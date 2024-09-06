@@ -5,6 +5,7 @@ namespace App\Http\Functions;
 use App\Enums\AlturaEnum;
 use App\Enums\CalidadEnum;
 use App\Enums\DensidadEnum;
+use App\Enums\MensajesEnum;
 use App\Enums\TipoHabEnum;
 
 class Functions
@@ -122,5 +123,35 @@ class Functions
     public static function infiltracionesTotales(float $infiltracionesDeAire, float $areaVentana)
     {
         return round($infiltracionesDeAire * $areaVentana, 1);
+    }
+
+    //Función para calcular la apertura de la ventana en centímentros
+    public static function aperturaVentana(float $valorAE, float $alturaVentana)
+    {
+        return round((($valorAE / $alturaVentana) * 100), 0);
+    }
+//-1 no tiene alerta mas adelante se podria pasar el modelo de la API 
+    public static function determinarMensajes(float $temperatura, float $velocidadViento, bool $llueve)
+    {
+        $resumenMensajes = [];
+
+    if ($temperatura > 18) {
+        $resumenMensajes[] = MensajesEnum::Agradable;
+    }
+    if ($temperatura < 10) {
+        $resumenMensajes[] = MensajesEnum::Frio;
+    }
+    if ($velocidadViento > 40) {
+        $resumenMensajes[] = MensajesEnum::VientosFuertes;
+    }
+    if ($llueve) {
+        $resumenMensajes[] = MensajesEnum::Tormenta;
+    }
+
+    if (empty($resumenMensajes)) {
+        $resumenMensajes[] = -1;
+    }
+
+    return $resumenMensajes;
     }
 }
