@@ -5,6 +5,7 @@ namespace App\Http\Functions;
 use App\Enums\AlturaEnum;
 use App\Enums\CalidadEnum;
 use App\Enums\DensidadEnum;
+use App\Enums\MensajesEnum;
 use App\Enums\TipoHabEnum;
 
 class Functions
@@ -159,6 +160,34 @@ class Functions
         return round($infiltracionesDeAire * $areaVentana, 1);
     }
 
+    //Función para calcular la apertura de la ventana en centímentros
+    public static function aperturaVentana(float $valorAE, float $alturaVentana)
+    {
+        return round((($valorAE / $alturaVentana) * 100), 0);
+    }
+    //Esta funcion depende de los datos de la API
+    public static function determinarAlerta(float $temperatura, float $velocidadViento, bool $llueve, bool $tormenta)
+    {
+        //Se manejará una alerta y la prioridad será tomada primero el viento, segundo la tormenta,
+        // tercero si hay lluvia cuarto va el frio y por ultimo la temperatura agradable.
+        if ($velocidadViento > 40) {
+            return MensajesEnum::VientosFuertes;
+        }
+        if ($tormenta) {
+            return MensajesEnum::Tormenta;
+        }
+        if ($llueve) {
+            return MensajesEnum::Lluvia;
+        }
+        if ($temperatura < 10) {
+            return MensajesEnum::Frio;
+        }
+        if ($temperatura > 18) {
+            return MensajesEnum::Agradable;
+        }
+        return null;
+    }
+  
     //Inicio método AN
     /* 
         Funcion para retornar ventilacion por CO2, en base a los valores estáticos para comparar.
