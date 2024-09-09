@@ -2,11 +2,8 @@
 import { ref } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
 import ActionMessage from '@/Components/ActionMessage.vue';
-import FormSection from '@/Components/FormSection.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({
@@ -76,7 +73,7 @@ const clearPhotoFileInput = () => {
 </script>
 
 <template>
-    <FormSection @submitted="updateProfileInformation">
+    <!-- <FormSection @submitted="updateProfileInformation">
         <template #title>
             Profile Information
         </template>
@@ -86,9 +83,9 @@ const clearPhotoFileInput = () => {
         </template>
 
         <template #form>
-            <!-- Profile Photo -->
+            
             <div v-if="$page.props.jetstream.managesProfilePhotos" class="col-span-6 sm:col-span-4">
-                <!-- Profile Photo File Input -->
+                 Profile Photo File Input 
                 <input
                     id="photo"
                     ref="photoInput"
@@ -99,12 +96,12 @@ const clearPhotoFileInput = () => {
 
                 <InputLabel for="photo" value="Photo" />
 
-                <!-- Current Profile Photo -->
+                 Current Profile Photo 
                 <div v-show="! photoPreview" class="mt-2">
                     <img :src="user.profile_photo_url" :alt="user.name" class="rounded-full h-20 w-20 object-cover">
                 </div>
 
-                <!-- New Profile Photo Preview -->
+                 New Profile Photo Preview 
                 <div v-show="photoPreview" class="mt-2">
                     <span
                         class="block rounded-full w-20 h-20 bg-cover bg-no-repeat bg-center"
@@ -128,7 +125,7 @@ const clearPhotoFileInput = () => {
                 <InputError :message="form.errors.photo" class="mt-2" />
             </div>
 
-            <!-- Name -->
+             Name 
             <div class="col-span-6 sm:col-span-4">
                 <InputLabel for="name" value="Name" />
                 <TextInput
@@ -142,7 +139,7 @@ const clearPhotoFileInput = () => {
                 <InputError :message="form.errors.name" class="mt-2" />
             </div>
 
-            <!-- Email -->
+            Email 
             <div class="col-span-6 sm:col-span-4">
                 <InputLabel for="email" value="Email" />
                 <TextInput
@@ -186,5 +183,5 @@ const clearPhotoFileInput = () => {
                 Save
             </PrimaryButton>
         </template>
-    </FormSection>
+    </FormSection> -->
 </template>
