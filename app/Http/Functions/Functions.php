@@ -130,28 +130,26 @@ class Functions
     {
         return round((($valorAE / $alturaVentana) * 100), 0);
     }
-//-1 no tiene alerta mas adelante se podria pasar el modelo de la API 
-    public static function determinarMensajes(float $temperatura, float $velocidadViento, bool $llueve)
+    //Esta funcion depende de los datos de la API
+    public static function determinarAlerta(float $temperatura, float $velocidadViento, bool $llueve, bool $tormenta)
     {
-        $resumenMensajes = [];
-
-    if ($temperatura > 18) {
-        $resumenMensajes[] = MensajesEnum::Agradable;
-    }
-    if ($temperatura < 10) {
-        $resumenMensajes[] = MensajesEnum::Frio;
-    }
-    if ($velocidadViento > 40) {
-        $resumenMensajes[] = MensajesEnum::VientosFuertes;
-    }
-    if ($llueve) {
-        $resumenMensajes[] = MensajesEnum::Tormenta;
-    }
-
-    if (empty($resumenMensajes)) {
-        $resumenMensajes[] = -1;
-    }
-
-    return $resumenMensajes;
+        //Se manejará una alerta y la prioridad será tomada primero el viento, segundo la tormenta,
+        // tercero si hay lluvia cuarto va el frio y por ultimo la temperatura agradable.
+        if ($velocidadViento > 40) {
+            return MensajesEnum::VientosFuertes;
+        }
+        if ($tormenta) {
+            return MensajesEnum::Tormenta;
+        }
+        if ($llueve) {
+            return MensajesEnum::Lluvia;
+        }
+        if ($temperatura < 10) {
+            return MensajesEnum::Frio;
+        }
+        if ($temperatura > 18) {
+            return MensajesEnum::Agradable;
+        }
+        return null;
     }
 }
