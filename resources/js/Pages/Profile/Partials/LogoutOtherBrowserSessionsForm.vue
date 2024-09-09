@@ -2,11 +2,7 @@
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import ActionMessage from '@/Components/ActionMessage.vue';
-import ActionSection from '@/Components/ActionSection.vue';
-import DialogModal from '@/Components/DialogModal.vue';
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
 defineProps({
@@ -43,7 +39,7 @@ const closeModal = () => {
 </script>
 
 <template>
-    <ActionSection>
+    <!-- <ActionSection>
         <template #title>
             Browser Sessions
         </template>
@@ -57,7 +53,7 @@ const closeModal = () => {
                 If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.
             </div>
 
-            <!-- Other Browser Sessions -->
+             Other Browser Sessions 
             <div v-if="sessions.length > 0" class="mt-5 space-y-6">
                 <div v-for="(session, i) in sessions" :key="i" class="flex items-center">
                     <div>
@@ -88,17 +84,17 @@ const closeModal = () => {
             </div>
 
             <div class="flex items-center mt-5">
-                <PrimaryButton @click="confirmLogout">
+                <button @click="confirmLogout">
                     Log Out Other Browser Sessions
-                </PrimaryButton>
+                </button>
 
                 <ActionMessage :on="form.recentlySuccessful" class="ms-3">
                     Done.
                 </ActionMessage>
             </div>
 
-            <!-- Log Out Other Devices Confirmation Modal -->
-            <DialogModal :show="confirmingLogout" @close="closeModal">
+             Log Out Other Devices Confirmation Modal 
+             <DialogModal :show="confirmingLogout" @close="closeModal">
                 <template #title>
                     Log Out Other Browser Sessions
                 </template>
@@ -137,5 +133,5 @@ const closeModal = () => {
                 </template>
             </DialogModal>
         </template>
-    </ActionSection>
+    </ActionSection> -->
 </template>
