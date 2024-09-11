@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ResultadoController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,3 +27,5 @@ Route::middleware([
 Route::middleware(['auth:sanctum'])->get('/', function () {
     return Inertia::render('Home');
 })->name('home');;
+
+Route::get('/pruebita', [ResultadoController::class, 'pruebita']);
