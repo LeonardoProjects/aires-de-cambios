@@ -26,3 +26,7 @@ Route::middleware([
 Route::middleware(['auth:sanctum'])->get('/', function () {
     return Inertia::render('Home');
 })->name('home');;
+
+Route::middleware(['auth:sanctum'])->get('/herramienta', function () {
+    return Inertia::render('Herramienta');
+})->name('herramienta');;

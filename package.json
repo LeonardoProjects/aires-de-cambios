@@ -14,5 +14,8 @@
         "postcss": "^8.4.32",
         "vite": "^5.0",
         "vue": "^3.3.13"
+    },
+    "dependencies": {
+        "bootstrap": "^5.3.3"
     }
 }
