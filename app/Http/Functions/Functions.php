@@ -104,8 +104,9 @@ class Functions
         $vientoCh se obtiene en la función: obtenerVientoCh()
     */
     public static function obtenerAE(float $caudalARenovar, float $vientoCh)
+
     {
-        return round($caudalARenovar / ($vientoCh * 0.025), 2);
+        return round(round($caudalARenovar / 3600, 3) / ($vientoCh * 0.025), 3);
     }
 
     //Función para calcular el volumen local, en base a todas las dimensiones del ambiente. El resultado es en m3

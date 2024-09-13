@@ -13,6 +13,8 @@ class Ventana extends Model
         'largo',
         'alto',
         'corrediza',
-        'calidad'
+        'calidad',
+        'idAmbiente'
     ];
+    public $timestamps = false;
 }
