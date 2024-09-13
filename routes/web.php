@@ -28,4 +28,6 @@ Route::middleware(['auth:sanctum'])->get('/', function () {
     return Inertia::render('Home');
 })->name('home');;
 
-Route::get('/pruebita', [ResultadoController::class, 'pruebita']);
+Route::middleware(['auth:sanctum'])->get('/herramienta', function () {
+    return Inertia::render('Herramienta');
+})->name('herramienta');;
