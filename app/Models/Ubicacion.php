@@ -13,6 +13,8 @@ class Ubicacion extends Model
         'latitud',
         'longitud',
         'densidad',
-        'altura'
+        'altura',
+        'idAmbiente'
     ];
+    public $timestamps = false;
 }

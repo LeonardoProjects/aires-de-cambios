@@ -13,6 +13,8 @@ class Local extends Model
         'tipoHabitacion',
         'largo',
         'ancho',
-        'alto'
+        'alto',
+        'idAmbiente'
     ];
+    public $timestamps = false;
 }

@@ -10,6 +10,8 @@ class Ocupacion extends Model
     use HasFactory;
 
     protected $fillable = [
-        'cantPersonas'
+        'cantPersonas',
+        'idAmbiente'
     ];
+    public $timestamps = false;
 }

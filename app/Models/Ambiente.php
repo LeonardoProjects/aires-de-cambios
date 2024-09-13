@@ -10,7 +10,8 @@ class Ambiente extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nombre'
+        'nombre',
+        'idUsuario'
     ];
 
     public function ubicacion()
