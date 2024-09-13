@@ -186,9 +186,9 @@ class Functions
         if ($temperatura > 18) {
             return MensajesEnum::Agradable;
         }
-        return null;
+        return MensajesEnum::Nada;
     }
-  
+
     //Inicio método AN
     /* 
         Funcion para retornar ventilacion por CO2, en base a los valores estáticos para comparar.

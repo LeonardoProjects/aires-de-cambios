@@ -2,47 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\MensajesEnum;
 use App\Http\Functions\Functions;
 use App\Models\Ambiente;
 use App\Services\HourlyWeatherData;
 
 class ResultadoController extends Controller
 {
-    //Realizar el calculo utilizando todas las funciones
-    //Devolver en un formato JSON para el front cm, temperatura 
-    //Al final meter CSS al login y registro
-
     public function calcularResultado(Ambiente $ambiente, HourlyWeatherData $datosAPI)
     {
-        // Se obtienen las relaciones del modelo ambiente
-        $ubicacionAmbiente = $ambiente->ubicacion;
-        $localAmbiente = $ambiente->local;
-        $ocupacionAmbiente = $ambiente->ocupacion;
-        $ventanaAmbiente = $ambiente->ventana;
+        $lluvia = false;
+        $tormenta = false;
+        $centimetrosParaAbrirVentana = 0;
 
         //Datos de ubicación
-        $densidad = $ubicacionAmbiente->densidad;
-        $altura = $ubicacionAmbiente->altura;
+        $densidad = $ambiente->ubicacion->densidad;
+        $altura = $ambiente->ubicacion->altura;
+
         //Datos de Ambiente
-        $tipoHabitacion = $localAmbiente->tipoHabitacion;
-        $largoAmbiente = $localAmbiente->largo;
-        $anchoAmbiente = $localAmbiente->ancho;
-        $altoAmbiente = $localAmbiente->alto;
+        $tipoHabitacion = $ambiente->local->tipoHabitacion;
+        $largoAmbiente = $ambiente->local->largo;
+        $anchoAmbiente = $ambiente->local->ancho;
+        $altoAmbiente = $ambiente->local->alto;
 
         //Datos de ocupación
-        $cantPersonas = $ocupacionAmbiente->cantPersonas;
+        $cantPersonas = $ambiente->ocupacion->cantPersonas;
 
         //Datos de Ventana
-        $largoVentana = $ventanaAmbiente->largo;
-        $altoVentana = $ventanaAmbiente->alto;
-        $calidadVentana = $ventanaAmbiente->calidad;
+        $largoVentana = $ambiente->ventana->largo;
+        $altoVentana = $ambiente->ventana->alto;
+        $calidadVentana = $ambiente->ventana->calidad;
 
         //Datos climáticos y manejo de alertas API
         $vientoKXh = $datosAPI->getWindKph();
         $vientoMXs = ($datosAPI->getWindKph() / 3.6);
         $condicionClimatica = $datosAPI->getCondition();
+
         $codigosDeLluvia = [
+            //Comentar significado code
             1150,
             1153,
             1180,
@@ -57,16 +53,22 @@ class ResultadoController extends Controller
             1243,
             1246
         ];
-        $codigosDeTormeta = [1207, 1273, 1252, 1264, 1276];
+
+        $codigosDeTormeta = [
+            //Comentar significado code
+            1207,
+            1273,
+            1252,
+            1264,
+            1276
+        ];
+
         if (in_array($condicionClimatica['code'], $codigosDeLluvia)) {
             $lluvia = true;
-        } else {
-            $lluvia = false;
         }
+
         if (in_array($condicionClimatica['code'], $codigosDeTormeta)) {
             $tormenta = true;
-        } else {
-            $tormenta = false;
         }
         $temperatura = $datosAPI->getTemperatureC();
 
@@ -100,13 +102,12 @@ class ResultadoController extends Controller
         if ($caudalAireARenovar != -1) {
             $AE = Functions::obtenerAE($caudalAireARenovar, $vientoCh);
             $centimetrosParaAbrirVentana = Functions::aperturaVentana($AE, $altoVentana);
-            $alerta = Functions::determinarAlerta($temperatura, $vientoKXh, $lluvia, $tormenta);
-        } else {
-            $centimetrosParaAbrirVentana = 0;
-            $alerta = MensajesEnum::Nada;
         }
 
-        //Mensaje final a comunicar
-        dd($centimetrosParaAbrirVentana, $alerta);
+        $alerta = Functions::determinarAlerta($temperatura, $vientoKXh, $lluvia, $tormenta);
+        return [
+            'apertura' => $centimetrosParaAbrirVentana,
+            'alerta' => $alerta
+        ];
     }
 }
