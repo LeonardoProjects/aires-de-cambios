@@ -29,7 +29,7 @@ const submit = () => {
     <Head title="Iniciar Sesión" />
 
     <div class="min-vh-100 d-flex justify-content-center align-items-center main">
-        <div class="card p-4 container">
+        <div class="card p-4 authCard">
             <div class="mb-4 text-center">
                 <AuthenticationCardLogo />
             </div>
