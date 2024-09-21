@@ -1,0 +1,14 @@
+.main {
+    background-color: #272822;
+}
+
+.container {
+    background-color: #f8f9fa;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+.labelLogin {
+    color: #2096f3;
+}

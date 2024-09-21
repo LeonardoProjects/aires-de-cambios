@@ -1,3 +1,45 @@
 [x-cloak] {
     display: none;
 }
+
+html *{
+    font-family: "Sora", sans-serif;
+}
+
+.btnPrimary{
+    position: relative;
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btnPrimary::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0 0 0 0;
+    background: hsl(204, 26%, 7%);
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+}
+
+.btnPrimary:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.btnPrimary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
