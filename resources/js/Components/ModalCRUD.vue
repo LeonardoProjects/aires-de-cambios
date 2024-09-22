@@ -1,7 +1,9 @@
 <script setup>
 import { router, useForm } from "@inertiajs/vue3";
-import { reactive } from "vue"
 
+const props = defineProps({
+    titulo: String,
+});
 
 const form = useForm({
     anchoAmbiente: 0,
@@ -10,6 +12,8 @@ const form = useForm({
     altoAmbiente: 0,
     tipoHabitacion: "",
     alturaSelect: "",
+    longitud: -58.076054,
+    latitud: -32.319339,
     densidadSelect: "",
     largoVentana: 0,
     altoVentana: 0,
@@ -17,6 +21,13 @@ const form = useForm({
     calidadVentana: "",
 });
 
+function submit() {
+    router.post("/ambiente/store", form);
+}
+
+function clearInputs() {
+    form.reset();
+}
 </script>
 
 <template>
@@ -43,7 +54,7 @@ const form = useForm({
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                        {{ title }}
+                        {{ props.titulo }}
                     </h1>
                     <button
                         type="button"
@@ -53,10 +64,21 @@ const form = useForm({
                     ></button>
                 </div>
                 <div class="modal-body text-center">
-                    <form @submit="form.post('/ambiente/create')">
+                    <form @submit.prevent="submit" id="crudFORM">
                         <div class="mb-5">
                             <h3>Detalles del ambiente</h3>
                             <hr />
+                            <div class="mt-1 mb-4 mx-4 text-center">
+                                <label for="nombreAmbiente" class="form-label"
+                                        >Nombre de ambiente</label
+                                    >
+                                    <input
+                                        id="nombreAmbiente"
+                                        type="text"
+                                        class="form-control w-0"
+                                        v-model="form.nombreAmbiente"
+                                    />
+                            </div>
                             <div class="d-flex h-50 flex-row">
                                 <div class="mx-4 w-25 text-center">
                                     <label
@@ -70,7 +92,6 @@ const form = useForm({
                                         min="0"
                                         max="10"
                                         step="0,1"
-                                        value="0"
                                         class="form-control"
                                         v-model="form.anchoAmbiente"
                                     />
@@ -125,23 +146,14 @@ const form = useForm({
                                         Estar o comedor
                                     </option>
                                 </select>
-                                <label for="nombreAmbiente" class="form-label"
-                                    >Nombre</label
-                                >
-                                <input
-                                    id="nombreAmbiente"
-                                    type="text"
-                                    class="form-control w-0"
-                                    v-model="form.nombreAmbiente"
-                                />
                             </div>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-5">
                             <h3>Ubicación</h3>
                             <hr />
                             <div class="d-flex h-50">
-                                <div class="f w-50 text-center">
+                                <div class="me-3 w-50 text-center">
                                     <label
                                         for="alturaSelect"
                                         class="form-label"
@@ -169,7 +181,7 @@ const form = useForm({
                                     </select>
                                 </div>
 
-                                <div class="f w-50 text-center">
+                                <div class="ms-3 w-50 text-center">
                                     <label
                                         for="densidadSelect"
                                         class="form-label"
@@ -203,59 +215,90 @@ const form = useForm({
                                 </div>
                             </div>
 
-                            <input type="text" id="buscador" />
+                            <input
+                                type="text"
+                                id="buscador"
+                                class="form-control my-3"
+                                placeholder="Ingresa la ubicación del ambiente"
+                            />
                             <div id="map"></div>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-0">
                             <h3>Detalles de ventana</h3>
                             <hr />
-                            <label for="largoVentana">
-                                Largo (m)
-                                <input
-                                    id="largoVentana"
-                                    type="number"
-                                    min="0"
-                                    max="10"
-                                    step="0,1"
-                                    value="0"
-                                    v-model="form.largoVentana"
-                                />
-                            </label>
-                            <label for="altoVentana">
-                                Alto (m)
-                                <input
-                                    id="altoVentana"
-                                    type="number"
-                                    min="0"
-                                    max="10"
-                                    step="0,1"
-                                    value="0"
-                                    v-model="form.altoVentana"
-                                />
-                            </label>
-                            <label for="tipoVentana">
-                                Tipo de ventana
-                                <select
-                                    name="tipoVentanaSelect"
-                                    id="tipoVentana"
-                                    v-model="form.tipoVentana"
-                                >
-                                    <option value="Corrediza">Corrediza</option>
-                                </select>
-                            </label>
-                            <label for="calidadVentana">
-                                Calidad de ventana
-                                <select
-                                    name="calidadSelect"
-                                    id="calidadVentana"
-                                    v-model="form.calidadVentana"
-                                >
-                                    <option value="Normal">Normal</option>
-                                    <option value="Mejorada">Mejorada</option>
-                                    <option value="Reforzada">Reforzada</option>
-                                </select>
-                            </label>
+                            <div class="d-flex h-50 flex-row">
+                                <div class="mx-4 w-50 text-center">
+                                    <label
+                                        for="largoVentana"
+                                        class="form-label"
+                                    >
+                                        Largo (m)</label
+                                    >
+                                    <input
+                                        id="largoVentana"
+                                        type="number"
+                                        min="0"
+                                        max="10"
+                                        step="0,1"
+                                        class="form-control"
+                                        v-model="form.largoVentana"
+                                    />
+                                </div>
+                                <div class="mx-4 w-50 text-center">
+                                    <label for="altoVentana" class="form-label">
+                                        Alto (m)</label
+                                    >
+                                    <input
+                                        id="altoVentana"
+                                        type="number"
+                                        min="0"
+                                        max="10"
+                                        step="0,1"
+                                        class="form-control"
+                                        v-model="form.altoVentana"
+                                    />
+                                </div>
+                            </div>
+                            <div class="d-flex mt-4 flex-row">
+                                <div class="mx-3 w-50 text-center">
+                                    <label for="tipoVentana" class="form-label">
+                                        Tipo de ventana</label
+                                    >
+                                    <select
+                                        name="tipoVentanaSelect"
+                                        id="tipoVentana"
+                                        class="form-select"
+                                        v-model="form.tipoVentana"
+                                    >
+                                        <option value="Corrediza">
+                                            Corrediza
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="mx-3 w-50 text-center">
+                                    <label
+                                        for="calidadVentana"
+                                        class="form-label"
+                                    >
+                                        Calidad de ventana</label
+                                    >
+                                    <select
+                                        name="calidadSelect"
+                                        id="calidadVentana"
+                                        class="form-select"
+                                        v-model="form.calidadVentana"
+                                    >
+                                        <option value="Normal">Normal</option>
+                                        <option value="Mejorada">
+                                            Mejorada
+                                        </option>
+                                        <option value="Reforzada">
+                                            Reforzada
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -263,13 +306,16 @@ const form = useForm({
                     <button
                         type="button"
                         class="btn btn-secondary"
+                        @click="clearInputs"
                         data-bs-dismiss="modal"
                     >
                         Cancelar
                     </button>
                     <button
                         type="submit"
-                        lass="btn btn-primary">
+                        class="btn btn-primary"
+                        form="crudFORM"
+                    >
                         Guardar cambios
                     </button>
                 </div>
@@ -280,10 +326,16 @@ const form = useForm({
 
 <style>
 #map {
-    min-height: 150px;
-    max-height: 200px;
+    min-height: 200px;
+    max-height: 300px;
     min-width: 50%;
     max-width: 80%;
     background-color: gray;
+    margin: 0 50px 0 50px;
+}
+
+#buscador {
+    width: 75%;
+    margin: 0 57px 0 57px;
 }
 </style>

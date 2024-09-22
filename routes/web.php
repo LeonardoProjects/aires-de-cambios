@@ -32,4 +32,4 @@ Route::middleware(['auth:sanctum'])->get('/herramienta', function () {
     return Inertia::render('Herramienta');
 })->name('herramienta');;
 
-Route::post('/ambiente/create', [AmbienteController::class, 'store'])->name('ambiente.store');
+Route::post('/ambiente/store', [AmbienteController::class, 'store'])->name('ambiente.store');
