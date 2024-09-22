@@ -14,10 +14,31 @@ class ResultadosController extends Controller
         $forecastData = $this->getApiData();
         $objectAPI = $this->processApiData($forecastData);
         $ambiente = User::find(1)->ambiente()->where('id', $idAmbiente)->first();
-        foreach ($objectAPI->getFirstDateData() as $hourData) {
-            dump($hourData);
-            dump(Functions::calcularResultado($ambiente, $hourData));
-        }
+        $firstDayData = [];
+        $secondDayData = [];
+        $resultData = [];
+        foreach ($objectAPI->getFirstDateData() as $key => $hourData) {
+            $resultado = Functions::calcularResultado($ambiente, $hourData);
+            $firstDayData[$key] = [
+                'hora' => sprintf('%02d:00', $key),
+                'apertura' => $resultado['apertura'],
+                'alerta' => $resultado['alerta'],
+            ];
+        };
+        foreach ($objectAPI->getSecondDateData() as $key => $hourData) {
+            $resultado = Functions::calcularResultado($ambiente, $hourData);
+            $secondDayData[$key] = [
+                'hora' => sprintf('%02d:00', $key),
+                'apertura' => $resultado['apertura'],
+                'alerta' => $resultado['alerta'],
+            ];
+        };
+        $resultData = [
+            'firstDayData' => $firstDayData,
+            'secondDayData' => $secondDayData,
+            'localTime' => $objectAPI->getLocalTime(),
+        ];
+        return response()->json($resultData);
     }
 
     /*

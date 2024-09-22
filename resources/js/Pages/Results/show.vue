@@ -1,16 +1,27 @@
 <template>
-    <div class="d-flex justify-content-center align-items-center flex-column min-vh-100">
+    <div
+        class="d-flex justify-content-center align-items-center flex-column min-vh-100"
+    >
         <table border="1" align="center" cellpadding="10">
-            <tr v-for="(item, index) in items" :key="index" @click="toggleRow(index)">
-                <template v-if="!item.expanded">
-                    <td>{{ item.hour }}</td>
-                    <td>{{ item.cm }} cm</td>
-                    <td>{{ item.expanded ? '▲' : '▼' }}</td>
+            <tr
+                v-for="(resultado, index) in resultados"
+                :key="index"
+                @click="toggleRow(index)"
+            >
+                <template v-if="!resultado.expanded">
+                    <td>{{ resultado.hour }}</td>
+                    <td>{{ resultado.cm }} cm</td>
+                    <td>{{ resultado.expanded ? "▲" : "▼" }}</td>
                 </template>
                 <td colspan="3" v-else>
-                    <strong>{{ item.date }}</strong> <br>
-                    <img :src="item.icon" alt="Alert Icon" style="height: 20px; width: 20px;"> {{ item.details }} <br>
-                    Apertura: {{ item.aperture }}
+                    <strong>{{ resultado.date }}</strong> <br />
+                    <img
+                        :src="resultado.icon"
+                        alt="Alert Icon"
+                        style="height: 20px; width: 20px"
+                    />
+                    {{ resultado.details }}, {{ resultado.alert }} <br />
+                    Apertura: {{ resultado.cm }}
                 </td>
             </tr>
         </table>
@@ -21,53 +32,94 @@
 export default {
     data() {
         return {
-            items: [
-                { 
-                    hour: '22:00', 
-                    cm: 2, 
-                    expanded: false, 
-                    details: 'Precaución por baja temperatura (menor a 10°C)',
-                    date: '4, Agosto - 21:00',
-                    icon: 'alert-icon.png',
-                    aperture: '3 cm'
-                },
-                { 
-                    hour: '22:00', 
-                    cm: 2, 
-                    expanded: false, 
-                    details: 'Precaución por baja temperatura (menor a 10°C)',
-                    date: '4, Agosto - 21:00',
-                    icon: 'alert-icon.png',
-                    aperture: '3 cm'
-                },
-                { 
-                    hour: '22:00', 
-                    cm: 2, 
-                    expanded: false, 
-                    details: 'Precaución por baja temperatura (menor a 10°C)',
-                    date: '4, Agosto - 21:00',
-                    icon: 'alert-icon.png',
-                    aperture: '3 cm'
-                },
-            ]
-        }
+            idAmbiente: 1,
+            datosCalculos: [],
+            resultados: [],
+        };
     },
     methods: {
         toggleRow(index) {
-            this.items.forEach((item, idx) => {
-                if (idx !== index) item.expanded = false;
+            this.resultados.forEach((resultado, idx) => {
+                if (idx !== index) resultado.expanded = false;
             });
-            this.items[index].expanded = !this.items[index].expanded;
-        }
-    }
-}
+            this.resultados[index].expanded = !this.resultados[index].expanded;
+        },
+
+        async cargarDatos() {
+            let response = await axios.get(
+                this.route("resultados.index", { idAmbiente: this.idAmbiente })
+            );
+            this.datosCalculos = response.data;
+            this.setDatos();
+        },
+
+        roundDownHour(localTime) {
+            let date = new Date(localTime);
+            date.setMinutes(0, 0, 0);
+            return date.toTimeString().slice(0, 5);
+        },
+
+        getTenHoursOfData(localTime, firstDayData, secondDayData) {
+            let roundedLocalTime = this.roundDownHour(localTime);
+            let combinedData = [...firstDayData, ...secondDayData];
+            let result = [];
+
+            let startIndex = combinedData.findIndex(
+                (item) => item.hora === roundedLocalTime
+            );
+
+            if (startIndex !== -1) {
+                for (let i = 0; i < 10; i++) {
+                    result.push(combinedData[startIndex + i]);
+                }
+            }
+
+            return result;
+        },
+
+        setDatos() {
+            let localTime = this.datosCalculos["localTime"];
+            let firstDayData = this.datosCalculos["firstDayData"];
+            let secondDayData = this.datosCalculos["secondDayData"];
+            let tenHoursData = this.getTenHoursOfData(
+                localTime,
+                firstDayData,
+                secondDayData
+            );
+
+            let currentDate = new Date(localTime);
+            let tomorrowDate = new Date(localTime);
+            tomorrowDate.setDate(currentDate.getDate() + 1);
+
+            let formattedCurrentDate = currentDate.toISOString().slice(0, 10);
+            let formattedTomorrowDate = tomorrowDate.toISOString().slice(0, 10);
+
+            tenHoursData.forEach((resultado, index) => {
+                let date = index + Number(this.roundDownHour(localTime).split(":")[0]) < 24 ? formattedCurrentDate: formattedTomorrowDate;
+                this.resultados.push({
+                    hour: resultado.hora,
+                    cm: resultado.apertura,
+                    expanded: false,
+                    date: date,
+                    icon: "pene",
+                    alert: resultado.alerta,
+                });
+            });
+        },
+    },
+    mounted() {
+        this.cargarDatos();
+    },
+};
 </script>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
     transition: opacity 0.5s ease;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
     opacity: 0;
 }
 </style>
