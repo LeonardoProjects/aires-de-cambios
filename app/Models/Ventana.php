@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CalidadEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,5 +17,10 @@ class Ventana extends Model
         'calidad',
         'idAmbiente'
     ];
+
+    protected $casts = [
+        'calidad' => CalidadEnum::class,
+    ];
+
     public $timestamps = false;
 }

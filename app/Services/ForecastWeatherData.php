@@ -20,6 +20,7 @@ class ForecastWeatherData
         foreach ($DatehourlyData as $index => $data) {
             $hourlyCollection[] = new HourlyWeatherData(
                 $index,
+                $data['temp_c'],
                 $data['wind_kph'],
                 $data['humidity'],
                 $data['condition']

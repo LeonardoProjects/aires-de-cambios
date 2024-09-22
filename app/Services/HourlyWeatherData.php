@@ -5,15 +5,15 @@ namespace App\Services;
 class HourlyWeatherData
 {
     private $hour;
-    private $temperature;
+    private $temp_c;
     private $wind_kph;
     private $humidity;
     private $condition = [];
 
-    public function __construct($hour, $temperature, $wind_kph, $humidity, $condition)
+    public function __construct($hour, $temp_c, $wind_kph, $humidity, $condition)
     {
         $this->hour = $hour;
-        $this->temperature = $temperature;
+        $this->temp_c = $temp_c;
         $this->wind_kph = $wind_kph;
         $this->humidity = $humidity;
         $this->condition = [
@@ -30,7 +30,7 @@ class HourlyWeatherData
 
     public function getTemperatureC()
     {
-        return $this->temperature;
+        return $this->temp_c;
     }
 
     public function getWindKph()

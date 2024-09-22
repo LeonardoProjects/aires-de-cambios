@@ -2,6 +2,7 @@
 import ModalCRUD from '@/Components/ModalCRUD.vue';
 import { computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import Show from "./Results/show.vue";
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user);
@@ -13,7 +14,8 @@ export default {
         }
     },
     components: {
-        ModalCRUD
+        ModalCRUD,
+        Show
     },
     methods: {
         async obtenerTemas() {
@@ -35,7 +37,7 @@ export default {
 </script>
 
 <template>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center align-items-center flex-column min-vh-100">
         <label for="selectAmbientes" class="form-label"></label>
         <select name="selectAmbientes" id="selectAmbientes" class="form-select" 
         @change="cargarResultados($event.target.value)">
@@ -44,9 +46,12 @@ export default {
         <option v-if="ambientes && ambientes.length === 0" :value="-1">No hay ambientes creados</option>
         </select>
         <ModalCRUD titulo="Crear ambiente" @updateAmbientes="actualizarAmbientes"/>
-
+        <Show />
     </div>
 </template>
+
 <style>
-@import "../../css/Herramienta.css"
+div {
+    background-color: dimgray;
+}
 </style>

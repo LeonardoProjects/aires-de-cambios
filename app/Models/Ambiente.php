@@ -16,22 +16,22 @@ class Ambiente extends Model
 
     public function ubicacion()
     {
-        return $this->hasOne(Ubicacion::class);
+        return $this->hasOne(Ubicacion::class, "idAmbiente");
     }
 
     public function ventana()
     {
-        return $this->hasOne(Ventana::class);
+        return $this->hasOne(Ventana::class, "idAmbiente");
     }
 
     public function local()
     {
-        return $this->hasOne(Local::class);
+        return $this->hasOne(Local::class, "idAmbiente");
     }
 
     public function ocupacion()
     {
-        return $this->hasOne(Ocupacion::class);
+        return $this->hasOne(Ocupacion::class, "idAmbiente");
     }
 
     public function user()
