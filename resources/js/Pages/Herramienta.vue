@@ -26,7 +26,7 @@ export default {
 <template>
     <div class="d-flex justify-content-center align-items-center flex-column min-vh-100">
 
-        <ModalCRUD />
+        <ModalCRUD :title="abcd" />
 
         <table border=1 id="table_detail" align=center cellpadding=10>
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AmbienteController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,3 +31,5 @@ Route::middleware(['auth:sanctum'])->get('/', function () {
 Route::middleware(['auth:sanctum'])->get('/herramienta', function () {
     return Inertia::render('Herramienta');
 })->name('herramienta');;
+
+Route::post('/ambiente/create', [AmbienteController::class, 'store'])->name('ambiente.store');
