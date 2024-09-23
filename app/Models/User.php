@@ -31,7 +31,7 @@ class User extends Authenticatable
 
     public function ambiente()
     {
-        return $this->hasMany(Ambiente::class);
+        return $this->hasMany(Ambiente::class, 'idUsuario');
     }
 
     /**

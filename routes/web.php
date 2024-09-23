@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AmbienteController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,8 +26,17 @@ Route::middleware([
 
 Route::get('/', function () {
     return Inertia::render('Home');
-})->name('home');;
+})->name('home');
 
 Route::middleware(['auth:sanctum'])->get('/herramienta', function () {
     return Inertia::render('Herramienta');
-})->name('herramienta');;
+})->name('herramienta');
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/ambiente/store', [AmbienteController::class, 'store'])->name('ambiente.store');
+    
+    Route::get(
+        '/ambiente/getAll/{id}',
+        [AmbienteController::class, 'obtenerAmbientes']
+    )->name('ambiente.getAll');
+});
