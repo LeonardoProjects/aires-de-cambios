@@ -26,10 +26,17 @@ Route::middleware([
 
 Route::middleware(['auth:sanctum'])->get('/', function () {
     return Inertia::render('Home');
-})->name('home');;
+})->name('home');
 
 Route::middleware(['auth:sanctum'])->get('/herramienta', function () {
     return Inertia::render('Herramienta');
-})->name('herramienta');;
+})->name('herramienta');
 
-Route::post('/ambiente/store', [AmbienteController::class, 'store'])->name('ambiente.store');
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/ambiente/store', [AmbienteController::class, 'store'])->name('ambiente.store');
+    
+    Route::get(
+        '/ambiente/getAll/{id}',
+        [AmbienteController::class, 'obtenerAmbientes']
+    )->name('ambiente.getAll');
+});
