@@ -24,7 +24,7 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::middleware(['auth:sanctum'])->get('/', function () {
+Route::get('/', function () {
     return Inertia::render('Home');
 })->name('home');
 
