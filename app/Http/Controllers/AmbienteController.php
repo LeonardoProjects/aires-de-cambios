@@ -31,10 +31,10 @@ class AmbienteController extends Controller
                     return $query->where('idUsuario', $request['idUser']);
                 })
             ],
-            'alturaSelect' => ['required', Rule::in(AlturaEnum::class)],
-            'densidadSelect' => ['required', Rule::in(DensidadEnum::class)],
-            'tipoHabitacion' => ['required', Rule::in(TipoHabEnum::class)],
-            'calidadVentana' => ['required', Rule::in(CalidadEnum::class)]
+            'alturaSelect' => ['required'],
+            'densidadSelect' => ['required'],
+            'tipoHabitacion' => ['required'],
+            'calidadVentana' => ['required']
         ]);
 
         $ambiente = Ambiente::create([
