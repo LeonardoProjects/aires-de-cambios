@@ -30,12 +30,17 @@
 
 <script>
 export default {
+    props: { idAmbiente: Number },
     data() {
         return {
-            idAmbiente: 1,
             datosCalculos: [],
             resultados: [],
         };
+    },
+    watch: {
+        idAmbiente: function (newVal, oldVal) {
+            this.cargarDatos();
+        },
     },
     methods: {
         toggleRow(index) {
@@ -69,7 +74,7 @@ export default {
             );
 
             if (startIndex !== -1) {
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < 15; i++) {
                     result.push(combinedData[startIndex + i]);
                 }
             }
@@ -78,6 +83,7 @@ export default {
         },
 
         setDatos() {
+            this.resultados = [];
             let localTime = this.datosCalculos["localTime"];
             let firstDayData = this.datosCalculos["firstDayData"];
             let secondDayData = this.datosCalculos["secondDayData"];
@@ -95,13 +101,18 @@ export default {
             let formattedTomorrowDate = tomorrowDate.toISOString().slice(0, 10);
 
             tenHoursData.forEach((resultado, index) => {
-                let date = index + Number(this.roundDownHour(localTime).split(":")[0]) < 24 ? formattedCurrentDate: formattedTomorrowDate;
+                let date =
+                    index +
+                        Number(this.roundDownHour(localTime).split(":")[0]) <
+                    24
+                        ? formattedCurrentDate
+                        : formattedTomorrowDate;
                 this.resultados.push({
                     hour: resultado.hora,
                     cm: resultado.apertura,
                     expanded: false,
                     date: date,
-                    icon: "pene",
+                    icon: "icono",
                     alert: resultado.alerta,
                 });
             });
@@ -122,4 +133,6 @@ export default {
 .fade-leave-to {
     opacity: 0;
 }
+
+
 </style>

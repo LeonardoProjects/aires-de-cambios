@@ -10,7 +10,8 @@ const userId = computed(() => page.props.auth.user);
 export default {
     data() {
         return {
-            ambientes: []
+            ambientes: [],
+            idAmbiente: 1
         }
     },
     components: {
@@ -26,7 +27,12 @@ export default {
             this.ambientes = $data;
         },  
         cargarResultados($idAmbiente) {
+            this.idAmbiente = Number($idAmbiente);
+            console.log(this.idAmbiente);
             console.log('Cargando resultados en Show.vue ' + $idAmbiente);
+        },
+        enviarEvento(){
+            this.idAmbiente = 1;
         }
     },
     mounted() {
@@ -46,12 +52,10 @@ export default {
         <option v-if="ambientes && ambientes.length === 0" :value="-1">No hay ambientes creados</option>
         </select>
         <ModalCRUD titulo="Crear ambiente" @updateAmbientes="actualizarAmbientes"/>
-        <Show />
+        <Show :idAmbiente="idAmbiente" />
     </div>
 </template>
 
 <style>
-div {
-    background-color: dimgray;
-}
+
 </style>

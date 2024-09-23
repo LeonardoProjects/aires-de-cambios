@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class ResultadosController extends Controller
 {
-    public function index($idAmbiente = 1)
+    public function index($idAmbiente)
     {
         $forecastData = $this->getApiData();
         $objectAPI = $this->processApiData($forecastData);
