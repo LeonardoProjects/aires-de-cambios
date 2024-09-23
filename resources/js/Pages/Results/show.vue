@@ -1,34 +1,32 @@
 <template>
-    <div
-        class="d-flex justify-content-center align-items-center flex-column min-vh-100"
-    >
-        <table border="1" align="center" cellpadding="10">
-            <tr
-                v-for="(resultado, index) in resultados"
-                :key="index"
-                @click="toggleRow(index)"
-            >
-                <template v-if="!resultado.expanded">
-                    <td>{{ resultado.hour }}</td>
-                    <td>{{ resultado.cm }} cm</td>
-                    <td>{{ resultado.expanded ? "▲" : "▼" }}</td>
-                </template>
-                <td colspan="3" v-else>
-                    <strong>{{ resultado.date }}</strong> <br />
-                    <img
-                        :src="resultado.icon"
-                        alt="Alert Icon"
-                        style="height: 20px; width: 20px"
-                    />
-                    {{ resultado.details }}, {{ resultado.alert }} <br />
-                    Apertura: {{ resultado.cm }}
-                </td>
-            </tr>
-        </table>
+    <div class="d-flex justify-content-center flex-column min-vh-100 w-75 text-center">
+        <h1>Resultados</h1>
+        <div class="d-flex justify-content-center">
+            <table border="1" align="center" cellpadding="10" class="text-center">
+                <tr v-for="(resultado, index) in resultados" :key="index" @click="toggleRow(index)" role="button">
+                    <template v-if="!resultado.expanded">
+                        <td>{{ resultado.hour }}</td>
+                        <td>{{ resultado.cm }} cm</td>
+                        <td class="text-end">{{ resultado.expanded ? "▲" : "▼" }}</td>
+                    </template>
+                    <td class="text-center" colspan="3" v-else>
+                        <strong>{{ resultado.date }}</strong>
+                        <br />
+                        <img v-bind:src="getImage(resultado.alert)"
+                            alt="" style="height: 20px; width: 20px" />
+                        {{ resultado.alert }}
+                        - Apertura: {{ resultado.cm }}cm
+                        <br />
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </template>
 
 <script>
+import thunderIcon from '../../../images/icons/thunder.png';
+
 export default {
     props: { idAmbiente: Number },
     data() {
@@ -49,7 +47,13 @@ export default {
             });
             this.resultados[index].expanded = !this.resultados[index].expanded;
         },
-
+        getImage(alert) {
+            // Verifica la alerta y devuelve la ruta de la imagen correspondiente
+            if (alert === "Precaución por lluvias") {
+                return thunderIcon; // Usa la imagen importada
+            }
+            return ''; // En caso de que no haya imagen, devuelve un string vacío o una imagen por defecto
+        },
         async cargarDatos() {
             let response = await axios.get(
                 this.route("resultados.index", { idAmbiente: this.idAmbiente })
@@ -104,7 +108,7 @@ export default {
                 let date =
                     index +
                         Number(this.roundDownHour(localTime).split(":")[0]) <
-                    24
+                        24
                         ? formattedCurrentDate
                         : formattedTomorrowDate;
                 this.resultados.push({
@@ -129,10 +133,13 @@ export default {
 .fade-leave-active {
     transition: opacity 0.5s ease;
 }
+
 .fade-enter,
 .fade-leave-to {
     opacity: 0;
 }
 
-
+table {
+    width: 700px;
+}
 </style>
