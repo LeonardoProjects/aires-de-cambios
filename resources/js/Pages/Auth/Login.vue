@@ -77,14 +77,14 @@ const submit = () => {
                     </label>
                 </div>
 
-                <div class="d-flex justify-content-center align-content-center">
-                    <div class="d-flex flex-row col-6 flex-wrap">
+                <div class="d-flex flex-column justify-content-center align-content-center">
+                    <div class="row row-cols-2 text-center">
                         <Link v-if="canResetPassword" :href="route('password.request')" class="nav-link labelCeleste mt-2">
                             ¿Has olvidado tu contraseña?
                         </Link>
     
                         <Link v-if="canResetPassword" :href="route('register')" class="nav-link labelCeleste mt-2">
-                            ¿No se encuentra registrado?
+                            No tengo cuenta
                         </Link>
                     </div>
 
