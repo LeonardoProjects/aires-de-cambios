@@ -1,6 +1,6 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 
 const page = usePage();
@@ -22,8 +22,8 @@ const form = useForm({
     altoAmbiente: 0,
     tipoHabitacion: "",
     alturaSelect: "",
-    longitud: -58.076054,
-    latitud: -32.319339,
+    longitud: "",
+    latitud: "",
     densidadSelect: "",
     largoVentana: 0,
     altoVentana: 0,
@@ -51,6 +51,44 @@ async function submit() {
         }
     }
 }
+
+// Funcionalidad para el mapa Leaflet
+const marcador = ref(null);
+
+onMounted(() => {
+    const map = L.map('map').setView([-32.98369774322006, -55.93512229688155], 6);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    // Añadir el Geocoder al mapa (lupita)
+    var geocoder = L.Control.geocoder({
+        defaultMarkGeocode: false // No agregar el marcador automáticamente
+    })
+    .on('markgeocode', function (e) {
+        var bbox = e.geocode.bbox;
+        var poly = L.polygon([
+            [bbox.getSouthEast().lat, bbox.getSouthEast().lng],
+            [bbox.getNorthEast().lat, bbox.getNorthEast().lng],
+            [bbox.getNorthWest().lat, bbox.getNorthWest().lng],
+            [bbox.getSouthWest().lat, bbox.getSouthWest().lng]
+        ]);
+        map.fitBounds(poly.getBounds());
+
+        // Borrar marcador si ya existe
+        if (marcador.value) {
+            map.removeLayer(marcador.value);
+        }
+
+        // Añadir nuevo marcador en la ubicación ingresada por el geocoder
+        marcador.value = L.marker(e.geocode.center).addTo(map).bindPopup(e.geocode.name).openPopup();
+
+        // Actualizar latitud y longitud en el formulario
+        form.latitud = e.geocode.center.lat;
+        form.longitud = e.geocode.center.lng;
+    }).addTo(map);
+});
 
 function emitirAmbientes($ambientes) {
     emit('updateAmbientes', $ambientes);
@@ -111,8 +149,8 @@ function closeModal() {
                             <div class="d-flex h-50 flex-row">
                                 <div class="mx-4 w-25 text-center">
                                     <label for="anchoAmbiente" class="form-label">Ancho (m)</label>
-                                    <input id="anchoAmbiente" type="number" min="0" max="20" step="0,1" class="form-control"
-                                        v-model="form.anchoAmbiente" />
+                                    <input id="anchoAmbiente" type="number" min="0" max="20" step="0,1"
+                                        class="form-control" v-model="form.anchoAmbiente" />
                                 </div>
                                 <div class="mx-4 w-25 text-center">
                                     <label for="largoAmbiente" class="form-label">Largo (m)</label>
@@ -148,8 +186,8 @@ function closeModal() {
                                 <div class="me-3 w-50 text-center">
                                     <label for="alturaSelect" class="form-label">
                                         Altura</label>
-                                    <select name="alturaSelect" id="altura" v-model="form.alturaSelect" class="form-select"
-                                        @change="form.clearErrors('alturaSelect')">
+                                    <select name="alturaSelect" id="altura" v-model="form.alturaSelect"
+                                        class="form-select" @change="form.clearErrors('alturaSelect')">
                                         <option value="Planta baja">
                                             Planta baja
                                         </option>
@@ -188,14 +226,11 @@ function closeModal() {
                                             El centro con edificios altos
                                         </option>
                                     </select>
-                                    <div v-if="form.errors.densidadSelect" class="error">{{ form.errors.densidadSelect[0] }}
-                                    </div>
+                                    <div v-if="form.errors.densidadSelect" class="error">{{
+                                        form.errors.densidadSelect[0] }}</div>
                                 </div>
                             </div>
-
-                            <input type="text" id="buscador" class="form-control my-3"
-                                placeholder="Ingresa la ubicación del ambiente" />
-                            <div id="map"></div>
+                            <div id="map" class="mt-4"></div>
                         </div>
 
                         <div class="mb-0">
@@ -205,14 +240,14 @@ function closeModal() {
                                 <div class="mx-4 w-50 text-center">
                                     <label for="largoVentana" class="form-label">
                                         Largo (m)</label>
-                                    <input id="largoVentana" type="number" min="0" max="20" step="0.1" class="form-control"
-                                        v-model="form.largoVentana" />
+                                    <input id="largoVentana" type="number" min="0" max="20" step="0.1"
+                                        class="form-control" v-model="form.largoVentana" />
                                 </div>
                                 <div class="mx-4 w-50 text-center">
                                     <label for="altoVentana" class="form-label">
                                         Alto (m)</label>
-                                    <input id="altoVentana" type="number" min="0" max="20" step="0.1" class="form-control"
-                                        v-model="form.altoVentana" />
+                                    <input id="altoVentana" type="number" min="0" max="20" step="0.1"
+                                        class="form-control" v-model="form.altoVentana" />
                                 </div>
                             </div>
                             <div class="d-flex mt-4 flex-row">
@@ -225,7 +260,8 @@ function closeModal() {
                                             Corrediza
                                         </option>
                                     </select>
-                                    <div v-if="form.errors.tipoVentana" class="error">{{ form.errors.tipoVentana[0] }}</div>
+                                    <div v-if="form.errors.tipoVentana" class="error">{{ form.errors.tipoVentana[0] }}
+                                    </div>
                                 </div>
                                 <div class="mx-3 w-50 text-center">
                                     <label for="calidadVentana" class="form-label">
@@ -263,20 +299,15 @@ function closeModal() {
 
 <style>
 #map {
-    min-height: 200px;
-    max-height: 300px;
-    min-width: 50%;
-    max-width: 80%;
-    background-color: gray;
+    /* min-height: 200px;
+    min-width: 50%; */
+    width: 80%;
+    height: 400px;
     margin: 0 50px 0 50px;
-}
-
-#buscador {
-    width: 75%;
-    margin: 0 57px 0 57px;
 }
 
 .error {
     color: red;
     font-size: 0.9em;
-}</style>
+}
+</style>
