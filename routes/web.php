@@ -1,18 +1,9 @@
 <?php
 
 use App\Http\Controllers\AmbienteController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\ResultadosController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
 
 Route::middleware([
     'auth:sanctum',
@@ -34,9 +25,12 @@ Route::middleware(['auth:sanctum'])->get('/herramienta', function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/ambiente/store', [AmbienteController::class, 'store'])->name('ambiente.store');
-    
     Route::get(
         '/ambiente/getAll/{id}',
         [AmbienteController::class, 'obtenerAmbientes']
     )->name('ambiente.getAll');
 });
+
+Route::get('/pruebita', [ResultadosController::class, 'index']);
+
+Route::get('/api/resultados/{idAmbiente}', [ResultadosController::class, 'index'])->name('resultados.index');

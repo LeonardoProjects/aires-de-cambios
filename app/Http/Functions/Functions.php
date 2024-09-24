@@ -7,6 +7,8 @@ use App\Enums\CalidadEnum;
 use App\Enums\DensidadEnum;
 use App\Enums\MensajesEnum;
 use App\Enums\TipoHabEnum;
+use App\Models\Ambiente;
+use App\Services\HourlyWeatherData;
 
 class Functions
 {
@@ -270,5 +272,109 @@ class Functions
             return $caudalAireMAX;
             //Si las infiltraciones no cubren el caudal de aire, retorna el caudal de aire
         }
+    }
+
+    /* Funcion final para realizar el calculo de apertura de ventana y obtener alertas*/
+    public static function calcularResultado(Ambiente $ambiente, HourlyWeatherData $datosAPI)
+    {
+        $lluvia = false;
+        $tormenta = false;
+        $centimetrosParaAbrirVentana = 0;
+
+        //Datos de ubicación
+        $densidad = $ambiente->ubicacion->densidad;
+        $altura = $ambiente->ubicacion->altura;
+
+        //Datos de Ambiente
+        $tipoHabitacion = $ambiente->local->tipoHabitacion;
+        $largoAmbiente = $ambiente->local->largo;
+        $anchoAmbiente = $ambiente->local->ancho;
+        $altoAmbiente = $ambiente->local->alto;
+
+        //Datos de ocupación
+        $cantPersonas = $ambiente->ocupacion->cantPersonas;
+
+        //Datos de Ventana
+        $largoVentana = $ambiente->ventana->largo;
+        $altoVentana = $ambiente->ventana->alto;
+        $calidadVentana = $ambiente->ventana->calidad;
+
+        //Datos climáticos y manejo de alertas API
+        $vientoKXh = $datosAPI->getWindKph();
+        $vientoMXs = ($datosAPI->getWindKph() / 3.6);
+        $condicionClimatica = $datosAPI->getCondition();
+
+        $codigosDeLluvia = [
+            //Comentar significado code
+            1150,
+            1153,
+            1180,
+            1183,
+            1186,
+            1189,
+            1192,
+            1195,
+            1198,
+            1201,
+            1240,
+            1243,
+            1246
+        ];
+
+        $codigosDeTormeta = [
+            //Comentar significado code
+            1207,
+            1273,
+            1252,
+            1264,
+            1276
+        ];
+
+        if (in_array($condicionClimatica['code'], $codigosDeLluvia)) {
+            $lluvia = true;
+        }
+
+        if (in_array($condicionClimatica['code'], $codigosDeTormeta)) {
+            $tormenta = true;
+        }
+        $temperatura = $datosAPI->getTemperatureC();
+
+        //$areaAmbiente = Functions::area($largoAmbiente, $anchoAmbiente);
+        $areaVentana = self::area($largoVentana, $altoVentana);
+        $volumenAmbiente = self::volumLocal($largoAmbiente, $anchoAmbiente, $altoAmbiente);
+        $volDispXPersona = self::volDispXPersona($volumenAmbiente, $cantPersonas);
+
+        //Calculo de caudal de aire a renovar
+        //Método AN
+
+        $ventilacionXco2 = self::ventilacionXco2($volDispXPersona);
+        $caudalAireARenovarXco2 = self::caudalXco2($ventilacionXco2, $cantPersonas);
+
+        $ventilacionXh2o = self::ventilacionXh2o($volDispXPersona);
+        $caudalAireARenovarXh2o = self::caudalXh2o($ventilacionXh2o, $cantPersonas);
+
+        //Método CTE
+        $caudalMetodoCTE = self::caudalAireRenovar($tipoHabitacion, $cantPersonas);
+        //Calculo de infiltraciones de aire
+
+        $coeficienteDeRugosidad = self::obtenerCorreccionCh($altura, $densidad);
+        $vientoCh = self::obtenerVientoCh($coeficienteDeRugosidad, $vientoMXs);
+        $infiltracionesDeAire = self::infiltracionDeAire($calidadVentana, $vientoCh);
+        $infiltracionesTotales = self::infiltracionesTotales($infiltracionesDeAire, $areaVentana);
+        //Comparativo de caudal a renovar por diferentes métodos
+        $caudalAireMaximo = self::comparativoCaudalDiffMetodos($caudalMetodoCTE, $caudalAireARenovarXh2o);
+        $caudalAireARenovar = self::caudalAireCOMPinfiltraciones($caudalAireMaximo, $infiltracionesTotales);
+
+        //Calculo de ventilación unilateral
+        if ($caudalAireARenovar != -1) {
+            $AE = self::obtenerAE($caudalAireARenovar, $vientoCh);
+            $centimetrosParaAbrirVentana = self::aperturaVentana($AE, $altoVentana);
+        }
+
+        $alerta = self::determinarAlerta($temperatura, $vientoKXh, $lluvia, $tormenta);
+        return [
+            'apertura' => $centimetrosParaAbrirVentana,
+            'alerta' => $alerta
+        ];
     }
 }
