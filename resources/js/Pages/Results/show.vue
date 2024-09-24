@@ -55,13 +55,25 @@ export default {
             return ''; // En caso de que no haya imagen, devuelve un string vacío o una imagen por defecto
         },
         async cargarDatos() {
+        try {
             let response = await axios.get(
                 this.route("resultados.index", { idAmbiente: this.idAmbiente })
             );
             this.datosCalculos = response.data;
             this.setDatos();
-        },
-
+        } catch (error) {
+            if (error.response) {
+                console.error('Error en la respuesta del servidor:', error.response.status);
+                alert(`Error: ${error.response.status}. No se pudieron cargar los datos.`);
+            } else if (error.request) {
+                console.error('No se recibió respuesta del servidor:', error.request);
+                alert('Error de conexión. No se pudo establecer comunicación con el servidor.');
+            } else {
+                console.error('Error en la configuración de la solicitud:', error.message);
+                alert('Error en la solicitud. Inténtalo de nuevo más tarde.');
+            }
+        }
+    },
         roundDownHour(localTime) {
             let date = new Date(localTime);
             date.setMinutes(0, 0, 0);
