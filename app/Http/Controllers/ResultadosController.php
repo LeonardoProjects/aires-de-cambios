@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 class ResultadosController extends Controller
 {
-    public function index($idAmbiente)
+    public function index($idAmbiente, $cantPersonas)
     {
         $forecastData = $this->getApiData();
         $objectAPI = $this->processApiData($forecastData);
@@ -18,7 +18,7 @@ class ResultadosController extends Controller
         $secondDayData = [];
         $resultData = [];
         foreach ($objectAPI->getFirstDateData() as $key => $hourData) {
-            $resultado = Functions::calcularResultado($ambiente, $hourData);
+            $resultado = Functions::calcularResultado($ambiente, $hourData, $cantPersonas);
             $firstDayData[$key] = [
                 'hora' => sprintf('%02d:00', $key),
                 'apertura' => $resultado['apertura'],
@@ -26,7 +26,7 @@ class ResultadosController extends Controller
             ];
         };
         foreach ($objectAPI->getSecondDateData() as $key => $hourData) {
-            $resultado = Functions::calcularResultado($ambiente, $hourData);
+            $resultado = Functions::calcularResultado($ambiente, $hourData, $cantPersonas);
             $secondDayData[$key] = [
                 'hora' => sprintf('%02d:00', $key),
                 'apertura' => $resultado['apertura'],

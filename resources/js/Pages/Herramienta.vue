@@ -11,7 +11,8 @@ export default {
     data() {
         return {
             ambientes: [],
-            idAmbiente: -1
+            idAmbiente: -1,
+            cantPersonas: 1
         }
     },
     components: {
@@ -29,7 +30,6 @@ export default {
         },
         cargarResultados($idAmbiente) {
             this.idAmbiente = Number($idAmbiente);
-            console.log('Cargando resultados en Show.vue ' + $idAmbiente);
         }
     },
     mounted() {
@@ -57,13 +57,13 @@ export default {
                 </option>
                 <option v-if="ambientes && ambientes.length === 0" :value="-1">No hay ambientes creados</option>
             </select>
-            <ModalCRUD editFunction="true" />
-            <div class="d-flex flex-column position-absolute divCantPersonas text-center">
+            <ModalCRUD v-if="idAmbiente != -1" editFunction="true" />
+            <div v-if="idAmbiente != -1" class="d-flex flex-column position-absolute divCantPersonas text-center">
                 <label for="cantPersonas" class="form-label">Cant. personas</label>
-                <input type="text" id="cantPersonas" class="form-control">
+                <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas">
             </div>
         </div>
-        <Show :idAmbiente="idAmbiente" />
+        <Show :idAmbiente="idAmbiente" :cantPersonas="cantPersonas"/>
     </div>
 </template>
 

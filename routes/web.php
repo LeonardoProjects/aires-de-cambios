@@ -33,4 +33,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::get('/pruebita', [ResultadosController::class, 'index']);
 
-Route::get('/api/resultados/{idAmbiente}', [ResultadosController::class, 'index'])->name('resultados.index');
+Route::get('/api/resultados/{idAmbiente}/{cantPersonas}', [ResultadosController::class, 'index'])->name('resultados.index');
