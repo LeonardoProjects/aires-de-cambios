@@ -7,7 +7,10 @@ const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
 
 const props = defineProps({
-    titulo: String,
+    editFunction: {
+        Boolean,
+        default: false
+    }
 });
 
 const emit = defineEmits(['updateAmbientes']); // Definir el evento que vas a emitir
@@ -63,8 +66,21 @@ function closeModal() {
 </script>
 
 <template>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-        Crear ambiente
+    <button type="button" class="btn btn-outline-primary mx-1 rounded-5 p-0 px-2" data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop">
+        <svg v-if="!editFunction" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+            class="bi bi-plus-circle" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+            <path
+                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+        </svg>
+        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square"
+            viewBox="0 0 16 16">
+            <path
+                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+            <path fill-rule="evenodd"
+                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+        </svg>
     </button>
 
     <!-- Modal -->
@@ -74,7 +90,8 @@ function closeModal() {
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                        {{ props.titulo }}
+                        <span v-if="editFunction">Editar ambiente</span>
+                        <span v-else>Crear ambiente</span>
                     </h1>
                     <button type="button" class="btn-close" @click="clearInputs" data-bs-dismiss="modal"
                         aria-label="Close"></button>
@@ -87,8 +104,9 @@ function closeModal() {
                             <div class="mt-1 mb-4 mx-4 text-center">
                                 <label for="nombreAmbiente" class="form-label">Nombre de ambiente</label>
                                 <input id="nombreAmbiente" type="text" class="form-control w-0"
-                                    v-model="form.nombreAmbiente" @input="form.clearErrors('nombreAmbiente')"/>
-                                <div v-if="form.errors.nombreAmbiente" class="error">{{ form.errors.nombreAmbiente[0] }}</div>
+                                    v-model="form.nombreAmbiente" @input="form.clearErrors('nombreAmbiente')" />
+                                <div v-if="form.errors.nombreAmbiente" class="error">{{ form.errors.nombreAmbiente[0] }}
+                                </div>
                             </div>
                             <div class="d-flex h-50 flex-row">
                                 <div class="mx-4 w-25 text-center">
@@ -118,7 +136,8 @@ function closeModal() {
                                         Estar o comedor
                                     </option>
                                 </select>
-                                <div v-if="form.errors.tipoHabitacion" class="error">{{ form.errors.tipoHabitacion[0] }}</div>
+                                <div v-if="form.errors.tipoHabitacion" class="error">{{ form.errors.tipoHabitacion[0] }}
+                                </div>
                             </div>
                         </div>
 
@@ -130,7 +149,7 @@ function closeModal() {
                                     <label for="alturaSelect" class="form-label">
                                         Altura</label>
                                     <select name="alturaSelect" id="altura" v-model="form.alturaSelect" class="form-select"
-                                    @change="form.clearErrors('alturaSelect')">
+                                        @change="form.clearErrors('alturaSelect')">
                                         <option value="Planta baja">
                                             Planta baja
                                         </option>
@@ -144,7 +163,8 @@ function closeModal() {
                                             6° piso o más
                                         </option>
                                     </select>
-                                    <div v-if="form.errors.alturaSelect" class="error">{{ form.errors.alturaSelect[0] }}</div>
+                                    <div v-if="form.errors.alturaSelect" class="error">{{ form.errors.alturaSelect[0] }}
+                                    </div>
                                 </div>
 
                                 <div class="ms-3 w-50 text-center">
@@ -168,7 +188,8 @@ function closeModal() {
                                             El centro con edificios altos
                                         </option>
                                     </select>
-                                    <div v-if="form.errors.densidadSelect" class="error">{{ form.errors.densidadSelect[0] }}</div>
+                                    <div v-if="form.errors.densidadSelect" class="error">{{ form.errors.densidadSelect[0] }}
+                                    </div>
                                 </div>
                             </div>
 
@@ -219,7 +240,8 @@ function closeModal() {
                                             Reforzada
                                         </option>
                                     </select>
-                                    <div v-if="form.errors.calidadVentana" class="error">{{ form.errors.calidadVentana[0] }}</div>
+                                    <div v-if="form.errors.calidadVentana" class="error">{{ form.errors.calidadVentana[0] }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -255,7 +277,6 @@ function closeModal() {
 }
 
 .error {
-  color: red;
-  font-size: 0.9em;
-}
-</style>
+    color: red;
+    font-size: 0.9em;
+}</style>

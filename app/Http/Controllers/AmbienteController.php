@@ -72,8 +72,7 @@ class AmbienteController extends Controller
         ]);
         $ambiente->ocupacion->save();
 
-        $user = User::findOrFail($request['idUser']);
-        return response()->json(['message' => 'Ambiente creado correctamente', 'data' => $user->ambiente], 200);
+        return response()->json(['message' => 'Ambiente creado correctamente', 'data' => $ambiente], 200);
     }
 
     public function obtenerAmbientes($userId)

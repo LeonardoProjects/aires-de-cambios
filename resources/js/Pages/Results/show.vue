@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex justify-content-center flex-column min-vh-100 w-75 text-center">
+    <div v-if="datosCalculos.length != 0" class="d-flex justify-content-center flex-column w-75 text-center">
         <h1>Resultados</h1>
         <div class="d-flex justify-content-center">
             <table border="1" align="center" cellpadding="10" class="text-center">
@@ -21,6 +21,9 @@
                 </tr>
             </table>
         </div>
+    </div>
+    <div v-else class="d-flex justify-content-center flex-column w-75 text-center">
+        <p class="fs-5">¡Crea un ambiente para saber como ventilar!</p>
     </div>
 </template>
 
@@ -56,15 +59,18 @@ export default {
         },
         async cargarDatos() {
         try {
-            let response = await axios.get(
-                this.route("resultados.index", { idAmbiente: this.idAmbiente })
-            );
-            this.datosCalculos = response.data;
-            this.setDatos();
+            if (this.idAmbiente != -1) {
+                let response = await axios.get(
+                    this.route("resultados.index", { idAmbiente: this.idAmbiente })
+                );
+                this.datosCalculos = response.data;
+                this.setDatos();
+            }
         } catch (error) {
             if (error.response) {
                 console.error('Error en la respuesta del servidor:', error.response.status);
-                alert(`Error: ${error.response.status}. No se pudieron cargar los datos.`);
+
+                /* alert(`Error: ${error.response.status}. No se pudieron cargar los datos.`); */
             } else if (error.request) {
                 console.error('No se recibió respuesta del servidor:', error.request);
                 alert('Error de conexión. No se pudo establecer comunicación con el servidor.');
