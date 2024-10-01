@@ -275,7 +275,7 @@ class Functions
     }
 
     /* Funcion final para realizar el calculo de apertura de ventana y obtener alertas*/
-    public static function calcularResultado(Ambiente $ambiente, HourlyWeatherData $datosAPI)
+    public static function calcularResultado(Ambiente $ambiente, HourlyWeatherData $datosAPI, $cantPersonas)
     {
         $lluvia = false;
         $tormenta = false;
@@ -291,9 +291,9 @@ class Functions
         $anchoAmbiente = $ambiente->local->ancho;
         $altoAmbiente = $ambiente->local->alto;
 
-        //Datos de ocupación
-        $cantPersonas = $ambiente->ocupacion->cantPersonas;
-
+        /* Datos de ocupación
+        $cantPersonas = $ambiente->ocupacion->cantPersonas; */
+        
         //Datos de Ventana
         $largoVentana = $ambiente->ventana->largo;
         $altoVentana = $ambiente->ventana->alto;

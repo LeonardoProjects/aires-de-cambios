@@ -11,7 +11,8 @@ export default {
     data() {
         return {
             ambientes: [],
-            idAmbiente: 1
+            idAmbiente: -1,
+            cantPersonas: 1
         }
     },
     components: {
@@ -19,43 +20,68 @@ export default {
         Show
     },
     methods: {
-        async obtenerTemas() {
+        async obtenerAmbientes() {
             const response = await axios.get(route('ambiente.getAll', { id: userId.value }));
             this.ambientes = response.data.data;
         },
         actualizarAmbientes($data) {
-            this.ambientes = $data;
-        },  
+            this.ambientes.push($data);
+            this.idAmbiente = $data.id;
+        },
         cargarResultados($idAmbiente) {
             this.idAmbiente = Number($idAmbiente);
-            console.log(this.idAmbiente);
-            console.log('Cargando resultados en Show.vue ' + $idAmbiente);
-        },
-        enviarEvento(){
-            this.idAmbiente = 1;
         }
     },
     mounted() {
-        this.obtenerTemas();
-    }
+        // Llama a la función asincrónica y espera a que termine
+        this.obtenerAmbientes().then(() => {
+            // Verifica si hay ambientes después de que se hayan cargado
+            if (this.ambientes.length > 0) {
+                this.idAmbiente = this.ambientes[0];
+                this.cargarResultados(this.ambientes[0].id); // Asegúrate de usar this.cargarResultados
+            }
+        });
+    },
+
 }
 
 </script>
 
 <template>
-    <div class="d-flex justify-content-center align-items-center flex-column min-vh-100">
-        <label for="selectAmbientes" class="form-label"></label>
-        <select name="selectAmbientes" id="selectAmbientes" class="form-select" 
-        @change="cargarResultados($event.target.value)">
-        <option v-for="(ambiente) in ambientes" :key="ambiente.id" 
-        :value="ambiente.id">{{ ambiente.nombre }}</option>
-        <option v-if="ambientes && ambientes.length === 0" :value="-1">No hay ambientes creados</option>
-        </select>
-        <ModalCRUD titulo="Crear ambiente" @updateAmbientes="actualizarAmbientes"/>
-        <Show :idAmbiente="idAmbiente" />
+    <div class="d-flex justify-content-center align-items-center flex-column min-vh-100 divPrincipal">
+        <div class="d-flex flex-row position-relative divSelect">
+            <ModalCRUD @updateAmbientes="actualizarAmbientes" />
+            <select name="selectAmbientes" id="selectAmbientes" class="form-select w-50"
+                @change="cargarResultados($event.target.value)" v-model="idAmbiente">
+                <option v-for="(ambiente) in ambientes" :key="ambiente.id" :value="ambiente.id">{{ ambiente.nombre }}
+                </option>
+                <option v-if="ambientes && ambientes.length === 0" :value="-1">No hay ambientes creados</option>
+            </select>
+            <ModalCRUD v-if="idAmbiente != -1" editFunction="true" />
+            <div v-if="idAmbiente != -1" class="d-flex flex-column position-absolute divCantPersonas text-center">
+                <label for="cantPersonas" class="form-label">Cant. personas</label>
+                <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas">
+            </div>
+        </div>
+        <Show :idAmbiente="idAmbiente" :cantPersonas="cantPersonas"/>
     </div>
 </template>
 
 <style>
+.divPrincipal {
+    width: 650px;
+    margin: 0 33vw 0 33vw;
+    padding: 50px 0 50px 0;
+}
 
+.divSelect {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.divCantPersonas {
+    right: 0;
+    bottom: 0;
+    width: 20%;
+}
 </style>
