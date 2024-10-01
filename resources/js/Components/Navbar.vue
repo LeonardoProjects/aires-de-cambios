@@ -7,7 +7,7 @@
                     class="d-flex justify-content-start align-items-center w-50"
                 >
                     <!-- Logo -->
-                    <div class="d-flex align-items-center w-25">
+                    <div class="d-flex align-items-center">
                         <Link :href="route('dashboard')">
                             <!-- Aquí podrías agregar un logo -->
                             <div class="logo-container object-fit-cover">
@@ -39,11 +39,16 @@
                     </div>
                 </div>
 
-                <div class="dropdown d-none d-md-flex align-items-center">
+                <div
+                    v-if="$page.props.auth.user"
+                    class="dropdown mx-3 d-md-flex align-items-center"
+                >
                     <!-- Settings Dropdown -->
                     <Dropdown align="right" width="48">
                         <template #trigger>
-                            <button class="btn btn-outline-secondary">
+                            <button
+                                class="btn profile-button align-items-center"
+                            >
                                 {{ $page.props.auth.user.name }}
                                 <i class="ms-2 bi bi-chevron-down"></i>
                             </button>
@@ -55,7 +60,7 @@
                                     Perfil
                                 </DropdownLink>
                                 <form @submit.prevent="logout">
-                                    <DropdownLink as="button">
+                                    <DropdownLink btnClass="logout" as="button">
                                         Cerrar sesión
                                     </DropdownLink>
                                 </form>
@@ -64,9 +69,19 @@
                     </Dropdown>
                 </div>
 
+                <!-- Mostrar "Iniciar sesión" si el usuario no está autenticado -->
+                <div v-else>
+                    <Link
+                        :href="route('login')"
+                        class="btn btn-outline-primary mx-3"
+                    >
+                        Iniciar sesión
+                    </Link>
+                </div>
+
                 <!-- Hamburger -->
                 <button
-                    class="btn btn-outline-secondary d-md-none"
+                    class="btn btn-outline-secondary mx-3 d-md-none"
                     @click="
                         showingNavigationDropdown = !showingNavigationDropdown
                     "
@@ -96,7 +111,7 @@
             }"
             class="d-md-none"
         >
-            <div class="py-2">
+            <div class="">
                 <ResponsiveNavLink
                     :href="route('dashboard')"
                     :active="route().current('dashboard')"
@@ -104,7 +119,7 @@
                     Menú principal
                 </ResponsiveNavLink>
             </div>
-            <div class="py-2 border-top">
+            <div class="border-top" v-if="$page.props.auth.user">
                 <ResponsiveNavLink
                     :href="route('profile.show')"
                     :active="route().current('profile.show')"
@@ -117,6 +132,13 @@
                     </ResponsiveNavLink>
                 </form>
             </div>
+
+            <!-- Mostrar "Iniciar sesión" en el menú responsive si no está autenticado -->
+            <div class="border-top" v-else>
+                <ResponsiveNavLink :href="route('login')">
+                    Iniciar sesión
+                </ResponsiveNavLink>
+            </div>
         </div>
     </nav>
 </template>
@@ -127,7 +149,7 @@ import DropdownLink from "@/Components/DropdownLink.vue";
 import NavLink from "@/Components/NavLink.vue";
 import AuthenticationCardLogo from "@/Components/AuthenticationCardLogo.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 import { ref } from "vue";
 
 const showingNavigationDropdown = ref(false);
@@ -140,13 +162,11 @@ const logout = () => {
 nav {
     display: flex;
     align-items: center;
-    height: auto; /* Ajusta la altura según el contenido */
-    min-height: 100px; /* Establece una altura mínima */
-    max-height: 10vh; /* Ajusta la altura máxima a algo más razonable */
+    height: auto;
+    min-height: 100px;
+    max-height: 10vh;
     background-color: transparent;
-    border-bottom: 1px solid #ddd; /* Para añadir la línea de fondo */
-
-    /* Ajuste para el dropdown */
+    border-bottom: 1px solid #ddd;
     .dropdown {
         position: relative;
     }
@@ -163,10 +183,26 @@ nav {
 }
 
 .logo-container {
-    min-width: 75px;
+    min-width: 100px;
     min-height: 50px;
-    max-width: 10vw;
-    max-height: auto; /* Cambia el max-height por 'auto' */
+    max-width: 8vw;
+    max-height: auto;
+}
+
+.profile-button {
+    border: solid 1px #0099ff;
+    color: #0099ff;
+    position: relative;
+}
+
+.profile-button:hover {
+    background-color: #0099ff;
+    color: white;
+}
+
+.profile-button:focus {
+    background-color: #0099ff;
+    color: white;
 }
 
 @media screen and (max-width: 768px) {
@@ -176,9 +212,12 @@ nav {
         align-items: center;
         min-width: 120px;
         min-height: 70px;
-        max-width: 50vw;
+        max-width: 20vw;
         max-height: 50vw;
     }
-}
 
+    .profile-button {
+        display: none;
+    }
+}
 </style>

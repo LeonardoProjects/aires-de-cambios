@@ -1,16 +1,11 @@
 <script setup>
-import { Head, router } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import Navbar from '@/Components/Navbar.vue';
 
 defineProps({
     title: String,
 });
 
-
-
-const logout = () => {
-    router.post(route('logout'));
-};
 </script>
 
 <template>
