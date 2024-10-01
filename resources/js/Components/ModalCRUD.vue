@@ -59,35 +59,71 @@ onMounted(() => {
     const map = L.map('map').setView([-32.98369774322006, -55.93512229688155], 6);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        fullscreenControl: true,
+        maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    // Añadir el Geocoder al mapa (lupita)
-    var geocoder = L.Control.geocoder({
+    let pantallaCompleta = new L.Control.Fullscreen({
+        title: {
+            'false': 'View Fullscreen',
+            'true': 'Exit Fullscreen'
+        }
+    });
+    map.addControl(pantallaCompleta);
+
+    // Añadir el Geocoder al mapa (lupa)
+    L.Control.geocoder({
         defaultMarkGeocode: false // No agregar el marcador automáticamente
     })
-    .on('markgeocode', function (e) {
-        var bbox = e.geocode.bbox;
-        var poly = L.polygon([
-            [bbox.getSouthEast().lat, bbox.getSouthEast().lng],
-            [bbox.getNorthEast().lat, bbox.getNorthEast().lng],
-            [bbox.getNorthWest().lat, bbox.getNorthWest().lng],
-            [bbox.getSouthWest().lat, bbox.getSouthWest().lng]
-        ]);
-        map.fitBounds(poly.getBounds());
+        .on('markgeocode', function (e) {
+            let bbox = e.geocode.bbox;
+            let poly = L.polygon([
+                [bbox.getSouthEast().lat, bbox.getSouthEast().lng],
+                [bbox.getNorthEast().lat, bbox.getNorthEast().lng],
+                [bbox.getNorthWest().lat, bbox.getNorthWest().lng],
+                [bbox.getSouthWest().lat, bbox.getSouthWest().lng]
+            ]);
+            map.fitBounds(poly.getBounds());
 
-        // Borrar marcador si ya existe
+            // Borrar marcador si ya existe
+            if (marcador.value) {
+                map.removeLayer(marcador.value);
+            }
+
+            // Añadir nuevo marcador en la ubicación ingresada por el geocoder
+            marcador.value = L.marker(e.geocode.center).addTo(map).bindPopup(e.geocode.name).openPopup();
+
+            // Actualizar latitud y longitud en el formulario
+            form.latitud = e.geocode.center.lat;
+            form.longitud = e.geocode.center.lng;
+        }).addTo(map);
+
+    // Manejar el evento de fullscreen para que el geocoder se mantenga visible
+    map.on('enterFullscreen', () => {
+        map.invalidateSize(); // Ajustar el tamaño del mapa cuando entra en fullscreen
+    });
+
+    map.on('exitFullscreen', () => {
+        map.invalidateSize(); // Ajustar el tamaño del mapa cuando sale de fullscreen
+    });
+
+    // Evento de clic en el mapa para que el usuario pueda seleccionar una ubicación
+    map.on('click', function (e) {
+        const { lat, lng } = e.latlng;
+
+        // Borrar el marcador anterior si existe
         if (marcador.value) {
             map.removeLayer(marcador.value);
         }
 
-        // Añadir nuevo marcador en la ubicación ingresada por el geocoder
-        marcador.value = L.marker(e.geocode.center).addTo(map).bindPopup(e.geocode.name).openPopup();
+        // Añadir nuevo marcador en la ubicación seleccionada por el usuario
+        marcador.value = L.marker([lat, lng]).addTo(map).bindPopup(`Coordenadas: ${lat}, ${lng}`).openPopup();
 
         // Actualizar latitud y longitud en el formulario
-        form.latitud = e.geocode.center.lat;
-        form.longitud = e.geocode.center.lng;
-    }).addTo(map);
+        form.latitud = lat;
+        form.longitud = lng;
+    });
 });
 
 function emitirAmbientes($ambientes) {
@@ -299,15 +335,26 @@ function closeModal() {
 
 <style>
 #map {
-    /* min-height: 200px;
-    min-width: 50%; */
-    width: 80%;
+    width: 100%;
     height: 400px;
-    margin: 0 50px 0 50px;
+    margin: 0 auto;
 }
 
 .error {
     color: red;
     font-size: 0.9em;
+}
+
+label, input, option, select{
+    font-size: 0.8rem !important;
+}
+
+
+/*Resolución para tablets (pantallas entre 768px y 1024px)*/
+@media (min-width: 768px) and (min-width: 1024px) {
+    #map {
+        width: 90%;
+        height: 350px;
+    }
 }
 </style>
