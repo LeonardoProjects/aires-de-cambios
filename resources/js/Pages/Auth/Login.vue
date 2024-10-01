@@ -83,7 +83,7 @@ const submit = () => {
                             ¿Has olvidado tu contraseña?
                         </Link>
     
-                        <Link v-if="canResetPassword" :href="route('register')" class="nav-link labelCeleste mt-2">
+                        <Link :href="route('register')" class="nav-link labelCeleste mt-2">
                             No tengo cuenta
                         </Link>
                     </div>
