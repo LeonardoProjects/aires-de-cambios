@@ -40,7 +40,7 @@ const submit = () => {
 
             <form @submit.prevent="submit">
                 <div class="mb-3">
-                    <label for="email" class="form-label labelLogin">Correo Electrónico</label>
+                    <label for="email" class="form-label labelCeleste">Correo Electrónico</label>
                     <input
                         id="email"
                         v-model="form.email"
@@ -56,7 +56,7 @@ const submit = () => {
                 </div>
 
                 <div class="mb-3">
-                    <label for="password" class="form-label labelLogin">Contraseña</label>
+                    <label for="password" class="form-label labelCeleste">Contraseña</label>
                     <input
                         id="password"
                         v-model="form.password"
@@ -72,15 +72,21 @@ const submit = () => {
 
                 <div class="form-check mb-3">
                     <Checkbox v-model:checked="form.remember" name="remember" class="form-check-input" />
-                    <label for="remember" class="form-check-label labelLogin">
+                    <label for="remember" class="form-check-label labelCeleste">
                         Recordar credenciales
                     </label>
                 </div>
 
                 <div class="d-flex flex-column justify-content-center align-content-center">
-                    <Link v-if="canResetPassword" :href="route('password.request')" class="nav-link labelLogin">
-                        ¿Has olvidado tu contraseña?
-                    </Link>
+                    <div class="row row-cols-2 text-center">
+                        <Link v-if="canResetPassword" :href="route('password.request')" class="nav-link labelCeleste mt-2">
+                            ¿Has olvidado tu contraseña?
+                        </Link>
+    
+                        <Link :href="route('register')" class="nav-link labelCeleste mt-2">
+                            No tengo cuenta
+                        </Link>
+                    </div>
 
                     <button type="submit" class="btn btn-primary mt-3 btnPrimary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         Iniciar sesión
@@ -92,5 +98,5 @@ const submit = () => {
 </template>
 
 <style>
-@import "../../../css/login.css";
+@import "../../../css/app.css";
 </style>
