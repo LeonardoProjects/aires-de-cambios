@@ -24,7 +24,7 @@ defineProps({
             </header>
 
             <!-- Page Content -->
-            <main class="container-fluid py-4">
+            <main class="container-fluid">
                 <slot />
             </main>
         </div>

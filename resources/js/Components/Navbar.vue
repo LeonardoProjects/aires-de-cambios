@@ -80,66 +80,69 @@
                 </div>
 
                 <!-- Hamburger -->
-                <button
-                    class="btn btn-outline-secondary mx-3 d-md-none"
-                    @click="
-                        showingNavigationDropdown = !showingNavigationDropdown
-                    "
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        fill="currentColor"
-                        class="bi bi-list"
-                        viewBox="0 0 16 16"
+                <div class="position-relative d-none hamburguerDiv">
+                    <button
+                        class="btn btn-outline-secondary mx-3 d-md-none hamburger"
+                        @click="
+                            showingNavigationDropdown =
+                                !showingNavigationDropdown
+                        "
                     >
-                        <path
-                            fill-rule="evenodd"
-                            d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
-                        />
-                    </svg>
-                </button>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            fill="currentColor"
+                            class="bi bi-list"
+                            viewBox="0 0 16 16"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
+                            />
+                        </svg>
+                    </button>
+                    <div
+                        :class="{
+                            'd-block': showingNavigationDropdown,
+                            'd-none': !showingNavigationDropdown,
+                        }"
+                        class="d-md-none dropdown-content"
+                    >
+                        <div class="">
+                        </div>
+                        <div class="border-top" v-if="$page.props.auth.user">
+                            <ResponsiveNavLink
+                                :href="route('profile.show')"
+                                :active="route().current('profile.show')"
+                            >
+                                {{ $page.props.auth.user.name }}
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink
+                                :href="route('herramienta')"
+                                :active="route().current('herramienta')"
+                                btnClass="logout"
+                            >
+                                Herramienta
+                            </ResponsiveNavLink>
+                            <form @submit.prevent="logout">
+                                <ResponsiveNavLink as="button-logout">
+                                    Cerrar sesión
+                                </ResponsiveNavLink>
+                            </form>
+                        </div>
+                        <!-- Mostrar "Iniciar sesión" en el menú responsive si no está autenticado -->
+                        <div class="border-top" v-else>
+                            <ResponsiveNavLink :href="route('login')">
+                                Iniciar sesión
+                            </ResponsiveNavLink>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Responsive Navigation Menu -->
-        <div
-            :class="{
-                'd-block': showingNavigationDropdown,
-                'd-none': !showingNavigationDropdown,
-            }"
-            class="d-md-none"
-        >
-            <div class="">
-                <ResponsiveNavLink
-                    :href="route('dashboard')"
-                    :active="route().current('dashboard')"
-                >
-                    Menú principal
-                </ResponsiveNavLink>
-            </div>
-            <div class="border-top" v-if="$page.props.auth.user">
-                <ResponsiveNavLink
-                    :href="route('profile.show')"
-                    :active="route().current('profile.show')"
-                >
-                    Mi perfil
-                </ResponsiveNavLink>
-                <form @submit.prevent="logout">
-                    <ResponsiveNavLink as="button">
-                        Cerrar sesión
-                    </ResponsiveNavLink>
-                </form>
-            </div>
-
-            <!-- Mostrar "Iniciar sesión" en el menú responsive si no está autenticado -->
-            <div class="border-top" v-else>
-                <ResponsiveNavLink :href="route('login')">
-                    Iniciar sesión
-                </ResponsiveNavLink>
-            </div>
-        </div>
     </nav>
 </template>
 
@@ -165,7 +168,7 @@ nav {
     height: auto;
     min-height: 100px;
     max-height: 10vh;
-    background-color: transparent;
+    background-color: white;
     border-bottom: 1px solid #ddd;
     .dropdown {
         position: relative;
@@ -205,7 +208,19 @@ nav {
     color: white;
 }
 
-@media screen and (max-width: 768px) {
+button.hamburger {
+    position: relative;
+    z-index: 1050;
+    color: #0099ff;
+    border-color: #0099ff;
+}
+
+button.hamburger:hover {
+    background-color: #0099ff;
+    color: white;
+}
+
+@media screen and (max-width: 767px) {
     .logo-container {
         display: flex;
         justify-content: center;
@@ -218,6 +233,10 @@ nav {
 
     .profile-button {
         display: none;
+    }
+
+    .hamburguerDiv{
+        display: block !important;
     }
 }
 </style>
