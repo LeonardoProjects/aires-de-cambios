@@ -6,6 +6,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import Footer from '@/Components/Footer.vue';
 
 defineProps({
     title: String,
@@ -196,6 +197,9 @@ const logout = () => {
                     </div>
                 </div>
             </main>
+            <footer>
+                <Footer />
+            </footer>
         </div>
     </div>
 </template>
