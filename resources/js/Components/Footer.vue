@@ -42,7 +42,7 @@ import { Link } from "@inertiajs/vue3";
 }
 
 .logo-footer {
-    min-width: 200px;
+    min-width: 180px;
     min-height: 50px;
     max-width: 10vw;
     max-height: 10vh;
