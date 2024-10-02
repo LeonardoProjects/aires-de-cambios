@@ -12,7 +12,7 @@ const props = defineProps({
     },
     contentClasses: {
         type: Array,
-        default: () => ['py-1', 'bg-white'],
+        default: () => ['bg-white'],
     },
 });
 
@@ -47,7 +47,7 @@ const alignmentClasses = computed(() => {
 </script>
 
 <template>
-    <div class="relative">
+    <div class="relative d-flex">
         <div @click="open = ! open">
             <slot name="trigger" />
         </div>
