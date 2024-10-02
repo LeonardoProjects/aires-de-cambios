@@ -1,0 +1,51 @@
+<template>
+    <div class="footer-container">
+        <a :href="'https://utec.edu.uy/es/'" target="_blank" class="logo-footer d-flex align-items-center justify-content-center">
+            <img
+                src="../../images/utec.png"
+                alt="logoProyecto"
+                class="h-100 w-50"
+            />
+        </a>
+        <a :href="'https://www.fadu.edu.uy/'" target="_blank" class="logo-footer d-flex justify-content-center  align-items-center">
+            <img
+                src="../../images/fadu.jpg"
+                alt="logoProyecto"
+                class="h-100 w-100"
+            />
+        </a>
+    </div>
+</template>
+
+<script setup>
+import { Link } from "@inertiajs/vue3";
+</script>
+
+<style lang="css" scoped>
+.footer-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    min-height: 100px;
+    max-height: 10vh;
+    padding: 0 20px 0 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgb(255, 255, 255);
+    color: black;
+    border-top: 1px solid #ddd;
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    flex-wrap: wrap;
+}
+
+.logo-footer {
+    min-width: 200px;
+    min-height: 50px;
+    max-width: 10vw;
+    max-height: 10vh;
+    object-fit: cover;
+}
+</style>
