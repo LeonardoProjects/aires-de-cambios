@@ -1,19 +1,19 @@
 <template>
     <div class="footer-container">
-        <Link :href="'https://utec.edu.uy/es/'" class="logo-footer d-flex align-items-center justify-content-center">
+        <a :href="'https://utec.edu.uy/es/'" class="logo-footer d-flex align-items-center justify-content-center">
             <img
                 src="../../images/utec.png"
                 alt="logoProyecto"
                 class="h-100 w-50"
             />
-        </Link>
-        <Link :href="'https://www.fadu.edu.uy/'" class="logo-footer d-flex justify-content-center  align-items-center">
+        </a>
+        <a :href="'https://www.fadu.edu.uy/'" target="_blank" class="logo-footer d-flex justify-content-center  align-items-center">
             <img
                 src="../../images/fadu.jpg"
                 alt="logoProyecto"
                 class="h-100 w-100"
             />
-        </Link>
+        </a>
     </div>
 </template>
 
