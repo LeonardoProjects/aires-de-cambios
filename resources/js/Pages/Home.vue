@@ -9,7 +9,6 @@
                 Una herramienta que te ayudará a ventilar tu hogar de forma
                 adecuada para mantener una buena calidad del aire.
             </p>
-
             <a v-if="!isMobile" href="/herramienta" class="try-button">Probar herramienta</a>
         </div>
         <a v-if="isMobile" href="/herramienta" class="try-button-mobile">Probar herramienta</a>
@@ -28,6 +27,29 @@
                     cálculos que determinan la apertura óptima de una ventana en
                     distintos horarios, con el fin de asegurar una ventilación
                     adecuada del ambiente.
+            <a v-if="!isMobile" href="/herramienta" class="try-button"
+                >Probar herramienta</a
+            >
+        </div>
+        <a v-if="isMobile" href="/herramienta" class="try-button-mobile"
+            >Probar herramienta</a
+        >
+    </section>
+    <section class="app-info my-5 d-flex justify-content-center">
+        <div class="text-center w-50">
+            <div class="content">
+                <h4>¿Qué es Aires de cambios?</h4>
+                <span class="description">
+                    Es una herramienta que utiliza datos proporcionados por la
+                    API meteorológica de
+                </span>
+                <a href="https://www.weatherapi.com/">Weather API</a>
+                <span class="description">
+                    y los ingresados por el usuario, como las dimensiones del
+                    ambiente y la ventana, la ubicación, y demás. A partir de
+                    estos datos, realiza cálculos para determinar la apertura de
+                    una ventana en diferentes horarios, basándose en una
+                    estimación de la calidad del aire.
                 </span>
             </div>
         </div>
