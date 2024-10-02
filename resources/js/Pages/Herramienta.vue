@@ -35,6 +35,16 @@ export default {
         cargarResultados($idAmbiente) {
             this.idAmbiente = Number($idAmbiente);
         },
+        obtenerAmbienteXid($idAmbiente) {
+            let $ambiente = null;
+            for (const amb of this.ambientes) {
+                if (amb.id === Number($idAmbiente)) {
+                    $ambiente = amb;
+                    break;
+                }
+            };
+            return $ambiente;
+        }
     },
     mounted() {
         // Llama a la función asincrónica y espera a que termine
@@ -51,47 +61,22 @@ export default {
 
 <template>
     <div class="d-flex justify-content-center">
-        <div
-            class="d-flex justify-content-start align-items-center flex-column min-vh-100 divPrincipal"
-        >
+        <div class="d-flex justify-content-start align-items-center flex-column min-vh-100 divPrincipal">
             <div class="d-flex flex-row position-relative divSelect">
                 <ModalCRUD @updateAmbientes="actualizarAmbientes" />
-                <select
-                    name="selectAmbientes"
-                    id="selectAmbientes"
-                    class="form-select w-50"
-                    @change="cargarResultados($event.target.value)"
-                    v-model="idAmbiente"
-                >
-                    <option
-                        v-for="ambiente in ambientes"
-                        :key="ambiente.id"
-                        :value="ambiente.id"
-                    >
+                <select name="selectAmbientes" id="selectAmbientes" class="form-select w-50"
+                    @change="cargarResultados($event.target.value)" v-model="idAmbiente">
+                    <option v-for="ambiente in ambientes" :key="ambiente.id" :value="ambiente.id">
                         {{ ambiente.nombre }}
                     </option>
-                    <option
-                        v-if="ambientes && ambientes.length === 0"
-                        :value="-1"
-                    >
+                    <option v-if="ambientes && ambientes.length === 0" :value="-1">
                         No hay ambientes creados
                     </option>
                 </select>
-                <ModalCRUD v-if="idAmbiente != -1" editFunction="true" />
-                <div
-                    v-if="idAmbiente != -1"
-                    class="d-flex flex-column position-absolute divCantPersonas text-center"
-                >
-                    <label for="cantPersonas" class="form-label"
-                        >Cant. personas</label
-                    >
-                    <input
-                        type="number"
-                        id="cantPersonas"
-                        class="form-control"
-                        min="1"
-                        v-model="cantPersonas"
-                    />
+                <ModalCRUD v-if="idAmbiente != -1" editFunction="true" :ambiente="obtenerAmbienteXid(idAmbiente)" />
+                <div v-if="idAmbiente != -1" class="d-flex flex-column position-absolute divCantPersonas text-center">
+                    <label for="cantPersonas" class="form-label">Cant. personas</label>
+                    <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas" />
                 </div>
             </div>
             <Show :idAmbiente="idAmbiente" :cantPersonas="cantPersonas" />

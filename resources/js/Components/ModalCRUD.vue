@@ -1,21 +1,24 @@
 <script setup>
-import { useForm } from "@inertiajs/vue3";
-import { computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { useForm, usePage } from "@inertiajs/vue3";
+import { computed, onMounted, watch, nextTick, ref } from 'vue';
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
 
 const props = defineProps({
     editFunction: {
-        Boolean,
+        type: Boolean,
         default: false
+    },
+    ambiente: {
+        type: Object,
+        default: null
     }
 });
 
 const emit = defineEmits(['updateAmbientes']); // Definir el evento que vas a emitir
 
-const form = useForm({
+const form  = useForm({
     anchoAmbiente: 0,
     nombreAmbiente: "",
     largoAmbiente: 0,
@@ -39,7 +42,7 @@ async function submit() {
         // Si la solicitud es exitosa (status 200)
         if (response.status === 200) {
             closeModal(); // Cerrar el modal
-            emitirAmbientes(response.data.data); // Emitir los ambientes actualizados
+            emitirAmbiente(response.data.data); // Emitir los ambientes actualizados
         }
     } catch (error) {
         // Si hay un error de validación o cualquier otro error
@@ -52,8 +55,38 @@ async function submit() {
     }
 }
 
-function emitirAmbientes($ambientes) {
-    emit('updateAmbientes', $ambientes);
+// Este método se ejecuta al montar el componente si es edición
+onMounted(() => {
+    if (props.editFunction && props.ambiente) {
+        cargarAmbiente(props.ambiente); 
+    }
+});
+
+// Crear un watch para actualizar el formulario cuando cambia el ambiente
+watch(() => props.ambiente, (newAmbiente) => {
+    if (props.editFunction && newAmbiente) {
+        cargarAmbiente(props.ambiente); 
+    }
+});
+
+// Función para cargar los datos del ambiente en el formulario
+function cargarAmbiente(ambiente) {
+    form.reset();
+    form.nombreAmbiente = ref([ambiente.nombre]) || "";
+    form.anchoAmbiente = Number(ambiente.local.ancho) || 0;
+    form.largoAmbiente = Number(ambiente.local.largo) || 0;
+    form.altoAmbiente = Number(ambiente.local.alto) || 0;
+    form.tipoHabitacion = ambiente.local.tipoHabitacion || "";
+    form.alturaSelect = ambiente.ubicacion.altura || "";
+    form.densidadSelect = ambiente.ubicacion.densidad || "";
+    form.largoVentana = Number(ambiente.ventana.largo) || 0;
+    form.altoVentana = Number(ambiente.ventana.alto) || 0;
+    form.calidadVentana = ambiente.ventana.calidad || "";
+    console.log(form);
+}
+
+function emitirAmbiente($ambiente) {
+    emit('updateAmbientes', $ambiente);
 }
 
 function clearInputs() {
@@ -67,15 +100,15 @@ function closeModal() {
 
 <template>
     <button type="button" class="btn btn-outline-primary mx-1 rounded-5 p-0 px-2" data-bs-toggle="modal"
-        data-bs-target="#staticBackdrop">
+        data-bs-target="#staticBackdrop" @click="editFunction ? cargarAmbiente(ambiente) : null">
         <svg v-if="!editFunction" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
             class="bi bi-plus-circle" viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
             <path
                 d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
         </svg>
-        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square"
-            viewBox="0 0 16 16">
+        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+            class="bi bi-pencil-square" viewBox="0 0 16 16">
             <path
                 d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
             <path fill-rule="evenodd"
@@ -90,8 +123,8 @@ function closeModal() {
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                        <span v-if="editFunction">Editar ambiente</span>
-                        <span v-else>Crear ambiente</span>
+                        <span v-if="props.editFunction">Editar ambiente</span>
+                        <span v-else>Ambiente</span>
                     </h1>
                     <button type="button" class="btn-close" @click="clearInputs" data-bs-dismiss="modal"
                         aria-label="Close"></button>
@@ -279,4 +312,5 @@ function closeModal() {
 .error {
     color: red;
     font-size: 0.9em;
-}</style>
+}
+</style>
