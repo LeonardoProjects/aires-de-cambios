@@ -54,10 +54,10 @@ async function submit() {
 
 // Funcionalidad para el mapa Leaflet
 const marcador = ref(null);
-let mapaCreado = false;
+let map;
 
 function crearMapa() {
-    const map = L.map('map').setView([-32.98369774322006, -55.93512229688155], 6);
+    map = L.map('map').setView([-32.98369774322006, -55.93512229688155], 6);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         fullscreenControl: true,
@@ -76,7 +76,7 @@ function crearMapa() {
 
     // Añadir el Geocoder al mapa
     L.Control.geocoder({
-        defaultMarkGeocode: false // No agregar el marcador automáticamente
+        defaultMarkGeocode: false
     })
         .on('markgeocode', function (e) {
             let bbox = e.geocode.bbox;
@@ -88,7 +88,6 @@ function crearMapa() {
             ]);
             map.fitBounds(poly.getBounds());
 
-            // Borrar marcador si ya existe
             if (marcador.value) {
                 map.removeLayer(marcador.value);
             }
@@ -102,7 +101,6 @@ function crearMapa() {
         }).addTo(map);
     map.invalidateSize();
 
-    // Manejar el evento de fullscreen para que el geocoder se mantenga visible
     map.on('enterFullscreen', () => {
         map.invalidateSize(); // Ajustar el tamaño del mapa cuando entra en fullscreen
     });
@@ -123,7 +121,6 @@ function crearMapa() {
         // Añadir nuevo marcador en la ubicación seleccionada por el usuario
         marcador.value = L.marker([lat, lng]).addTo(map).bindPopup(`Coordenadas: ${lat}, ${lng}`).openPopup();
 
-        // Actualizar latitud y longitud en el formulario
         form.latitud = lat;
         form.longitud = lng;
     });
@@ -132,15 +129,22 @@ function crearMapa() {
     }, 1000);
 }
 
-onMounted(() => {
-
-});
-
 function emitirAmbientes($ambientes) {
     emit('updateAmbientes', $ambientes);
 }
 
 function clearInputs() {
+    // Limpiar marcadores y volver a la posicion original del mapa
+    if (marcador.value) {
+        console.log(marcador.value);
+        map.removeLayer(marcador.value);
+        marcador.value = null;
+    }
+
+    if (map) {
+        map.remove();
+    }
+
     form.reset();
 }
 
