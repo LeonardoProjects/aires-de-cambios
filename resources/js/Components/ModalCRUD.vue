@@ -1,6 +1,6 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 
 const page = usePage();
@@ -364,7 +364,7 @@ label,
 input,
 option,
 select {
-    font-size: 0.8rem !important;
+    font-size: max(0.8vw, 0.9rem) !important;
 }
 
 
