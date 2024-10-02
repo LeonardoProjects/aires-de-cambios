@@ -1,6 +1,6 @@
 <template>
     <div class="footer-container">
-        <a :href="'https://utec.edu.uy/es/'" class="logo-footer d-flex align-items-center justify-content-center">
+        <a :href="'https://utec.edu.uy/es/'" target="_blank" class="logo-footer d-flex align-items-center justify-content-center">
             <img
                 src="../../images/utec.png"
                 alt="logoProyecto"
