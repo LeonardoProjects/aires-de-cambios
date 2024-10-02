@@ -3,11 +3,13 @@ import ModalCRUD from '@/Components/ModalCRUD.vue';
 import { computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import Show from "./Results/show.vue";
+import AppLayout from "@/Layouts/AppLayout.vue";
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user);
 
 export default {
+    layout: AppLayout,
     data() {
         return {
             ambientes: [],
