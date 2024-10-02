@@ -25,6 +25,7 @@ Route::middleware(['auth:sanctum'])->get('/herramienta', function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/ambiente/store', [AmbienteController::class, 'store'])->name('ambiente.store');
+    Route::post('/ambiente/update', [AmbienteController::class, 'update'])->name('ambiente.update');
     Route::get(
         '/ambiente/getAll/{id}',
         [AmbienteController::class, 'obtenerAmbientes']
