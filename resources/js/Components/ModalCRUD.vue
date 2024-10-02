@@ -54,8 +54,9 @@ async function submit() {
 
 // Funcionalidad para el mapa Leaflet
 const marcador = ref(null);
+let mapaCreado = false;
 
-onMounted(() => {
+function crearMapa() {
     const map = L.map('map').setView([-32.98369774322006, -55.93512229688155], 6);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -63,6 +64,7 @@ onMounted(() => {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
+
 
     let pantallaCompleta = new L.Control.Fullscreen({
         title: {
@@ -72,7 +74,7 @@ onMounted(() => {
     });
     map.addControl(pantallaCompleta);
 
-    // Añadir el Geocoder al mapa (lupa)
+    // Añadir el Geocoder al mapa
     L.Control.geocoder({
         defaultMarkGeocode: false // No agregar el marcador automáticamente
     })
@@ -98,6 +100,7 @@ onMounted(() => {
             form.latitud = e.geocode.center.lat;
             form.longitud = e.geocode.center.lng;
         }).addTo(map);
+    map.invalidateSize();
 
     // Manejar el evento de fullscreen para que el geocoder se mantenga visible
     map.on('enterFullscreen', () => {
@@ -124,6 +127,13 @@ onMounted(() => {
         form.latitud = lat;
         form.longitud = lng;
     });
+    setTimeout(function () {
+        window.dispatchEvent(new Event('resize'));
+    }, 1000);
+}
+
+onMounted(() => {
+
 });
 
 function emitirAmbientes($ambientes) {
@@ -140,16 +150,16 @@ function closeModal() {
 </script>
 
 <template>
-    <button type="button" class="btn btn-outline-primary mx-1 rounded-5 p-0 px-2" data-bs-toggle="modal"
-        data-bs-target="#staticBackdrop">
+    <button type="button" @click="crearMapa" class="btn btn-outline-primary mx-1 rounded-5 p-0 px-2"
+        data-bs-toggle="modal" data-bs-target="#staticBackdrop">
         <svg v-if="!editFunction" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
             class="bi bi-plus-circle" viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
             <path
                 d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
         </svg>
-        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square"
-            viewBox="0 0 16 16">
+        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+            class="bi bi-pencil-square" viewBox="0 0 16 16">
             <path
                 d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
             <path fill-rule="evenodd"
@@ -215,7 +225,7 @@ function closeModal() {
                             </div>
                         </div>
 
-                        <div class="mb-5">
+                        <div class="mb-5 padreMapa">
                             <h3>Ubicación</h3>
                             <hr />
                             <div class="d-flex h-50">
@@ -312,7 +322,8 @@ function closeModal() {
                                             Reforzada
                                         </option>
                                     </select>
-                                    <div v-if="form.errors.calidadVentana" class="error">{{ form.errors.calidadVentana[0] }}
+                                    <div v-if="form.errors.calidadVentana" class="error">{{
+                                        form.errors.calidadVentana[0] }}
                                     </div>
                                 </div>
                             </div>
@@ -345,7 +356,10 @@ function closeModal() {
     font-size: 0.9em;
 }
 
-label, input, option, select{
+label,
+input,
+option,
+select {
     font-size: 0.8rem !important;
 }
 
