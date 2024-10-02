@@ -74,12 +74,12 @@ class AmbienteController extends Controller
         ]);
         $ambiente->ocupacion->save();
 
-        return response()->json(['message' => 'Ambiente creado correctamente', 'data' => $ambiente], 200);
+        return response()->json(['message' => 'Ambiente creado correctamente', 'data' => $ambiente->with(['ubicacion', 'ventana', 'local', 'ocupacion'])->get()], 200);
     }
 
     public function obtenerAmbientes($userId)
     {
         $user = User::findOrFail($userId);
-        return response()->json(['message' => 'Ambientes obtenidos correctamente', 'data' => $user->ambiente], 200);
+        return response()->json(['message' => 'Ambientes obtenidos correctamente', 'data' => $user->ambiente()->with(['ubicacion', 'ventana', 'local', 'ocupacion'])->get()], 200);
     }
 }

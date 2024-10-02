@@ -8,14 +8,18 @@ const userId = computed(() => page.props.auth.user.id);
 
 const props = defineProps({
     editFunction: {
-        Boolean,
+        type: Boolean,
         default: false
+    },
+    ambiente: {
+        type: Object,
+        default: null
     }
 });
 
 const emit = defineEmits(['updateAmbientes']); // Definir el evento que vas a emitir
 
-const form = useForm({
+const form  = useForm({
     anchoAmbiente: 0,
     nombreAmbiente: "",
     largoAmbiente: 0,
@@ -39,7 +43,7 @@ async function submit() {
         // Si la solicitud es exitosa (status 200)
         if (response.status === 200) {
             closeModal(); // Cerrar el modal
-            emitirAmbientes(response.data.data); // Emitir los ambientes actualizados
+            emitirAmbiente(response.data.data); // Emitir los ambientes actualizados
         }
     } catch (error) {
         // Si hay un error de validación o cualquier otro error
@@ -129,8 +133,38 @@ function crearMapa() {
     }, 1000);
 }
 
-function emitirAmbientes($ambientes) {
-    emit('updateAmbientes', $ambientes);
+// Este método se ejecuta al montar el componente si es edición
+onMounted(() => {
+    if (props.editFunction && props.ambiente) {
+        cargarAmbiente(props.ambiente); 
+    }
+});
+
+// Crear un watch para actualizar el formulario cuando cambia el ambiente
+watch(() => props.ambiente, (newAmbiente) => {
+    if (props.editFunction && newAmbiente) {
+        cargarAmbiente(props.ambiente); 
+    }
+});
+
+// Función para cargar los datos del ambiente en el formulario
+function cargarAmbiente(ambiente) {
+    form.reset();
+    form.nombreAmbiente = ref([ambiente.nombre]) || "";
+    form.anchoAmbiente = Number(ambiente.local.ancho) || 0;
+    form.largoAmbiente = Number(ambiente.local.largo) || 0;
+    form.altoAmbiente = Number(ambiente.local.alto) || 0;
+    form.tipoHabitacion = ambiente.local.tipoHabitacion || "";
+    form.alturaSelect = ambiente.ubicacion.altura || "";
+    form.densidadSelect = ambiente.ubicacion.densidad || "";
+    form.largoVentana = Number(ambiente.ventana.largo) || 0;
+    form.altoVentana = Number(ambiente.ventana.alto) || 0;
+    form.calidadVentana = ambiente.ventana.calidad || "";
+    console.log(form);
+}
+
+function emitirAmbiente($ambiente) {
+    emit('updateAmbientes', $ambiente);
 }
 
 function clearInputs() {
@@ -177,8 +211,8 @@ function closeModal() {
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                        <span v-if="editFunction">Editar ambiente</span>
-                        <span v-else>Crear ambiente</span>
+                        <span v-if="props.editFunction">Editar ambiente</span>
+                        <span v-else>Ambiente</span>
                     </h1>
                     <button type="button" class="btn-close" @click="clearInputs" data-bs-dismiss="modal"
                         aria-label="Close"></button>
