@@ -23,7 +23,7 @@ import { Link } from "@inertiajs/vue3";
 
 <style lang="css" scoped>
 .footer-container {
-    position: fixed;
+    position: relative;
     bottom: 0;
     left: 0;
     width: 100%;

@@ -100,7 +100,7 @@ export default {
 <style>
 .divPrincipal {
     width: 650px;
-    padding: 50px 0 50px 0;
+    padding: 50px 0 0 0;
 }
 
 .divSelect {
@@ -112,5 +112,25 @@ export default {
     right: 0;
     bottom: 0;
     width: 20%;
+}
+
+@media screen and (max-width: 768px) {
+    .divSelect {
+        width: 65% !important;
+        padding-top: 10px;
+
+        select {
+            width: 40% !important;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .divCantPersonas {
+        width: 30% !important;
+    }
+
+    label {
+        font-size: 0.9em !important;
+    }
 }
 </style>
