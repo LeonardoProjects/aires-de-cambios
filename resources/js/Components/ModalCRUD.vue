@@ -185,17 +185,17 @@ function closeModal() {
                             <div class="d-flex h-50 flex-row">
                                 <div class="mx-4 w-25 text-center">
                                     <label for="anchoAmbiente" class="form-label">Ancho (m)</label>
-                                    <input id="anchoAmbiente" type="number" min="0" max="20" step="0.1" class="form-control"
+                                    <input id="anchoAmbiente" type="number" min="0.1" max="20" step="0.1" class="form-control"
                                         v-model="formAdd.anchoAmbiente" />
                                 </div>
                                 <div class="mx-4 w-25 text-center">
                                     <label for="largoAmbiente" class="form-label">Largo (m)</label>
-                                    <input id="largoAmbiente" type="number" min="0" max="20" step="0.1" value="0"
+                                    <input id="largoAmbiente" type="number" min="0.1" max="20" step="0.1" value="0"
                                         class="form-control w-0" v-model="formAdd.largoAmbiente" />
                                 </div>
                                 <div class="mx-4 w-25 text-center">
                                     <label for="altoAmbiente" class="form-label">Alto (m)</label>
-                                    <input id="altoAmbiente" type="number" min="0" max="20" step="0.1" value="0"
+                                    <input id="altoAmbiente" type="number" min="0.1" max="20" step="0.1" value="0"
                                         class="form-control w-0" v-model="formAdd.altoAmbiente" />
                                 </div>
                             </div>
@@ -279,13 +279,13 @@ function closeModal() {
                                 <div class="mx-4 w-50 text-center">
                                     <label for="largoVentana" class="form-label">
                                         Largo (m)</label>
-                                    <input id="largoVentana" type="number" min="0" max="20" step="0.1" class="form-control"
+                                    <input id="largoVentana" type="number" min="0.1" max="20" step="0.1" class="form-control"
                                         v-model="formAdd.largoVentana" />
                                 </div>
                                 <div class="mx-4 w-50 text-center">
                                     <label for="altoVentana" class="form-label">
                                         Alto (m)</label>
-                                    <input id="altoVentana" type="number" min="0" max="20" step="0.1" class="form-control"
+                                    <input id="altoVentana" type="number" min="0.1" max="20" step="0.1" class="form-control"
                                         v-model="formAdd.altoVentana" />
                                 </div>
                             </div>
