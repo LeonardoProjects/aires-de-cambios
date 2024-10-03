@@ -1,14 +1,40 @@
 <script setup>
-import { useForm } from "@inertiajs/vue3";
+import { useForm, usePage } from "@inertiajs/vue3";
 import { computed, ref } from 'vue';
-import { usePage } from '@inertiajs/vue3';
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
 
-const emit = defineEmits(['updateAmbientes']); // Definir el evento que vas a emitir
+const props = defineProps({
+    ambiente: {
+        type: Object,
+        default: null
+    }
+});
 
-const formAdd = useForm({
+const emit = defineEmits(['updateAmbientesEdit']); // Definir el evento que vas a emitir
+
+async function submitEdit() {
+    try {
+        const response = await axios.post(route("ambiente.update"), form);
+        // Si la solicitud es exitosa (status 200)
+        if (response.status === 200) {
+            closeModal(); // Cerrar el modal
+            emitirAmbiente(response.data.data); // Emitir los ambientes actualizados
+        }
+    } catch (error) {
+        // Si hay un error de validación o cualquier otro error
+        if (error.response && error.response.status === 422) {
+            // Los errores de validación están en error.response.data.errors
+            form.errors = error.response.data.errors; // Asignar los errores al objeto 'form'
+        } else {
+            console.error("Error inesperado: ", error);
+        }
+    }
+}
+
+const form = useForm({
+    idAmbiente: 0,
     anchoAmbiente: 0,
     nombreAmbiente: "",
     largoAmbiente: 0,
@@ -26,37 +52,60 @@ const formAdd = useForm({
     errors: {}
 });
 
-async function submit() {
-    try {
-        const response = await axios.post(route("ambiente.store"), formAdd);
-        // Si la solicitud es exitosa (status 200)
-        if (response.status === 200) {
-            closeModal(); // Cerrar el modal
-            emitirAmbiente(response.data.data); // Emitir los ambientes actualizados
-        }
-    } catch (error) {
-        // Si hay un error de validación o cualquier otro error
-        if (error.response && error.response.status === 422) {
-            // Los errores de validación están en error.response.data.errors
-            formAdd.errors = error.response.data.errors; // Asignar los errores al objeto 'formAdd'
-        } else {
-            console.error("Error inesperado: ", error);
-        }
+// Función para cargar los datos del ambiente en el formulario
+function cargarAmbiente(ambiente) {
+    crearMapaEdit(ambiente.ubicacion.latitud, ambiente.ubicacion.longitud);
+    form.reset();
+    form.idAmbiente = ambiente.id || 0;
+    form.nombreAmbiente = ambiente.nombre || "";
+    form.anchoAmbiente = Number(ambiente.local.ancho) || 0;
+    form.largoAmbiente = Number(ambiente.local.largo) || 0;
+    form.altoAmbiente = Number(ambiente.local.alto) || 0;
+    form.tipoHabitacion = ambiente.local.tipoHabitacion || "";
+    form.latitud = ambiente.ubicacion.latitud || "";
+    form.longitud = ambiente.ubicacion.longitud || "";
+    form.alturaSelect = ambiente.ubicacion.altura || "";
+    form.densidadSelect = ambiente.ubicacion.densidad || "";
+    form.largoVentana = Number(ambiente.ventana.largo) || 0;
+    form.altoVentana = Number(ambiente.ventana.alto) || 0;
+    form.calidadVentana = ambiente.ventana.calidad || "";
+}
+
+function emitirAmbiente($ambiente) {
+    emit('updateAmbientesEdit', $ambiente);
+
+}
+
+function clearInputs() {
+    // Limpiar marcadores y volver a la posicion original del mapa
+    if (marcadorEdit.value) {
+        mapEdit.removeLayer(marcadorEdit.value);
+        marcadorEdit.value = null;
     }
+
+    if (mapEdit) {
+        mapEdit.remove();
+    }
+
+    form.reset();
+}
+
+function closeModal() {
+    document.querySelector('#closeModalEditButton').click();
 }
 
 // Funcionalidad para el mapa Leaflet
-const marcador = ref(null);
-let map;
+const marcadorEdit = ref(null);
+let mapEdit;
 
-function crearMapa() {
-    map = L.map('map').setView([-32.98369774322006, -55.93512229688155], 6);
+function crearMapaEdit($latitud, $longitud) {
+    mapEdit = L.map('mapEdit').setView([Number($latitud), Number($longitud)], 18);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         fullscreenControl: true,
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+    }).addTo(mapEdit);
 
 
     let pantallaCompleta = new L.Control.Fullscreen({
@@ -65,7 +114,7 @@ function crearMapa() {
             'true': 'Exit Fullscreen'
         }
     });
-    map.addControl(pantallaCompleta);
+    mapEdit.addControl(pantallaCompleta);
 
     // Añadir el Geocoder al mapa
     L.Control.geocoder({
@@ -79,130 +128,109 @@ function crearMapa() {
                 [bbox.getNorthWest().lat, bbox.getNorthWest().lng],
                 [bbox.getSouthWest().lat, bbox.getSouthWest().lng]
             ]);
-            map.fitBounds(poly.getBounds());
+            mapEdit.fitBounds(poly.getBounds());
 
-            if (marcador.value) {
-                map.removeLayer(marcador.value);
+            if (marcadorEdit.value) {
+                mapEdit.removeLayer(marcadorEdit.value);
             }
 
             // Añadir nuevo marcador en la ubicación ingresada por el geocoder
-            marcador.value = L.marker(e.geocode.center).addTo(map).bindPopup(e.geocode.name).openPopup();
+            marcadorEdit.value = L.marker(e.geocode.center).addTo(mapEdit).bindPopup(e.geocode.name).openPopup();
 
             // Actualizar latitud y longitud en el formulario
-            formAdd.latitud = e.geocode.center.lat;
-            formAdd.longitud = e.geocode.center.lng;
-        }).addTo(map);
-    map.invalidateSize();
+            form.latitud = e.geocode.center.lat;
+            form.longitud = e.geocode.center.lng;
+        }).addTo(mapEdit);
+    mapEdit.invalidateSize();
 
-    map.on('enterFullscreen', () => {
-        map.invalidateSize(); // Ajustar el tamaño del mapa cuando entra en fullscreen
+    mapEdit.on('enterFullscreen', () => {
+        mapEdit.invalidateSize(); // Ajustar el tamaño del mapa cuando entra en fullscreen
     });
 
-    map.on('exitFullscreen', () => {
-        map.invalidateSize(); // Ajustar el tamaño del mapa cuando sale de fullscreen
+    mapEdit.on('exitFullscreen', () => {
+        mapEdit.invalidateSize(); // Ajustar el tamaño del mapa cuando sale de fullscreen
     });
 
     // Evento de clic en el mapa para que el usuario pueda seleccionar una ubicación
-    map.on('click', function (e) {
+    mapEdit.on('click', function (e) {
         const { lat, lng } = e.latlng;
 
         // Borrar el marcador anterior si existe
-        if (marcador.value) {
-            map.removeLayer(marcador.value);
+        if (marcadorEdit.value) {
+            mapEdit.removeLayer(marcadorEdit.value);
         }
 
         // Añadir nuevo marcador en la ubicación seleccionada por el usuario
-        marcador.value = L.marker([lat, lng]).addTo(map).bindPopup('Ubicación seleccionada').openPopup();
+        marcadorEdit.value = L.marker([lat, lng]).addTo(mapEdit).bindPopup('Ubicación modificada').openPopup();
 
-        formAdd.latitud = lat;
-        formAdd.longitud = lng;
+        form.latitud = lat;
+        form.longitud = lng;
     });
     setTimeout(function () {
         window.dispatchEvent(new Event('resize'));
     }, 1000);
-}
-
-
-function emitirAmbiente($ambiente) {
-    emit('updateAmbientes', $ambiente);
-}
-
-function clearInputs() {
-    // Limpiar marcadores y volver a la posicion original del mapa
-    if (marcador.value) {
-        map.removeLayer(marcador.value);
-        marcador.value = null;
-    }
-
-    if (map) {
-        map.remove();
-    }
-
-    formAdd.reset();
-}
-
-function closeModal() {
-    document.querySelector('#closeModalButton').click();
+    
+    marcadorEdit.value = L.marker([$latitud, $longitud]).addTo(mapEdit);
 }
 </script>
 
 <template>
-    <button type="button" @click="crearMapa" class="btn btn-outline-primary mx-1 rounded-5 p-0 px-2" data-bs-toggle="modal"
-        data-bs-target="#staticBackdrop">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle"
+    <button type="button" class="btn btn-outline-primary mx-1 rounded-5 p-0 px-2" data-bs-toggle="modal"
+        data-bs-target="#modalEdit" @click="cargarAmbiente(ambiente)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square"
             viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
             <path
-                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+            <path fill-rule="evenodd"
+                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
         </svg>
     </button>
 
     <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal fade" id="modalEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="modalEditLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                        <span>Crear ambiente</span>
+                    <h1 class="modal-title fs-5" id="modalEditLabel">
+                        Editar ambiente
                     </h1>
                     <button type="button" class="btn-close" @click="clearInputs" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <form @submit.prevent="submit" id="crudFORM">
+                    <form @submit.prevent="submitEdit" id="editFORM">
                         <div class="mb-5">
                             <h3>Detalles del ambiente</h3>
                             <hr />
                             <div class="mt-1 mb-4 mx-4 text-center">
                                 <label for="nombreAmbiente" class="form-label">Nombre de ambiente</label>
                                 <input id="nombreAmbiente" type="text" class="form-control w-0"
-                                    v-model="formAdd.nombreAmbiente" />
-                                <div v-if="formAdd.errors.nombreAmbiente" class="error">{{ formAdd.errors.nombreAmbiente[0]
-                                }}
+                                    v-model="form.nombreAmbiente" />
+                                <div v-if="form.errors.nombreAmbiente" class="error">{{ form.errors.nombreAmbiente[0] }}
                                 </div>
                             </div>
                             <div class="d-flex h-50 flex-row">
                                 <div class="mx-4 w-25 text-center">
                                     <label for="anchoAmbiente" class="form-label">Ancho (m)</label>
                                     <input id="anchoAmbiente" type="number" min="0.1" max="20" step="0.1" class="form-control"
-                                        v-model="formAdd.anchoAmbiente" />
+                                        v-model="form.anchoAmbiente" />
                                 </div>
                                 <div class="mx-4 w-25 text-center">
                                     <label for="largoAmbiente" class="form-label">Largo (m)</label>
                                     <input id="largoAmbiente" type="number" min="0.1" max="20" step="0.1" value="0"
-                                        class="form-control w-0" v-model="formAdd.largoAmbiente" />
+                                        class="form-control w-0" v-model="form.largoAmbiente" />
                                 </div>
                                 <div class="mx-4 w-25 text-center">
                                     <label for="altoAmbiente" class="form-label">Alto (m)</label>
                                     <input id="altoAmbiente" type="number" min="0.1" max="20" step="0.1" value="0"
-                                        class="form-control w-0" v-model="formAdd.altoAmbiente" />
+                                        class="form-control w-0" v-model="form.altoAmbiente" />
                                 </div>
                             </div>
                             <div class="mx-5 mt-4 w-75 text-center">
                                 <label for="tipoHabitacion" class="form-label">Tipo de habitación</label>
                                 <select name="tipoHabitacionSelect" id="tipoHabitacion" class="form-select"
-                                    v-model="formAdd.tipoHabitacion" @change="formAdd.clearErrors('tipoHabitacion')">
+                                    v-model="form.tipoHabitacion" @change="form.clearErrors('tipoHabitacion')">
                                     <option value="Dormitorio">
                                         Dormitorio
                                     </option>
@@ -210,21 +238,20 @@ function closeModal() {
                                         Estar o comedor
                                     </option>
                                 </select>
-                                <div v-if="formAdd.errors.tipoHabitacion" class="error">{{ formAdd.errors.tipoHabitacion[0]
-                                }}
+                                <div v-if="form.errors.tipoHabitacion" class="error">{{ form.errors.tipoHabitacion[0] }}
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mb-5 padreMapa">
+                        <div class="mb-5">
                             <h3>Ubicación</h3>
                             <hr />
                             <div class="d-flex h-50">
                                 <div class="me-3 w-50 text-center">
                                     <label for="alturaSelect" class="form-label">
                                         Altura</label>
-                                    <select name="alturaSelect" id="altura" v-model="formAdd.alturaSelect"
-                                        class="form-select" @change="formAdd.clearErrors('alturaSelect')">
+                                    <select name="alturaSelect" id="altura" v-model="form.alturaSelect" class="form-select"
+                                        @change="form.clearErrors('alturaSelect')">
                                         <option value="Planta baja">
                                             Planta baja
                                         </option>
@@ -238,8 +265,7 @@ function closeModal() {
                                             6° piso o más
                                         </option>
                                     </select>
-                                    <div v-if="formAdd.errors.alturaSelect" class="error">{{ formAdd.errors.alturaSelect[0]
-                                    }}
+                                    <div v-if="form.errors.alturaSelect" class="error">{{ form.errors.alturaSelect[0] }}
                                     </div>
                                 </div>
 
@@ -247,7 +273,7 @@ function closeModal() {
                                     <label for="densidadSelect" class="form-label">
                                         Vivo en</label>
                                     <select name="densidadSelect" id="densidad" class="form-select"
-                                        v-model="formAdd.densidadSelect" @change="formAdd.clearErrors('densidadSelect')">
+                                        v-model="form.densidadSelect" @change="form.clearErrors('densidadSelect')">
                                         <option value="Frente al mar">
                                             Frente al mar
                                         </option>
@@ -264,12 +290,11 @@ function closeModal() {
                                             El centro con edificios altos
                                         </option>
                                     </select>
-                                    <div v-if="formAdd.errors.densidadSelect" class="error">{{
-                                        formAdd.errors.densidadSelect[0] }}
+                                    <div v-if="form.errors.densidadSelect" class="error">{{ form.errors.densidadSelect[0] }}
                                     </div>
                                 </div>
                             </div>
-                            <div id="map" class="mt-4"></div>
+                            <div id="mapEdit" class="mt-4"></div>
                         </div>
 
                         <div class="mb-0">
@@ -280,13 +305,13 @@ function closeModal() {
                                     <label for="largoVentana" class="form-label">
                                         Largo (m)</label>
                                     <input id="largoVentana" type="number" min="0.1" max="20" step="0.1" class="form-control"
-                                        v-model="formAdd.largoVentana" />
+                                        v-model="form.largoVentana" />
                                 </div>
                                 <div class="mx-4 w-50 text-center">
                                     <label for="altoVentana" class="form-label">
                                         Alto (m)</label>
                                     <input id="altoVentana" type="number" min="0.1" max="20" step="0.1" class="form-control"
-                                        v-model="formAdd.altoVentana" />
+                                        v-model="form.altoVentana" />
                                 </div>
                             </div>
                             <div class="d-flex mt-4 flex-row">
@@ -294,19 +319,18 @@ function closeModal() {
                                     <label for="tipoVentana" class="form-label">
                                         Tipo de ventana</label>
                                     <select name="tipoVentanaSelect" id="tipoVentana" class="form-select"
-                                        v-model="formAdd.tipoVentana" @change="formAdd.clearErrors('tipoVentana')">
+                                        v-model="form.tipoVentana" @change="form.clearErrors('tipoVentana')">
                                         <option value="Corrediza">
                                             Corrediza
                                         </option>
                                     </select>
-                                    <div v-if="formAdd.errors.tipoVentana" class="error">{{ formAdd.errors.tipoVentana[0] }}
-                                    </div>
+                                    <div v-if="form.errors.tipoVentana" class="error">{{ form.errors.tipoVentana[0] }}</div>
                                 </div>
                                 <div class="mx-3 w-50 text-center">
                                     <label for="calidadVentana" class="form-label">
                                         Calidad de ventana</label>
                                     <select name="calidadSelect" id="calidadVentana" class="form-select"
-                                        v-model="formAdd.calidadVentana" @change="formAdd.clearErrors('calidadVentana')">
+                                        v-model="form.calidadVentana" @change="form.clearErrors('calidadVentana')">
                                         <option value="Normal">Normal</option>
                                         <option value="Mejorada">
                                             Mejorada
@@ -315,8 +339,7 @@ function closeModal() {
                                             Reforzada
                                         </option>
                                     </select>
-                                    <div v-if="formAdd.errors.calidadVentana" class="error">{{
-                                        formAdd.errors.calidadVentana[0] }}
+                                    <div v-if="form.errors.calidadVentana" class="error">{{ form.errors.calidadVentana[0] }}
                                     </div>
                                 </div>
                             </div>
@@ -324,11 +347,11 @@ function closeModal() {
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="closeModalButton" class="btn btn-secondary" @click="clearInputs"
+                    <button type="button" id="closeModalEditButton" class="btn btn-secondary" @click="clearInputs"
                         data-bs-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary" form="crudFORM" :disabled="formAdd.processing">
+                    <button type="submit" class="btn btn-primary" form="editFORM" :disabled="form.processing">
                         Guardar cambios
                     </button>
                 </div>
@@ -338,7 +361,7 @@ function closeModal() {
 </template>
 
 <style>
-#map {
+#mapEdit {
     width: 100%;
     height: 400px;
     margin: 0 auto;
@@ -356,10 +379,13 @@ select {
     font-size: max(0.8vw, 0.9rem) !important;
 }
 
+select {
+    text-overflow: ellipsis;
+}
 
 /*Resolución para tablets (pantallas entre 768px y 1024px)*/
 @media (min-width: 768px) and (min-width: 1024px) {
-    #map {
+    #mapEdit {
         width: 90%;
         height: 350px;
     }
