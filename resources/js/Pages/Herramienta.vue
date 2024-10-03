@@ -51,47 +51,22 @@ export default {
 
 <template>
     <div class="d-flex justify-content-center">
-        <div
-            class="d-flex justify-content-start align-items-center flex-column min-vh-100 divPrincipal"
-        >
+        <div class="d-flex justify-content-start align-items-center flex-column min-vh-100 divPrincipal">
             <div class="d-flex flex-row position-relative divSelect">
                 <ModalCRUD @updateAmbientes="actualizarAmbientes" />
-                <select
-                    name="selectAmbientes"
-                    id="selectAmbientes"
-                    class="form-select w-50"
-                    @change="cargarResultados($event.target.value)"
-                    v-model="idAmbiente"
-                >
-                    <option
-                        v-for="ambiente in ambientes"
-                        :key="ambiente.id"
-                        :value="ambiente.id"
-                    >
+                <select name="selectAmbientes" id="selectAmbientes" class="form-select w-50"
+                    @change="cargarResultados($event.target.value)" v-model="idAmbiente">
+                    <option v-for="ambiente in ambientes" :key="ambiente.id" :value="ambiente.id">
                         {{ ambiente.nombre }}
                     </option>
-                    <option
-                        v-if="ambientes && ambientes.length === 0"
-                        :value="-1"
-                    >
+                    <option v-if="ambientes && ambientes.length === 0" :value="-1">
                         No hay ambientes creados
                     </option>
                 </select>
                 <ModalCRUD v-if="idAmbiente != -1" editFunction="true" />
-                <div
-                    v-if="idAmbiente != -1"
-                    class="d-flex flex-column position-absolute divCantPersonas text-center"
-                >
-                    <label for="cantPersonas" class="form-label"
-                        >Cant. personas</label
-                    >
-                    <input
-                        type="number"
-                        id="cantPersonas"
-                        class="form-control"
-                        min="1"
-                        v-model="cantPersonas"
-                    />
+                <div v-if="idAmbiente != -1" class="d-flex flex-column position-absolute divCantPersonas text-center">
+                    <label for="cantPersonas" class="form-label">Cant. personas</label>
+                    <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas" />
                 </div>
             </div>
             <Show :idAmbiente="idAmbiente" :cantPersonas="cantPersonas" />
@@ -102,7 +77,7 @@ export default {
 <style>
 .divPrincipal {
     width: 650px;
-    padding: 50px 0 50px 0;
+    padding: 50px 0 0 0;
 }
 
 .divSelect {
@@ -114,5 +89,25 @@ export default {
     right: 0;
     bottom: 0;
     width: 20%;
+}
+
+@media screen and (max-width: 768px) {
+    .divSelect {
+        width: 65% !important;
+        padding-top: 10px;
+
+        select {
+            width: 40% !important;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .divCantPersonas {
+        width: 30% !important;
+    }
+
+    label {
+        font-size: 0.9em !important;
+    }
 }
 </style>
