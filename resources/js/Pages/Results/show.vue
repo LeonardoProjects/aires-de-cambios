@@ -3,7 +3,7 @@
         <!-- Iterar sobre los grupos de resultados agrupados por fecha -->
         <div v-for="(resultadosPorFecha, date) in agrupadosPorFecha" :key="date" class="mb-4">
             <!-- Mostrar la fecha por encima de la tabla -->
-            <h3 class="text-center">{{ date }}</h3>
+            <h3 class="text-end">{{ date }}</h3>
             <div class="d-flex justify-content-center">
                 <div class="text-center resultsTable">
                     <div v-for="(resultado, index) in resultadosPorFecha" :key="index" @click="toggleRow(index)"
@@ -33,12 +33,58 @@
                             claseAgradableExpanded: resultado.alert == 'Aprovechar temperaturas agradables (mayor a 18° C)',
                             claseTormentaExpanded: resultado.alert == 'Precaución por tormentas fuertes'
                         }]" v-else>
-                            <strong>{{ resultado.hour }}</strong>
-                            <br />
-                            <img v-if="resultado.alert" v-bind:src="getImage(resultado.alert)" alt=""
-                                style="height: 20px; width: 20px" />
-                            Precaución por vientos fuertes (mayores a 40 km/h) Apertura: {{ resultado.cm }}cm
-                            <br />
+                            <div class="dUP">
+                                <strong>{{ resultado.hour }}</strong>
+                                <span class="m-0">Apertura<br><span class="fs-3">{{ resultado.cm }}cm</span></span>
+                            </div>
+                            <div class="dDOWN">
+                                <div class="alertIcons">
+                                    <!-- frio  -->
+                                    <div class="iconFrio">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                            <path d="M0 0h24v24H0z" fill="none" />
+                                            <path
+                                                d="M22 11h-4.17l3.24-3.24-1.41-1.42L15 11h-2V9l4.66-4.66-1.42-1.41L13 6.17V2h-2v4.17L7.76 2.93 6.34 4.34 11 9v2H9L4.34 6.34 2.93 7.76 6.17 11H2v2h4.17l-3.24 3.24 1.41 1.42L9 13h2v2l-4.66 4.66 1.42 1.41L11 17.83V22h2v-4.17l3.24 3.24 1.42-1.41L13 15v-2h2l4.66 4.66 1.41-1.42L17.83 13H22z" />
+                                        </svg>
+                                    </div>
+
+                                    <!-- viento -->
+                                    <div class="iconViento">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                            <path
+                                                d="M17 16.99c-1.35 0-2.2.42-2.95.8-.65.33-1.18.6-2.05.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.17.6-2.05.6v1.95c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.18-.6 2.05-.6.9 0 1.4.25 2.05.6.75.38 1.58.8 2.95.8v-1.95c-.9 0-1.4-.25-2.05-.6-.75-.38-1.6-.8-2.95-.8zm0-4.45c-1.35 0-2.2.43-2.95.8-.65.32-1.18.6-2.05.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.43-2.95.8c-.65.32-1.17.6-2.05.6v1.95c1.35 0 2.2-.43 2.95-.8.65-.35 1.15-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.43 2.95-.8c.65-.35 1.15-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.58.8 2.95.8v-1.95c-.9 0-1.4-.25-2.05-.6-.75-.38-1.6-.8-2.95-.8zm2.95-8.08c-.75-.38-1.58-.8-2.95-.8s-2.2.42-2.95.8c-.65.32-1.18.6-2.05.6-.9 0-1.4-.25-2.05-.6-.75-.37-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.17.6-2.05.6v1.93c1.35 0 2.2-.43 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.43 2.95-.8c.65-.32 1.18-.6 2.05-.6.9 0 1.4.25 2.05.6.75.38 1.58.8 2.95.8V5.04c-.9 0-1.4-.25-2.05-.58zM17 8.09c-1.35 0-2.2.43-2.95.8-.65.35-1.15.6-2.05.6s-1.4-.25-2.05-.6c-.75-.38-1.57-.8-2.95-.8s-2.2.43-2.95.8c-.65.35-1.15.6-2.05.6v1.95c1.35 0 2.2-.43 2.95-.8.65-.32 1.18-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.43 2.95-.8c.65-.32 1.18-.6 2.05-.6.9 0 1.4.25 2.05.6.75.38 1.58.8 2.95.8V9.49c-.9 0-1.4-.25-2.05-.6-.75-.38-1.6-.8-2.95-.8z" />
+                                        </svg>
+                                    </div>
+
+                                    <!-- tormenta -->
+                                    <div class="iconTormenta">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                            <path d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M7 2v11h3v9l7-12h-4l4-8z" />
+                                        </svg>
+                                    </div>
+
+                                    <!-- agradable -->
+                                    <div class="iconAgradable">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                            <path d="M0 0h24v24H0z" fill="none" />
+                                            <path
+                                                d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z" />
+                                        </svg>
+                                    </div>
+
+                                    <!-- lluvia -->
+                                    <div class="iconLluvia">
+                                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24"
+                                            height="24" viewBox="0 0 24 24" width="24">
+                                            <rect fill="none" height="24" width="24" />
+                                            <path
+                                                d="M12,2c-5.33,4.55-8,8.48-8,11.8c0,4.98,3.8,8.2,8,8.2s8-3.22,8-8.2C20,10.48,17.33,6.55,12,2z M7.83,14 c0.37,0,0.67,0.26,0.74,0.62c0.41,2.22,2.28,2.98,3.64,2.87c0.43-0.02,0.79,0.32,0.79,0.75c0,0.4-0.32,0.73-0.72,0.75 c-2.13,0.13-4.62-1.09-5.19-4.12C7.01,14.42,7.37,14,7.83,14z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <p class="m-0">{{ resultado.alert }}</p>
+                            </div>
                         </span>
                     </div>
                 </div>
@@ -199,6 +245,19 @@ export default {
 </script>
 
 <style scoped>
+.dUP {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.dDOWN {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
 .fade-enter-active,
 .fade-leave-active {
     transition: opacity 0.5s ease;
@@ -210,8 +269,9 @@ export default {
 }
 
 .resultsTable {
-    width: 700px;
+    width: 600px;
     height: auto;
+    flex-shrink: 0;
 }
 
 .resultsHourMinimized {
@@ -222,6 +282,7 @@ export default {
     box-shadow: 0px 3.87px 3.87px 0px rgba(0, 0, 0, 0.25);
     border-radius: 7px;
     min-height: 40px;
+    width: 100%;
 
     display: flex;
     justify-content: center;
@@ -229,6 +290,7 @@ export default {
 }
 
 .resultsHourExpanded {
+    width: 100%;
     margin-bottom: 20px;
     background-color: #f1f1f1;
     -webkit-box-shadow: 0px 3.87px 3.87px 0px rgba(0, 0, 0, 0.25);
@@ -236,7 +298,7 @@ export default {
     box-shadow: 0px 3.87px 3.87px 0px rgba(0, 0, 0, 0.25);
     border-radius: 7px;
     min-height: 50px;
-    max-height: 100px;
+    max-height: 120px;
 }
 
 .hourRow {
@@ -257,10 +319,18 @@ export default {
 }
 
 .resultExpanded {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    align-items: space-around;
     min-height: 30px;
     max-height: 100%;
-    padding: 3%;
+    padding: 1.5%;
+}
+
+.alertIcons {
+    display: flex;
+    flex-flow: row wrap;
+    width: auto;
 }
 
 .claseFrioMinimized:hover {
@@ -284,13 +354,23 @@ export default {
 }
 
 /* separacion minimized expanded */
-.claseFrioExpanded:hover {}
+.claseFrioExpanded {
+    background: linear-gradient(180deg, rgba(79, 158, 195, 1) 0%, rgba(162, 208, 229, 1) 100%);
+}
 
-.claseLluviaExpanded:hover {}
+.claseLluviaExpanded {
+    background: linear-gradient(180deg, rgba(46,65,255,1) 0%, rgba(105,133,206,1) 57%);
+}
 
-.claseVientoExpanded:hover {}
+.claseVientoExpanded {
+    background: linear-gradient(180deg, rgba(205,126,7,1) 0%, rgba(226,168,80,1) 100%);
+}
 
-.claseTormentaExpanded:hover {}
+.claseTormentaExpanded {
+    background: linear-gradient(180deg, rgba(100,67,178,1) 0%, rgba(161,152,243,1) 100%);
+}
 
-.claseAgradableExpanded:hover {}
+.claseAgradableExpanded {
+    background: linear-gradient(180deg, rgba(63, 161, 61, 1) 0%, rgba(118, 218, 116, 1) 100%);
+}
 </style>
