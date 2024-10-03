@@ -24,35 +24,98 @@
     </section>
     <section class="app-info my-5 d-flex justify-content-center">
         <div class="text-center w-50">
-            <div class="content">
-                <h4>¿Qué es Aires de cambios?</h4>
+            <h1 class="fs-3">¿Qué es Aires de cambios?</h1>
+            <div class="content fs-5 my-4">
                 <span class="description">
-                    Es una herramienta que utiliza datos proporcionados por la
-                    API meteorológica de
+                    Es una herramienta que utiliza tanto los datos
+                    proporcionados por la API meteorológica de
                 </span>
                 <a href="https://www.weatherapi.com/">Weather API</a>
                 <span class="description">
-                    y los ingresados por el usuario, como las dimensiones del
-                    ambiente y la ventana, la ubicación, y demás. A partir de
-                    estos datos, realiza cálculos para determinar la apertura de
-                    una ventana en diferentes horarios, basándose en una
-                    estimación de la calidad del aire.
+                    como los datos ingresados por el usuario para realizar
+                    cálculos que determinan la apertura óptima de una ventana en
+                    distintos horarios, con el fin de asegurar una ventilación
+                    adecuada del ambiente.
                 </span>
             </div>
         </div>
     </section>
     <section class="app-data">
-        <h4>usuarios activos</h4>
-        <div>grafica 1</div>
-        <p>usuarios registrados</p>
-        <div>grafica 2</div>
+        <!-- <div class="ambientesXPaises w-100 d-flex">
+            <div class="chartDescription">
+                <h4>Ambientes creados</h4>
+                <p>Cantidad de ambientes creados en diferentes ubicaciones:</p>
+            </div>
+            <div>grafica 1</div>
+        </div>
+        <div class="UsuariosMensuales w-100">
+            <h4>Usuarios de la herramienta</h4>
+            <p>Nuevos usuarios registrados en los útimos meses:</p>
+            <div>grafica 1</div>
+        </div> -->
+        <h1 class="text-center m-5 p-5">GRÁFICAS PROXIMAMENTE</h1>
     </section>
-    <section class="about-us">
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti
-            rem minus dignissimos libero sint atque, delectus odio eaque iusto
-            sed quasi ea amet laborum illum. Amet eos neque eum magni.
-        </p>
+    <section class="about-us my-5 d-flex flex-column align-items-center">
+        <div class="aboutUsPresentation text-center w-50">
+            <h1>Sobre nosotros</h1>
+            <p>
+                El proyecto surge de una version de la herramienta previamente
+                realizada por el equipo de FADU, esta misma fue adaptada a una
+                aplicación web por estudiantes de la carrera de tecnólogo en
+                informática de UTEC.
+            </p>
+        </div>
+        <div class="aboutUsDescription d-flex my-5 mx-5">
+            <a
+                target="_blank"
+                href="https://www.fadu.edu.uy/"
+                class="aboutFADU align-items-center d-flex mx-5"
+            >
+                <img
+                    src="../../images/fadu.png"
+                    class="logo-aboutUs mx-5"
+                    alt=""
+                />
+                <div>
+                    <h2 class="fs-5">
+                        FADU (Facultad de Arquitectura, Diseño y Urbanismo)
+                    </h2>
+                    <p>
+                        La Facultad de Arquitectura, Diseño y Urbanismo (FADU)
+                        de la Universidad de la República es reconocida por
+                        formar profesionales en arquitectura, diseño industrial
+                        y comunicación visual. Con un enfoque
+                        interdisciplinario, fomenta la creatividad, la
+                        innovación y el desarrollo sustentable, contribuyendo al
+                        progreso de la sociedad uruguaya.
+                    </p>
+                </div>
+            </a>
+            <a
+                target="_blank"
+                href="https://utec.edu.uy/es/"
+                class="aboutUTEC align-items-center d-flex mx-5"
+            >
+                <img
+                    src="../../images/utec.png"
+                    class="logo-aboutUs utecLogo"
+                    alt=""
+                />
+                <div>
+                    <h2 class="fs-5">
+                        UTEC (Facultad de Arquitectura, Diseño y Urbanismo)
+                    </h2>
+                    <p>
+                        La Universidad Tecnológica (UTEC) es una institución
+                        pública enfocada en la educación tecnológica e
+                        innovación. Ofrece carreras en áreas clave como
+                        ingeniería y agroindustria, con un fuerte vínculo con el
+                        sector productivo y la investigación aplicada,
+                        impulsando el desarrollo sostenible en Uruguay.
+                    </p>
+                </div>
+            </a>
+        </div>
     </section>
 </template>
 
@@ -134,6 +197,114 @@ export default {
     color: #000000;
 }
 
+.logo-aboutUs {
+    margin: 20px;
+    min-width: 100px;
+    min-height: 100%;
+    max-width: 10vw;
+    max-height: 10vh;
+    object-fit: contain;
+}
+
+.utecLogo {
+    padding-bottom: 20px;
+}
+
+.aboutFADU {
+    padding: 40px;
+    max-width: 877px;
+    border: solid 1px #e5801c;
+    background: white;
+    position: relative;
+    z-index: 1;
+    transition: background 0.5s ease-in-out;
+    border-radius: 10px;
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+}
+
+.aboutFADU::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        180deg,
+        rgba(229, 128, 28, 0.3) 0%,
+        rgba(229, 128, 28, 0.4) 47%,
+        rgba(229, 128, 28, 7) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: -1;
+}
+
+.aboutFADU:hover::before {
+    opacity: 1;
+    animation: gradientSlide 1s ease-in-out forwards;
+}
+
+@keyframes gradientSlide {
+    0% {
+        background-position: 0% 100%;
+    }
+    100% {
+        background-position: 0% 0%;
+    }
+}
+
+.aboutUsDescription {
+
+}
+
+.aboutUTEC {
+    padding: 40px;
+    border: solid 1px #00a9e0;
+    background: white;
+    position: relative;
+    z-index: 1;
+    transition: background 0.5s ease-in-out;
+    border-radius: 10px;
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+}
+
+.aboutUTEC::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 169, 224, 0.3) 0%,
+        rgba(0, 169, 224, 0.4) 47%,
+        rgba(0, 169, 224, 0.7) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: -1;
+}
+
+.aboutUTEC:hover::before {
+    opacity: 1;
+    animation: gradientSlideUTEC 1s ease-in-out forwards;
+}
+
+@keyframes gradientSlideUTEC {
+    0% {
+        background-position: 0% 100%; /* Inicia desde la parte inferior */
+    }
+    100% {
+        background-position: 0% 0%; /* El gradiente se desplaza hacia arriba */
+    }
+}
+
 @media screen and (max-width: 768px) {
     .hero-section {
         position: relative;
@@ -161,7 +332,7 @@ export default {
         cursor: pointer;
         position: absolute;
         left: 50%;
-        top: 90%;
+        top: 93%;
         translate: -50% -50%;
         background-color: transparent;
         color: white;
@@ -170,6 +341,31 @@ export default {
     .try-button-mobile:hover {
         background-color: #ffffff;
         color: #000000;
+    }
+
+    .aboutUsDescription {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .aboutFADU {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .logo-aboutUs {
+        margin: 20px;
+        min-width: 200px;
+        min-height: 100px;
+        max-width: 10vw;
+        max-height: 10vh;
+        object-fit: contain;
+    }
+
+    .aboutUTEC {
+        display: flex;
+        flex-direction: column;
     }
 }
 </style>
