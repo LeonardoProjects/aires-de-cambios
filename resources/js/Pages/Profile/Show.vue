@@ -15,22 +15,16 @@ defineProps({
 
 <template>
     <AppLayout title="Profile">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Mi perfil
-            </h2>
-        </template>
-
         <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div v-if="$page.props.jetstream.canUpdateProfileInformation">
-                    <UpdateProfileInformationForm :user="$page.props.auth.user" />
+            <div>
+                <div v-if="$page.props.jetstream.canUpdateProfileInformation" class="d-flex justify-content-center">
+                    <UpdateProfileInformationForm :user="$page.props.auth.user" class="p-3" />
 
                     <SectionBorder />
                 </div>
 
                 <div v-if="$page.props.jetstream.canUpdatePassword">
-                    <UpdatePasswordForm class="mt-10 sm:mt-0" />
+                    <UpdatePasswordForm />
 
                     <SectionBorder />
                 </div>
@@ -44,12 +38,12 @@ defineProps({
                     <SectionBorder />
                 </div> -->
 
-                <LogoutOtherBrowserSessionsForm :sessions="sessions" class="mt-10 sm:mt-0" />
+                <LogoutOtherBrowserSessionsForm :sessions="sessions" />
 
                 <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
                     <SectionBorder />
 
-                    <DeleteUserForm class="mt-10 sm:mt-0" />
+                    <DeleteUserForm />
                 </template>
             </div>
         </div>

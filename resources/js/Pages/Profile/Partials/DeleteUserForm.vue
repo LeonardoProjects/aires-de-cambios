@@ -35,62 +35,103 @@ const closeModal = () => {
 
 <template>
     <!-- Título de la sección -->
-    <div class="mb-4">
-        <h2 class="text-lg font-medium text-gray-900">Delete Account</h2>
-        <p class="text-sm text-gray-600">
-            Permanently delete your account and all associated resources.
-        </p>
-    </div>
-
-    <!-- Descripción -->
-    <div class="max-w-xl text-sm text-gray-600 mb-4">
-        Once your account is deleted, all of its resources and data will be permanently deleted. 
-        Before deleting your account, please download any data or information that you wish to retain.
-    </div>
-
-    <!-- Botón de eliminación -->
-    <div>
-        <button @click="confirmUserDeletion" class="btn btn-danger">
-            Delete Account
+    <div class="mb-4 text-center">
+        <h5>¿Deseas eliminar tu cuenta?</h5>
+        <!-- Botón de eliminación -->
+        <button @click="confirmUserDeletion" class="btn btn-danger btnDanger">
+            Eliminar cuenta
         </button>
     </div>
 
-    <!-- Modal de confirmación de eliminación -->
-    <DialogModal :show="confirmingUserDeletion" @close="closeModal">
-        <template #title>
-            Delete Account
-        </template>
-
-        <template #content>
-            Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm.
-
-            <div class="mt-4">
-                <TextInput
-                    ref="passwordInput"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-3/4"
-                    placeholder="Password"
-                    autocomplete="current-password"
-                    @keyup.enter="deleteUser"
-                />
-                <InputError :message="form.errors.password" class="mt-2" />
+  <!-- Modal de confirmación de eliminación -->
+<div
+    v-if="confirmingUserDeletion"
+    class="modal fade show d-block"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="deleteUserModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered modalEliminarCuenta">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel">Eliminar cuenta</h5>
+                <button type="button" class="btn-close" @click="closeModal" data-bs-dismiss="modal" aria-label="Close">
+                </button>
             </div>
-        </template>
+            <div class="modal-body text-center">
+                <p>
+                    ¿Estás seguro de que quieres eliminar tu cuenta? Una vez que se elimine su cuenta,
+                    todos sus recursos y datos se eliminarán permanentemente.
+                    Por favor ingrese su contraseña para confirmar.
+                </p>
 
-        <template #footer>
-            <SecondaryButton @click="closeModal">
-                Cancel
-            </SecondaryButton>
+                <!-- Campo de contraseña -->
+                <div class="form-group">
+                    <TextInput
+                        ref="passwordInput"
+                        v-model="form.password"
+                        type="password"
+                        class="form-control"
+                        id="passwordInput"
+                        placeholder="Contraseña"
+                        autocomplete="current-password"
+                        @keyup.enter="deleteUser"
+                    />
+                    <InputError :message="form.errors.password" class="mt-2" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @click="closeModal">Cancelar</button>
+                <button
+                    type="button"
+                    class="btn btn-danger btnDanger"
+                    @click="deleteUser"
+                    :disabled="form.processing"
+                >
+                    Borrar cuenta
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            <DangerButton
-                class="ms-3"
-                :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
-                @click="deleteUser"
-            >
-                Delete Account
-            </DangerButton>
-        </template>
-    </DialogModal>
 </template>
+
+<style>
+.modalEliminarCuenta {
+  position: relative;
+  z-index: 1050;
+}
+
+.modalEliminarCuenta::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+  backdrop-filter: blur(10px); /* Aplicar efecto blur */
+  z-index: -1;
+}
+
+.modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.btnDanger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btnDanger:disabled {
+  opacity: 0.65;
+}
+
+</style>

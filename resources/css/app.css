@@ -44,6 +44,44 @@ html *{
     cursor: not-allowed;
 }
 
+.btnDanger{
+    position: relative;
+    font-size: 1rem;
+    padding: 10px 20px;
+    background-color: #7A000A;
+    color: white;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btnDanger::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0 0 0 0;
+    background: hsl(0, 93%, 53%);
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+}
+
+.btnDanger:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.btnDanger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .authCard {
     background-color: #f8f9fa;
     width: 100%;

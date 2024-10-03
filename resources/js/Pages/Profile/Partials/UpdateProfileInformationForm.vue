@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
-import DeleteUserForm from './DeleteUserForm.vue';
+import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     user: Object,
@@ -29,25 +28,24 @@ const sendEmailVerification = () => {
 </script>
 
 <template>
-    <form @submit.prevent="updateProfileInformation">
+    <form @submit.prevent="updateProfileInformation" class="formActualizar text-center">
 
         <!-- Descripción -->
-        <p>Actualiza la información de tu cuenta y el correo electrónico</p>
+        <h3>Editar perfil</h3>
 
         <!-- Formulario -->
         <div class="mt-4">
             <!-- Nombre -->
             <div class="col-span-6 sm:col-span-4">
                 <label for="name" class="labelCeleste">Nombre</label>
-                <input id="name" v-model="form.name" type="text" class="form-control w-25" required
-                    autocomplete="name" />
+                <input id="name" v-model="form.name" type="text" class="form-control" required autocomplete="name" />
                 <span v-if="form.errors.name" class="text-red-500 text-sm mt-2">{{ form.errors.name }}</span>
             </div>
 
             <!-- Email -->
             <div class="col-span-6 sm:col-span-4 mt-4">
                 <label for="email" class="labelCeleste">Correo electrónico</label>
-                <input id="email" v-model="form.email" type="email" class="form-control w-25" required
+                <input id="email" v-model="form.email" type="email" class="form-control" required
                     autocomplete="username" />
                 <span v-if="form.errors.email" class="text-red-500 text-sm mt-2">{{ form.errors.email }}</span>
 
@@ -70,22 +68,38 @@ const sendEmailVerification = () => {
 
         <!-- Mensaje de éxito -->
         <div class="mt-4">
-            <span v-if="form.recentlySuccessful" class="text-green-500">Saved.</span>
+            <span v-if="form.recentlySuccessful"
+                class="alert alert-success align-content-center justify-content-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    class="bi bi-check2-circle" viewBox="0 0 16 16">
+                    <path
+                        d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
+                    <path
+                        d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
+                </svg>
+                Guardado</span>
         </div>
 
         <!-- Botón de guardar -->
-        <div class="mt-4">
+        <div class="mb-4 d-flex justify-content-center align-content-center">
             <button type="submit" :disabled="form.processing" class="btn btn-primary mt-3 btnPrimary"
                 :class="{ 'opacity-25': form.processing }">
                 Guardar
             </button>
-        </div>
-        <div class="mt-8">
-            <DeleteUserForm />
         </div>
     </form>
 </template>
 
 <style>
 @import "../../../../css/app.css";
+
+.formActualizar {
+    width: 40vw;
+}
+
+@media (min-width: 450px) {
+    .btnPrimary {
+        width: 30vw;
+    }
+}
 </style>
