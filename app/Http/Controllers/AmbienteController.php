@@ -34,11 +34,11 @@ class AmbienteController extends Controller
             'calidadVentana' => ['required'],
             'longitud' => ['required'],
             'latitud' => ['required'],
-            'anchoAmbiente' => ['required', 'between:0.1,20'],
-            'largoAmbiente' => ['required', 'between:0.1,20'],
-            'altoAmbiente' => ['required', 'between:0.1,20'],
-            'largoVentana' => ['required', 'between:0.1,20'],
-            'altoVentana' => ['required', 'between:0.1,20']
+            'anchoAmbiente' => ['required', 'numeric', 'between:0.1,20'],
+            'largoAmbiente' => ['required', 'numeric', 'between:0.1,20'],
+            'altoAmbiente' => ['required', 'numeric', 'between:0.1,20'],
+            'largoVentana' => ['required', 'numeric', 'between:0.1,20'],
+            'altoVentana' => ['required', 'numeric', 'between:0.1,20']
         ]);
 
         $ambiente = Ambiente::create([
@@ -97,11 +97,11 @@ class AmbienteController extends Controller
             'densidadSelect' => ['required'],
             'tipoHabitacion' => ['required'],
             'calidadVentana' => ['required'],
-            'anchoAmbiente' => ['required', 'between:0.1,20'],
-            'largoAmbiente' => ['required', 'between:0.1,20'],
-            'altoAmbiente' => ['required', 'between:0.1,20'],
-            'largoVentana' => ['required', 'between:0.1,20'],
-            'altoVentana' => ['required', 'between:0.1,20']
+            'anchoAmbiente' => ['required', 'numeric', 'between:0.1,20'],
+            'largoAmbiente' => ['required', 'numeric', 'between:0.1,20'],
+            'altoAmbiente' => ['required', 'numeric', 'between:0.1,20'],
+            'largoVentana' => ['required', 'numeric', 'between:0.1,20'],
+            'altoVentana' => ['required', 'numeric', 'between:0.1,20']
         ]);
 
         $ambiente->nombre = $validatedData['nombreAmbiente'];
