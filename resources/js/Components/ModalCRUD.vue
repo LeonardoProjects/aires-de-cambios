@@ -89,8 +89,8 @@ function crearMapa() {
             marcador.value = L.marker(e.geocode.center).addTo(map).bindPopup(e.geocode.name).openPopup();
 
             // Actualizar latitud y longitud en el formulario
-            form.latitud = e.geocode.center.lat;
-            form.longitud = e.geocode.center.lng;
+            formAdd.latitud = e.geocode.center.lat;
+            formAdd.longitud = e.geocode.center.lng;
         }).addTo(map);
     map.invalidateSize();
 
@@ -112,10 +112,10 @@ function crearMapa() {
         }
 
         // Añadir nuevo marcador en la ubicación seleccionada por el usuario
-        marcador.value = L.marker([lat, lng]).addTo(map).bindPopup(`Coordenadas: ${lat}, ${lng}`).openPopup();
+        marcador.value = L.marker([lat, lng]).addTo(map).bindPopup('Ubicación seleccionada').openPopup();
 
-        form.latitud = lat;
-        form.longitud = lng;
+        formAdd.latitud = lat;
+        formAdd.longitud = lng;
     });
     setTimeout(function () {
         window.dispatchEvent(new Event('resize'));
@@ -185,17 +185,17 @@ function closeModal() {
                             <div class="d-flex h-50 flex-row">
                                 <div class="mx-4 w-25 text-center">
                                     <label for="anchoAmbiente" class="form-label">Ancho (m)</label>
-                                    <input id="anchoAmbiente" type="number" min="0" max="20" step="0,1" class="form-control"
+                                    <input id="anchoAmbiente" type="number" min="0" max="20" step="0.1" class="form-control"
                                         v-model="formAdd.anchoAmbiente" />
                                 </div>
                                 <div class="mx-4 w-25 text-center">
                                     <label for="largoAmbiente" class="form-label">Largo (m)</label>
-                                    <input id="largoAmbiente" type="number" min="0" max="20" step="0,1" value="0"
+                                    <input id="largoAmbiente" type="number" min="0" max="20" step="0.1" value="0"
                                         class="form-control w-0" v-model="formAdd.largoAmbiente" />
                                 </div>
                                 <div class="mx-4 w-25 text-center">
                                     <label for="altoAmbiente" class="form-label">Alto (m)</label>
-                                    <input id="altoAmbiente" type="number" min="0" max="20" step="0,1" value="0"
+                                    <input id="altoAmbiente" type="number" min="0" max="20" step="0.1" value="0"
                                         class="form-control w-0" v-model="formAdd.altoAmbiente" />
                                 </div>
                             </div>

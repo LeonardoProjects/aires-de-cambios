@@ -13,9 +13,7 @@ use App\Models\Ubicacion;
 use App\Models\User;
 use App\Models\Ventana;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 
 class AmbienteController extends Controller
 {
@@ -35,7 +33,12 @@ class AmbienteController extends Controller
             'tipoHabitacion' => ['required'],
             'calidadVentana' => ['required'],
             'longitud' => ['required'],
-            'latitud' => ['required']
+            'latitud' => ['required'],
+            'anchoAmbiente' => ['required', 'integer', 'max:20', 'min:1'],
+            'largoAmbiente' => ['required', 'integer', 'max:20', 'min:1'],
+            'altoAmbiente' => ['required', 'integer', 'max:20', 'min:1'],
+            'largoVentana' => ['required', 'integer', 'max:20', 'min:1'],
+            'altoVentana' => ['required', 'integer', 'max:20', 'min:1']
         ]);
 
         $ambiente = Ambiente::create([
@@ -93,7 +96,12 @@ class AmbienteController extends Controller
             'alturaSelect' => ['required'],
             'densidadSelect' => ['required'],
             'tipoHabitacion' => ['required'],
-            'calidadVentana' => ['required']
+            'calidadVentana' => ['required'],
+            'anchoAmbiente' => ['required', 'integer', 'max:20', 'min:1'],
+            'largoAmbiente' => ['required', 'integer', 'max:20', 'min:1'],
+            'altoAmbiente' => ['required', 'integer', 'max:20', 'min:1'],
+            'largoVentana' => ['required', 'integer', 'max:20', 'min:1'],
+            'altoVentana' => ['required', 'integer', 'max:20', 'min:1']
         ]);
 
         $ambiente->nombre = $validatedData['nombreAmbiente'];

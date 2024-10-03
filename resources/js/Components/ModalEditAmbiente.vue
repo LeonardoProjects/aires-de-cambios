@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, usePage } from "@inertiajs/vue3";
-import { computed, onMounted, watch, nextTick, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
@@ -41,8 +41,8 @@ const form = useForm({
     altoAmbiente: 0,
     tipoHabitacion: "",
     alturaSelect: "",
-    longitud: -58.076054,
-    latitud: -32.319339,
+    longitud: "",
+    latitud: "",
     densidadSelect: "",
     largoVentana: 0,
     altoVentana: 0,
@@ -54,6 +54,7 @@ const form = useForm({
 
 // Función para cargar los datos del ambiente en el formulario
 function cargarAmbiente(ambiente) {
+    crearMapaEdit(ambiente.ubicacion.latitud, ambiente.ubicacion.longitud);
     form.reset();
     form.idAmbiente = ambiente.id || 0;
     form.nombreAmbiente = ambiente.nombre || "";
@@ -61,6 +62,8 @@ function cargarAmbiente(ambiente) {
     form.largoAmbiente = Number(ambiente.local.largo) || 0;
     form.altoAmbiente = Number(ambiente.local.alto) || 0;
     form.tipoHabitacion = ambiente.local.tipoHabitacion || "";
+    form.latitud = ambiente.ubicacion.latitud || "";
+    form.longitud = ambiente.ubicacion.longitud || "";
     form.alturaSelect = ambiente.ubicacion.altura || "";
     form.densidadSelect = ambiente.ubicacion.densidad || "";
     form.largoVentana = Number(ambiente.ventana.largo) || 0;
@@ -74,11 +77,100 @@ function emitirAmbiente($ambiente) {
 }
 
 function clearInputs() {
+    // Limpiar marcadores y volver a la posicion original del mapa
+    if (marcadorEdit.value) {
+        mapEdit.removeLayer(marcadorEdit.value);
+        marcadorEdit.value = null;
+    }
+
+    if (mapEdit) {
+        mapEdit.remove();
+    }
+
     form.reset();
 }
 
 function closeModal() {
     document.querySelector('#closeModalEditButton').click();
+}
+
+// Funcionalidad para el mapa Leaflet
+const marcadorEdit = ref(null);
+let mapEdit;
+
+function crearMapaEdit($latitud, $longitud) {
+    mapEdit = L.map('mapEdit').setView([Number($latitud), Number($longitud)], 18);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        fullscreenControl: true,
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(mapEdit);
+
+
+    let pantallaCompleta = new L.Control.Fullscreen({
+        title: {
+            'false': 'View Fullscreen',
+            'true': 'Exit Fullscreen'
+        }
+    });
+    mapEdit.addControl(pantallaCompleta);
+
+    // Añadir el Geocoder al mapa
+    L.Control.geocoder({
+        defaultMarkGeocode: false
+    })
+        .on('markgeocode', function (e) {
+            let bbox = e.geocode.bbox;
+            let poly = L.polygon([
+                [bbox.getSouthEast().lat, bbox.getSouthEast().lng],
+                [bbox.getNorthEast().lat, bbox.getNorthEast().lng],
+                [bbox.getNorthWest().lat, bbox.getNorthWest().lng],
+                [bbox.getSouthWest().lat, bbox.getSouthWest().lng]
+            ]);
+            mapEdit.fitBounds(poly.getBounds());
+
+            if (marcadorEdit.value) {
+                mapEdit.removeLayer(marcadorEdit.value);
+            }
+
+            // Añadir nuevo marcador en la ubicación ingresada por el geocoder
+            marcadorEdit.value = L.marker(e.geocode.center).addTo(mapEdit).bindPopup(e.geocode.name).openPopup();
+
+            // Actualizar latitud y longitud en el formulario
+            form.latitud = e.geocode.center.lat;
+            form.longitud = e.geocode.center.lng;
+        }).addTo(mapEdit);
+    mapEdit.invalidateSize();
+
+    mapEdit.on('enterFullscreen', () => {
+        mapEdit.invalidateSize(); // Ajustar el tamaño del mapa cuando entra en fullscreen
+    });
+
+    mapEdit.on('exitFullscreen', () => {
+        mapEdit.invalidateSize(); // Ajustar el tamaño del mapa cuando sale de fullscreen
+    });
+
+    // Evento de clic en el mapa para que el usuario pueda seleccionar una ubicación
+    mapEdit.on('click', function (e) {
+        const { lat, lng } = e.latlng;
+
+        // Borrar el marcador anterior si existe
+        if (marcadorEdit.value) {
+            mapEdit.removeLayer(marcadorEdit.value);
+        }
+
+        // Añadir nuevo marcador en la ubicación seleccionada por el usuario
+        marcadorEdit.value = L.marker([lat, lng]).addTo(mapEdit).bindPopup('Ubicación modificada').openPopup();
+
+        form.latitud = lat;
+        form.longitud = lng;
+    });
+    setTimeout(function () {
+        window.dispatchEvent(new Event('resize'));
+    }, 1000);
+    
+    marcadorEdit.value = L.marker([$latitud, $longitud]).addTo(mapEdit);
 }
 </script>
 
@@ -121,17 +213,17 @@ function closeModal() {
                             <div class="d-flex h-50 flex-row">
                                 <div class="mx-4 w-25 text-center">
                                     <label for="anchoAmbiente" class="form-label">Ancho (m)</label>
-                                    <input id="anchoAmbiente" type="number" min="0" max="20" step="0,1" class="form-control"
+                                    <input id="anchoAmbiente" type="number" min="0" max="20" step="0.1" class="form-control"
                                         v-model="form.anchoAmbiente" />
                                 </div>
                                 <div class="mx-4 w-25 text-center">
                                     <label for="largoAmbiente" class="form-label">Largo (m)</label>
-                                    <input id="largoAmbiente" type="number" min="0" max="20" step="0,1" value="0"
+                                    <input id="largoAmbiente" type="number" min="0" max="20" step="0.1" value="0"
                                         class="form-control w-0" v-model="form.largoAmbiente" />
                                 </div>
                                 <div class="mx-4 w-25 text-center">
                                     <label for="altoAmbiente" class="form-label">Alto (m)</label>
-                                    <input id="altoAmbiente" type="number" min="0" max="20" step="0,1" value="0"
+                                    <input id="altoAmbiente" type="number" min="0" max="20" step="0.1" value="0"
                                         class="form-control w-0" v-model="form.altoAmbiente" />
                                 </div>
                             </div>
@@ -202,10 +294,7 @@ function closeModal() {
                                     </div>
                                 </div>
                             </div>
-
-                            <input type="text" id="buscador" class="form-control my-3"
-                                placeholder="Ingresa la ubicación del ambiente" />
-                            <div id="map"></div>
+                            <div id="mapEdit" class="mt-4"></div>
                         </div>
 
                         <div class="mb-0">
@@ -272,23 +361,34 @@ function closeModal() {
 </template>
 
 <style>
-#map {
-    min-height: 200px;
-    max-height: 300px;
-    min-width: 50%;
-    max-width: 80%;
-    background-color: gray;
-    margin: 0 50px 0 50px;
-}
-
-#buscador {
-    width: 75%;
-    margin: 0 57px 0 57px;
+#mapEdit {
+    width: 100%;
+    height: 400px;
+    margin: 0 auto;
 }
 
 .error {
     color: red;
     font-size: 0.9em;
+}
+
+label,
+input,
+option,
+select {
+    font-size: max(0.8vw, 0.9rem) !important;
+}
+
+select {
+    text-overflow: ellipsis;
+}
+
+/*Resolución para tablets (pantallas entre 768px y 1024px)*/
+@media (min-width: 768px) and (min-width: 1024px) {
+    #mapEdit {
+        width: 90%;
+        height: 350px;
+    }
 }
 
 svg {
