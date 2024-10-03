@@ -136,7 +136,6 @@ function emitirAmbientes($ambientes) {
 function clearInputs() {
     // Limpiar marcadores y volver a la posicion original del mapa
     if (marcador.value) {
-        console.log(marcador.value);
         map.removeLayer(marcador.value);
         marcador.value = null;
     }
