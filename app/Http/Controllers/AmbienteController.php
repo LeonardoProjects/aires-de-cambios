@@ -97,11 +97,11 @@ class AmbienteController extends Controller
             'densidadSelect' => ['required'],
             'tipoHabitacion' => ['required'],
             'calidadVentana' => ['required'],
-            'anchoAmbiente' => ['required', 'integer', 'max:20', 'min:1'],
-            'largoAmbiente' => ['required', 'integer', 'max:20', 'min:1'],
-            'altoAmbiente' => ['required', 'integer', 'max:20', 'min:1'],
-            'largoVentana' => ['required', 'integer', 'max:20', 'min:1'],
-            'altoVentana' => ['required', 'integer', 'max:20', 'min:1']
+            'anchoAmbiente' => ['required', 'between:0,99.99', 'max:20', 'min:1'],
+            'largoAmbiente' => ['required', 'between:0,99.99', 'max:20', 'min:1'],
+            'altoAmbiente' => ['required', 'between:0,99.99', 'max:20', 'min:1'],
+            'largoVentana' => ['required', 'between:0,99.99', 'max:20', 'min:1'],
+            'altoVentana' => ['required', 'between:0,99.99', 'max:20', 'min:1']
         ]);
 
         $ambiente->nombre = $validatedData['nombreAmbiente'];
