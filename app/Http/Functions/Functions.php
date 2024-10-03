@@ -80,7 +80,7 @@ class Functions
     */
     public static function area(float $largo, float $ancho)
     {
-        return round($largo * $ancho, 2);
+        return $largo * $ancho;
     }
 
     //Función para obtener la corrección del coeficiente de habitabilidad según la altura y densidad del barrio, devuelve -1 en caso de no encontrar alguno de los enums en la matriz
@@ -97,7 +97,7 @@ class Functions
     //$correccionCh se obtiene de la función: obtenerCorreccionCh()
     public static function obtenerVientoCh(float $correccionCh, float $viento)
     {
-        return round($correccionCh * $viento, 2);
+        return $correccionCh * $viento;
     }
 
     //El calculo AE se refiere al cálculo del área de entrada. El resultado es en m2.
@@ -106,22 +106,21 @@ class Functions
         $vientoCh se obtiene en la función: obtenerVientoCh()
     */
     public static function obtenerAE(float $caudalARenovar, float $vientoCh)
-
     {
-        return round(round($caudalARenovar / 3600, 3) / ($vientoCh * 0.025), 3);
+        return $caudalARenovar / 3600 / ($vientoCh * 0.025);
     }
 
     //Función para calcular el volumen local, en base a todas las dimensiones del ambiente. El resultado es en m3
     public static function volumLocal(float $largo, float $ancho, float $alto)
     {
-        return round($largo * $ancho * $alto, 2);
+        return $largo * $ancho * $alto;
     }
 
     //Función para calcular el volumen disponible por persona, en base al volumen local. El resultado es en m3/persona.
     //Depende de función: volumLocal()
     public static function volDispXPersona(float $volumen_local, int $cantPersonas)
     {
-        return round($volumen_local / $cantPersonas, 2);
+        return $volumen_local / $cantPersonas;
     }
 
     /* 
@@ -133,13 +132,13 @@ class Functions
         $caudal_minimo = 0.0;
         switch ($tipoHabitacion) {
             case TipoHabEnum::Dormitorio:
-                round($caudal_minimo = self::$caudal_minimo_x_persona_DORMITORIO * $cantPersonas, 2);
+                $caudal_minimo = self::$caudal_minimo_x_persona_DORMITORIO * $cantPersonas;
                 break;
             case TipoHabEnum::EstarComedor:
-                round($caudal_minimo = self::$caudal_minimo_x_persona_ESTARoCOMEDOR * $cantPersonas, 2);
+                $caudal_minimo = self::$caudal_minimo_x_persona_ESTARoCOMEDOR * $cantPersonas;
                 break;
         }
-        return round(($caudal_minimo / 1000) * 3600, 2);
+        return ($caudal_minimo / 1000) * 3600;
     }
 
     //Función para calcular la infiltraciones de aire (m3/h) * m2 de abertura
@@ -148,11 +147,11 @@ class Functions
     {
         switch ($calidadVentana) {
             case CalidadEnum::Normal:
-                return round((3.18 * pow(M_E, (0.283 * $viento_Ch))), 1);
+                return (3.18 * pow(M_E, (0.283 * $viento_Ch)));
             case CalidadEnum::Mejorada:
-                return round((1.15 * pow(M_E, (0.305 * $viento_Ch))), 1);
+                return (1.15 * pow(M_E, (0.305 * $viento_Ch)));
             case CalidadEnum::Reforzada:
-                return round((0.46 * pow(M_E, (0.277 * $viento_Ch))), 1);
+                return (0.46 * pow(M_E, (0.277 * $viento_Ch)));
         }
     }
 
@@ -160,12 +159,12 @@ class Functions
     //Depende de la función: infiltracionDeAire()
     public static function infiltracionesTotales(float $infiltracionesDeAire, float $areaVentana)
     {
-        return round($infiltracionesDeAire * $areaVentana, 1);
+        return $infiltracionesDeAire * $areaVentana;
     }
 
     //Función para calcular la apertura de la ventana en centímentros
     public static function aperturaVentana(float $valorAE, float $alturaVentana)
-    {
+    {   
         return round((($valorAE / $alturaVentana) * 100), 0);
     }
     //Esta funcion depende de los datos de la API
@@ -204,8 +203,8 @@ class Functions
         } else if ($volDispXPersona < self::$m3_p[0]) {
             return self::$co2[0];
         } else {
-            return round(62 - 11.7 * $volDispXPersona + 0.659 * pow($volDispXPersona, 2) +
-                0.017 * pow($volDispXPersona, 3) - 0.00232 * pow($volDispXPersona, 4), 1);
+            return 62 - 11.7 * $volDispXPersona + 0.659 * pow($volDispXPersona, 2) +
+                0.017 * pow($volDispXPersona, 3) - 0.00232 * pow($volDispXPersona, 4);
         }
     }
     /* 
@@ -214,7 +213,7 @@ class Functions
     */
     public static function caudalXco2(float $ventilacionXco2, int $cantPersonas)
     {
-        return round($ventilacionXco2 * $cantPersonas, 1);
+        return $ventilacionXco2 * $cantPersonas;
     }
 
     /* 
@@ -229,8 +228,8 @@ class Functions
         } else if ($volDispXPersona < self::$m3_p[0]) {
             return self::$h2o[0];
         } else {
-            return round(121 - 36.5 * $volDispXPersona + 5.64 * pow($volDispXPersona, 2) -
-                0.429 * pow($volDispXPersona, 3) + 0.0125 * pow($volDispXPersona, 4), 2);
+            return 121 - 36.5 * $volDispXPersona + 5.64 * pow($volDispXPersona, 2) -
+                0.429 * pow($volDispXPersona, 3) + 0.0125 * pow($volDispXPersona, 4);
         }
     }
     /* 
@@ -239,7 +238,7 @@ class Functions
     */
     public static function caudalXh2o(float $ventilacionXh2o, int $cantPersonas)
     {
-        return round($ventilacionXh2o * $cantPersonas, 1);
+        return $ventilacionXh2o * $cantPersonas;
     }
     //Fin método AN
 

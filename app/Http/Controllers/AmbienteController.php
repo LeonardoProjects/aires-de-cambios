@@ -34,7 +34,9 @@ class AmbienteController extends Controller
             'alturaSelect' => ['required'],
             'densidadSelect' => ['required'],
             'tipoHabitacion' => ['required'],
-            'calidadVentana' => ['required']
+            'calidadVentana' => ['required'],
+            'longitud' => ['required'],
+            'latitud' => ['required']
         ]);
 
         $ambiente = Ambiente::create([
@@ -44,8 +46,8 @@ class AmbienteController extends Controller
         $ambiente->save();
         $ambiente->ubicacion = Ubicacion::create([
             'altura' => AlturaEnum::from($validatedData['alturaSelect']),
-            'latitud' => $request['latitud'],
-            'longitud' => $request['longitud'],
+            'latitud' => $validatedData['latitud'],
+            'longitud' => $validatedData['longitud'],
             'densidad' => DensidadEnum::from($validatedData['densidadSelect']),
             'idAmbiente' => $ambiente->id,
         ]);
