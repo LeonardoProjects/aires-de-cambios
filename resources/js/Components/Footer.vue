@@ -9,7 +9,7 @@
         </a>
         <a :href="'https://www.fadu.edu.uy/'" target="_blank" class="logo-footer d-flex justify-content-center  align-items-center">
             <img
-                src="../../images/fadu.jpg"
+                src="../../images/fadu.png"
                 alt="logoProyecto"
                 class="h-100 w-100"
             />
