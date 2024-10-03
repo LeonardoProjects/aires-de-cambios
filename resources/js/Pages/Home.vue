@@ -37,19 +37,18 @@
     </section>
     <section class="app-info my-5 d-flex justify-content-center">
         <div class="text-center w-50">
-            <div class="content">
-                <h4>¿Qué es Aires de cambios?</h4>
+            <h1 class="fs-3">¿Qué es Aires de cambios?</h1>
+            <div class="content fs-5 my-4">
                 <span class="description">
-                    Es una herramienta que utiliza datos proporcionados por la
-                    API meteorológica de
+                    Es una herramienta que utiliza tanto los datos
+                    proporcionados por la API meteorológica de
                 </span>
                 <a href="https://www.weatherapi.com/">Weather API</a>
                 <span class="description">
-                    y los ingresados por el usuario, como las dimensiones del
-                    ambiente y la ventana, la ubicación, y demás. A partir de
-                    estos datos, realiza cálculos para determinar la apertura de
-                    una ventana en diferentes horarios, basándose en una
-                    estimación de la calidad del aire.
+                    como los datos ingresados por el usuario para realizar
+                    cálculos que determinan la apertura óptima de una ventana en
+                    distintos horarios, con el fin de asegurar una ventilación
+                    adecuada del ambiente.
                 </span>
             </div>
         </div>
@@ -244,13 +243,10 @@ export default {
     0% {
         background-position: 0% 100%;
     }
-
     100% {
         background-position: 0% 0%;
     }
 }
-
-
 
 .aboutUTEC {
     padding: 40px;
