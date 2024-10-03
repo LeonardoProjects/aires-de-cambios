@@ -23,7 +23,7 @@ defineProps({
                     <SectionBorder />
                 </div>
 
-                <div v-if="$page.props.jetstream.canUpdatePassword">
+                <div v-if="$page.props.jetstream.canUpdatePassword" class="d-flex justify-content-center">
                     <UpdatePasswordForm />
 
                     <SectionBorder />
