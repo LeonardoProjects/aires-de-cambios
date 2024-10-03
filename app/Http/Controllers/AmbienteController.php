@@ -13,15 +13,12 @@ use App\Models\Ubicacion;
 use App\Models\User;
 use App\Models\Ventana;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 
 class AmbienteController extends Controller
 {
     public function store(Request $request)
     {
-        //validar enums
         $validatedData = $request->validate([
             'nombreAmbiente' => [
                 'required',
@@ -36,7 +33,12 @@ class AmbienteController extends Controller
             'tipoHabitacion' => ['required'],
             'calidadVentana' => ['required'],
             'longitud' => ['required'],
-            'latitud' => ['required']
+            'latitud' => ['required'],
+            'anchoAmbiente' => ['required', 'numeric', 'between:0.1,20'],
+            'largoAmbiente' => ['required', 'numeric', 'between:0.1,20'],
+            'altoAmbiente' => ['required', 'numeric', 'between:0.1,20'],
+            'largoVentana' => ['required', 'numeric', 'between:0.1,20'],
+            'altoVentana' => ['required', 'numeric', 'between:0.1,20']
         ]);
 
         $ambiente = Ambiente::create([
@@ -74,12 +76,60 @@ class AmbienteController extends Controller
         ]);
         $ambiente->ocupacion->save();
 
-        return response()->json(['message' => 'Ambiente creado correctamente', 'data' => $ambiente], 200);
+        return response()->json(['message' => 'Ambiente creado correctamente', 'data' => $ambiente->with(['ubicacion', 'ventana', 'local', 'ocupacion'])->get()->where('id', $ambiente->id)], 200);
+    }
+
+    public function update(Request $request)
+    {
+        $ambiente = Ambiente::findOrFail($request['idAmbiente']);
+        $validatedData = $request->validate([
+            'nombreAmbiente' => [
+                'required',
+                'string',
+                'max:40',
+                Rule::unique('ambientes', 'nombre')
+                    ->where(function ($query) use ($request) {
+                        return $query->where('idUsuario', $request['idUser']);
+                    })
+                    ->ignore($ambiente->id) // Ignora el ambiente actual
+            ],
+            'alturaSelect' => ['required'],
+            'densidadSelect' => ['required'],
+            'tipoHabitacion' => ['required'],
+            'calidadVentana' => ['required'],
+            'anchoAmbiente' => ['required', 'numeric', 'between:0.1,20'],
+            'largoAmbiente' => ['required', 'numeric', 'between:0.1,20'],
+            'altoAmbiente' => ['required', 'numeric', 'between:0.1,20'],
+            'largoVentana' => ['required', 'numeric', 'between:0.1,20'],
+            'altoVentana' => ['required', 'numeric', 'between:0.1,20']
+        ]);
+
+        $ambiente->nombre = $validatedData['nombreAmbiente'];
+        $ambiente->save();
+
+        $ambiente->ubicacion->altura = AlturaEnum::from($validatedData['alturaSelect']);
+        $ambiente->ubicacion->densidad = DensidadEnum::from($validatedData['densidadSelect']);
+        $ambiente->ubicacion->latitud = $request['latitud'];
+        $ambiente->ubicacion->longitud = $request['longitud'];
+        $ambiente->ubicacion->save();
+
+        $ambiente->local->largo = $request['largoAmbiente'];
+        $ambiente->local->ancho = $request['anchoAmbiente'];
+        $ambiente->local->alto = $request['altoAmbiente'];
+        $ambiente->local->tipoHabitacion = TipoHabEnum::from($validatedData['tipoHabitacion']);
+        $ambiente->local->save();
+
+        $ambiente->ventana->largo = $request['largoVentana'];
+        $ambiente->ventana->alto = $request['altoVentana'];
+        $ambiente->ventana->calidad = CalidadEnum::from($validatedData['calidadVentana']);
+        $ambiente->ventana->save();
+
+        return response()->json(['message' => 'Ambiente creado correctamente', 'data' => $ambiente->with(['ubicacion', 'ventana', 'local', 'ocupacion'])->get()->where('id', $ambiente->id)], 200);
     }
 
     public function obtenerAmbientes($userId)
     {
         $user = User::findOrFail($userId);
-        return response()->json(['message' => 'Ambientes obtenidos correctamente', 'data' => $user->ambiente], 200);
+        return response()->json(['message' => 'Ambientes obtenidos correctamente', 'data' => $user->ambiente()->with(['ubicacion', 'ventana', 'local', 'ocupacion'])->get()], 200);
     }
 }

@@ -1,5 +1,6 @@
 <script>
 import ModalCRUD from "@/Components/ModalCRUD.vue";
+import ModalEditAmbiente from "@/Components/ModalEditAmbiente.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { computed } from "vue";
 import { usePage } from "@inertiajs/vue3";
@@ -14,12 +15,13 @@ export default {
         return {
             ambientes: [],
             idAmbiente: -1,
-            cantPersonas: 1,
+            cantPersonas: 1
         };
     },
     components: {
         ModalCRUD,
         Show,
+        ModalEditAmbiente
     },
     methods: {
         async obtenerAmbientes() {
@@ -28,13 +30,33 @@ export default {
             );
             this.ambientes = response.data.data;
         },
-        actualizarAmbientes($data) {
-            this.ambientes.push($data);
-            this.idAmbiente = $data.id;
+        actualizarAmbientesPostAdd($data) {
+            const ambienteAdd = Object.values($data)[0];
+            this.ambientes.push(ambienteAdd);
+            this.idAmbiente = ambienteAdd.id;
+        },
+        actualizarAmbientesPostEdit($data) {
+            // Extraer el ambiente desde el objeto anidado
+            const ambiente = Object.values($data)[0]; // Toma el primer valor, que es el objeto con la clave numérica
+            // Ahora puedes acceder al id del ambiente
+            const index = this.ambientes.findIndex(item => item.id === ambiente.id);
+            if (index !== -1) {
+                this.ambientes.splice(index, 1, ambiente); // Reemplaza el ambiente con el nuevo
+            }
         },
         cargarResultados($idAmbiente) {
             this.idAmbiente = Number($idAmbiente);
         },
+        obtenerAmbienteXid($idAmbiente) {
+            let $ambiente = null;
+            for (const amb of this.ambientes) {
+                if (amb.id === Number($idAmbiente)) {
+                    $ambiente = amb;
+                    break;
+                }
+            };
+            return $ambiente;
+        }
     },
     mounted() {
         // Llama a la función asincrónica y espera a que termine
@@ -53,7 +75,7 @@ export default {
     <div class="d-flex justify-content-center">
         <div class="d-flex justify-content-start align-items-center flex-column min-vh-100 divPrincipal">
             <div class="d-flex flex-row position-relative divSelect">
-                <ModalCRUD @updateAmbientes="actualizarAmbientes" />
+                <ModalCRUD @updateAmbientes="actualizarAmbientesPostAdd" />
                 <select name="selectAmbientes" id="selectAmbientes" class="form-select w-50"
                     @change="cargarResultados($event.target.value)" v-model="idAmbiente">
                     <option v-for="ambiente in ambientes" :key="ambiente.id" :value="ambiente.id">
@@ -63,7 +85,8 @@ export default {
                         No hay ambientes creados
                     </option>
                 </select>
-                <ModalCRUD v-if="idAmbiente != -1" editFunction="true" />
+                <ModalEditAmbiente v-if="idAmbiente != -1" @updateAmbientesEdit="actualizarAmbientesPostEdit"
+                    :ambiente="obtenerAmbienteXid(idAmbiente)" />
                 <div v-if="idAmbiente != -1" class="d-flex flex-column position-absolute divCantPersonas text-center">
                     <label for="cantPersonas" class="form-label">Cant. personas</label>
                     <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas" />
