@@ -1,11 +1,7 @@
 <template>
     <section class="hero-section">
         <div class="filter-banner-div">
-            <img
-                src="../../images/heroSection.jpg"
-                alt="Banner"
-                class="banner-image"
-            />
+            <img src="../../images/heroSection.jpg" alt="Banner" class="banner-image" />
         </div>
         <div class="banner-text">
             <h1>Aires de cambios</h1>
@@ -14,13 +10,9 @@
                 adecuada para mantener una buena calidad del aire.
             </p>
 
-            <a v-if="!isMobile" href="/herramienta" class="try-button"
-                >Probar herramienta</a
-            >
+            <a v-if="!isMobile" href="/herramienta" class="try-button">Probar herramienta</a>
         </div>
-        <a v-if="isMobile" href="/herramienta" class="try-button-mobile"
-            >Probar herramienta</a
-        >
+        <a v-if="isMobile" href="/herramienta" class="try-button-mobile">Probar herramienta</a>
     </section>
     <section class="app-info my-5 d-flex justify-content-center">
         <div class="text-center w-50">
@@ -59,29 +51,21 @@
         <div class="aboutUsPresentation text-center w-50">
             <h1>Sobre nosotros</h1>
             <p>
-                El proyecto surge de una version de la herramienta previamente
-                realizada por el equipo de FADU, esta misma fue adaptada a una
-                aplicación web por estudiantes de la carrera de tecnólogo en
-                informática de UTEC.
+                El proyecto surge de una versión de la herramienta previamente
+                realizada por el Área Clima y Confort del Instituto de Tecnologías de la FADU - UdelaR, esta misma fue
+                adaptada a una aplicación web por estudiantes de la carrera de Tecnólogo en
+                Informática de Paysandú - UTEC.
             </p>
         </div>
         <div class="aboutUsDescription d-flex my-5 mx-5">
-            <a
-                target="_blank"
-                href="https://www.fadu.edu.uy/"
-                class="aboutFADU align-items-center d-flex mx-5"
-            >
-                <img
-                    src="../../images/fadu.png"
-                    class="logo-aboutUs mx-5"
-                    alt=""
-                />
+            <a target="_blank" href="https://www.fadu.edu.uy/" class="aboutFADU align-items-center d-flex mx-5">
+                <img src="../../images/fadu.png" class="logo-aboutUs mx-5" alt="" />
                 <div>
                     <h2 class="fs-5">
-                        FADU (Facultad de Arquitectura, Diseño y Urbanismo)
+                        FADU - UdelaR (Facultad de Arquitectura, Diseño y Urbanismo)
                     </h2>
                     <p>
-                        La Facultad de Arquitectura, Diseño y Urbanismo (FADU)
+                        La Facultad de Arquitectura, Diseño y Urbanismo (FADU - UdelaR)
                         de la Universidad de la República es reconocida por
                         formar profesionales en arquitectura, diseño industrial
                         y comunicación visual. Con un enfoque
@@ -91,27 +75,18 @@
                     </p>
                 </div>
             </a>
-            <a
-                target="_blank"
-                href="https://utec.edu.uy/es/"
-                class="aboutUTEC align-items-center d-flex mx-5"
-            >
-                <img
-                    src="../../images/utec.png"
-                    class="logo-aboutUs utecLogo"
-                    alt=""
-                />
+            <a target="_blank" href="https://utec.edu.uy/es/" class="aboutUTEC align-items-center d-flex mx-5">
+                <img src="../../images/utec.png" class="logo-aboutUs utecLogo" alt="" />
                 <div>
                     <h2 class="fs-5">
-                        UTEC (Facultad de Arquitectura, Diseño y Urbanismo)
+                        UTEC (Universidad Tecnológica del Uruguay)
                     </h2>
                     <p>
-                        La Universidad Tecnológica (UTEC) es una institución
-                        pública enfocada en la educación tecnológica e
-                        innovación. Ofrece carreras en áreas clave como
-                        ingeniería y agroindustria, con un fuerte vínculo con el
-                        sector productivo y la investigación aplicada,
-                        impulsando el desarrollo sostenible en Uruguay.
+                        UTEC es una propuesta de educación terciaria universitaria
+                        pública de perfil tecnológico, orientada a la investigación y la innovación. Comprometida con los
+                        lineamientos estratégicos del país, abierta a las necesidades del Uruguay productivo, que tiene
+                        entre sus objetivos centrales hacer más equitativo el acceso a la oferta educativa en el interior
+                        del país.
                     </p>
                 </div>
             </a>
@@ -155,14 +130,12 @@ export default {
 
 .filter-banner-div {
     background: rgb(38, 38, 38);
-    background: linear-gradient(
-        180deg,
-        rgba(38, 38, 38, 0) 0%,
-        rgba(61, 61, 61, 0) 20%,
-        rgba(0, 130, 217, 1) 85%,
-        rgba(0, 117, 195, 1) 93%,
-        rgba(3, 68, 111, 0.9962185557816877) 100%
-    );
+    background: linear-gradient(180deg,
+            rgba(38, 38, 38, 0) 0%,
+            rgba(61, 61, 61, 0) 20%,
+            rgba(0, 130, 217, 1) 85%,
+            rgba(0, 117, 195, 1) 93%,
+            rgba(3, 68, 111, 0.9962185557816877) 100%);
     height: 100%;
 }
 
@@ -231,12 +204,10 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        180deg,
-        rgba(229, 128, 28, 0.3) 0%,
-        rgba(229, 128, 28, 0.4) 47%,
-        rgba(229, 128, 28, 7) 100%
-    );
+    background: linear-gradient(180deg,
+            rgba(229, 128, 28, 0.3) 0%,
+            rgba(229, 128, 28, 0.4) 47%,
+            rgba(229, 128, 28, 7) 100%);
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
     z-index: -1;
@@ -251,14 +222,13 @@ export default {
     0% {
         background-position: 0% 100%;
     }
+
     100% {
         background-position: 0% 0%;
     }
 }
 
-.aboutUsDescription {
 
-}
 
 .aboutUTEC {
     padding: 40px;
@@ -280,12 +250,10 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        180deg,
-        rgba(0, 169, 224, 0.3) 0%,
-        rgba(0, 169, 224, 0.4) 47%,
-        rgba(0, 169, 224, 0.7) 100%
-    );
+    background: linear-gradient(180deg,
+            rgba(0, 169, 224, 0.3) 0%,
+            rgba(0, 169, 224, 0.4) 47%,
+            rgba(0, 169, 224, 0.7) 100%);
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
     z-index: -1;
@@ -298,10 +266,13 @@ export default {
 
 @keyframes gradientSlideUTEC {
     0% {
-        background-position: 0% 100%; /* Inicia desde la parte inferior */
+        background-position: 0% 100%;
+        /* Inicia desde la parte inferior */
     }
+
     100% {
-        background-position: 0% 0%; /* El gradiente se desplaza hacia arriba */
+        background-position: 0% 0%;
+        /* El gradiente se desplaza hacia arriba */
     }
 }
 

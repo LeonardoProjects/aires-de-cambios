@@ -335,6 +335,7 @@ export default {
 }
 
 .resultExpanded {
+    border-radius: 7px;
     display: flex;
     flex-direction: column;
     align-items: space-around;
