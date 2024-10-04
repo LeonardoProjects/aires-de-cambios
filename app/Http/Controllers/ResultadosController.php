@@ -22,7 +22,7 @@ class ResultadosController extends Controller
             $firstDayData[$key] = [
                 'hora' => sprintf('%02d:00', $key),
                 'apertura' => $resultado['apertura'],
-                'alerta' => $resultado['alerta'],
+                'alertas' => $resultado['alertas'],
             ];
         };
         foreach ($objectAPI->getSecondDateData() as $key => $hourData) {
@@ -30,7 +30,7 @@ class ResultadosController extends Controller
             $secondDayData[$key] = [
                 'hora' => sprintf('%02d:00', $key),
                 'apertura' => $resultado['apertura'],
-                'alerta' => $resultado['alerta'],
+                'alertas' => $resultado['alertas'],
             ];
         };
         $resultData = [
@@ -54,8 +54,9 @@ class ResultadosController extends Controller
     /*
      * Procesa los datos de la API, y los devuelve como objeto ForecastWeatberData
      */
-    public function processApiData($forecastData) {
-        $objectAPI = new ForecastWeatherData($forecastData['location']['localtime'],$forecastData['forecast']['forecastday'][0]['hour'],$forecastData['forecast']['forecastday'][1]['hour'] );
+    public function processApiData($forecastData)
+    {
+        $objectAPI = new ForecastWeatherData($forecastData['location']['localtime'], $forecastData['forecast']['forecastday'][0]['hour'], $forecastData['forecast']['forecastday'][1]['hour']);
         return $objectAPI;
     }
 }

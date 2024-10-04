@@ -1,22 +1,30 @@
 <template>
     <div v-if="datosCalculos.length != 0" class="d-flex justify-content-center flex-column w-75 text-center">
         <!-- Iterar sobre los grupos de resultados agrupados por fecha -->
-        <div v-for="(resultadosPorFecha, date) in agrupadosPorFecha" :key="date" class="mb-4">
+        <div v-for="(resultadosPorFecha, date, fechaIndex) in agrupadosPorFecha" :key="date" class="mb-4">
             <!-- Mostrar la fecha por encima de la tabla -->
-            <h3 class="text-end">{{ date }}</h3>
+            <h3 class="text-center">{{ date }}</h3>
             <div class="d-flex justify-content-center">
                 <div class="text-center resultsTable">
-                    <div v-for="(resultado, index) in resultadosPorFecha" :key="index" @click="toggleRow(index)"
-                        role="button" :class="[resultado.expanded ? 'resultsHourExpanded' : 'resultsHourMinimized']">
+                    <div v-for="(resultado, index) in resultadosPorFecha" :key="getGlobalIndex(fechaIndex, index)"
+                        :data-index="getGlobalIndex(fechaIndex, index)"
+                        @click="toggleRow(getGlobalIndex(fechaIndex, index))" role="button"
+                        :class="[resultado.expanded ? 'resultsHourExpanded' : 'resultsHourMinimized']">
 
                         <div v-if="!resultado.expanded" :class="['hourRow', {
-                            claseLluviaMinimized: resultado.alert == 'Precaución por lluvias',
-                            claseFrioMinimized: resultado.alert == 'Precaución por bajas temperaturas (menor a 10° C)',
-                            claseVientoMinimized: resultado.alert == 'Precaución por vientos fuertes (mayores a 40 km/h)',
-                            claseAgradableMinimized: resultado.alert == 'Aprovechar temperaturas agradables (mayor a 18° C)',
-                            claseTormentaMinimized: resultado.alert == 'Precaución por tormentas fuertes'
+                            claseLluviaMinimized: resultado.alertas[0] == 'Precaución por lluvias',
+                            claseFrioMinimized: resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
+                            claseVientoMinimized: resultado.alertas[0] == 'Precaución por vientos fuertes (mayores a 40 km/h)',
+                            claseAgradableMinimized: resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
+                            claseTormentaMinimized: resultado.alertas[0] == 'Precaución por tormentas fuertes',
+                            claseNadaMinimized: resultado.alertas[0] == ''
                         }]">
-                            <span class="ps-2">{{ resultado.hour }}</span>
+                            <div class="d-flex">
+                                <div class="iconAlert">
+                                    <AlertIcon :alertName="getAlertName(resultado.alertas[0])" />
+                                </div>
+                                <span class="ps-2">{{ resultado.hour }}</span>
+                            </div>
                             <span>{{ resultado.cm }} cm</span>
                             <span>
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
@@ -27,11 +35,12 @@
                             </span>
                         </div>
                         <span :class="['text-center', 'resultExpanded', {
-                            claseLluviaExpanded: resultado.alert == 'Precaución por lluvias',
-                            claseFrioExpanded: resultado.alert == 'Precaución por bajas temperaturas (menor a 10° C)',
-                            claseVientoExpanded: resultado.alert == 'Precaución por vientos fuertes (mayores a 40 km/h)',
-                            claseAgradableExpanded: resultado.alert == 'Aprovechar temperaturas agradables (mayor a 18° C)',
-                            claseTormentaExpanded: resultado.alert == 'Precaución por tormentas fuertes'
+                            claseLluviaExpanded: resultado.alertas[0] == 'Precaución por lluvias',
+                            claseFrioExpanded: resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
+                            claseVientoExpanded: resultado.alertas[0] == 'Precaución por vientos fuertes (mayores a 40 km/h)',
+                            claseAgradableExpanded: resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
+                            claseTormentaExpanded: resultado.alertas[0] == 'Precaución por tormentas fuertes',
+                            claseNadaExpanded: resultado.alertas[0] == ''
                         }]" v-else>
                             <div class="dUP">
                                 <strong>{{ resultado.hour }}</strong>
@@ -39,51 +48,13 @@
                             </div>
                             <div class="dDOWN">
                                 <div class="alertIcons">
-                                    <!-- frio  -->
-                                    <div class="iconFrio">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                            <path d="M0 0h24v24H0z" fill="none" />
-                                            <path
-                                                d="M22 11h-4.17l3.24-3.24-1.41-1.42L15 11h-2V9l4.66-4.66-1.42-1.41L13 6.17V2h-2v4.17L7.76 2.93 6.34 4.34 11 9v2H9L4.34 6.34 2.93 7.76 6.17 11H2v2h4.17l-3.24 3.24 1.41 1.42L9 13h2v2l-4.66 4.66 1.42 1.41L11 17.83V22h2v-4.17l3.24 3.24 1.42-1.41L13 15v-2h2l4.66 4.66 1.41-1.42L17.83 13H22z" />
-                                        </svg>
-                                    </div>
-
-                                    <!-- viento -->
-                                    <div class="iconViento">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                            <path
-                                                d="M17 16.99c-1.35 0-2.2.42-2.95.8-.65.33-1.18.6-2.05.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.17.6-2.05.6v1.95c1.35 0 2.2-.42 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.42 2.95-.8c.65-.33 1.18-.6 2.05-.6.9 0 1.4.25 2.05.6.75.38 1.58.8 2.95.8v-1.95c-.9 0-1.4-.25-2.05-.6-.75-.38-1.6-.8-2.95-.8zm0-4.45c-1.35 0-2.2.43-2.95.8-.65.32-1.18.6-2.05.6-.9 0-1.4-.25-2.05-.6-.75-.38-1.57-.8-2.95-.8s-2.2.43-2.95.8c-.65.32-1.17.6-2.05.6v1.95c1.35 0 2.2-.43 2.95-.8.65-.35 1.15-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.43 2.95-.8c.65-.35 1.15-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.58.8 2.95.8v-1.95c-.9 0-1.4-.25-2.05-.6-.75-.38-1.6-.8-2.95-.8zm2.95-8.08c-.75-.38-1.58-.8-2.95-.8s-2.2.42-2.95.8c-.65.32-1.18.6-2.05.6-.9 0-1.4-.25-2.05-.6-.75-.37-1.57-.8-2.95-.8s-2.2.42-2.95.8c-.65.33-1.17.6-2.05.6v1.93c1.35 0 2.2-.43 2.95-.8.65-.33 1.17-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.43 2.95-.8c.65-.32 1.18-.6 2.05-.6.9 0 1.4.25 2.05.6.75.38 1.58.8 2.95.8V5.04c-.9 0-1.4-.25-2.05-.58zM17 8.09c-1.35 0-2.2.43-2.95.8-.65.35-1.15.6-2.05.6s-1.4-.25-2.05-.6c-.75-.38-1.57-.8-2.95-.8s-2.2.43-2.95.8c-.65.35-1.15.6-2.05.6v1.95c1.35 0 2.2-.43 2.95-.8.65-.32 1.18-.6 2.05-.6s1.4.25 2.05.6c.75.38 1.57.8 2.95.8s2.2-.43 2.95-.8c.65-.32 1.18-.6 2.05-.6.9 0 1.4.25 2.05.6.75.38 1.58.8 2.95.8V9.49c-.9 0-1.4-.25-2.05-.6-.75-.38-1.6-.8-2.95-.8z" />
-                                        </svg>
-                                    </div>
-
-                                    <!-- tormenta -->
-                                    <div class="iconTormenta">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                            <path d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M7 2v11h3v9l7-12h-4l4-8z" />
-                                        </svg>
-                                    </div>
-
-                                    <!-- agradable -->
-                                    <div class="iconAgradable">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                            <path d="M0 0h24v24H0z" fill="none" />
-                                            <path
-                                                d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z" />
-                                        </svg>
-                                    </div>
-
-                                    <!-- lluvia -->
-                                    <div class="iconLluvia">
-                                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24"
-                                            height="24" viewBox="0 0 24 24" width="24">
-                                            <rect fill="none" height="24" width="24" />
-                                            <path
-                                                d="M12,2c-5.33,4.55-8,8.48-8,11.8c0,4.98,3.8,8.2,8,8.2s8-3.22,8-8.2C20,10.48,17.33,6.55,12,2z M7.83,14 c0.37,0,0.67,0.26,0.74,0.62c0.41,2.22,2.28,2.98,3.64,2.87c0.43-0.02,0.79,0.32,0.79,0.75c0,0.4-0.32,0.73-0.72,0.75 c-2.13,0.13-4.62-1.09-5.19-4.12C7.01,14.42,7.37,14,7.83,14z" />
-                                        </svg>
+                                    <div v-for="(alerta, index) in resultado.alertas" :key="index">
+                                        <div v-if="alerta != ''">
+                                            <AlertIcon :alertName="getAlertName(alerta)" />
+                                        </div>
                                     </div>
                                 </div>
-                                <p class="m-0">{{ resultado.alert }}</p>
+                                <p class="m-0">{{ resultado.alertas[0] }}</p>
                             </div>
                         </span>
                     </div>
@@ -97,17 +68,20 @@
 </template>
 
 <script>
-import thunderIcon from "../../../images/icons/thunder.png";
+import AlertIcon from "@/Components/AlertIcon.vue";
 
 export default {
     props: {
         idAmbiente: Number,
         cantPersonas: Number,
     },
+    components: {
+        AlertIcon
+    },
     data() {
         return {
             datosCalculos: [],
-            resultados: [],
+            resultados: []
         };
     },
     watch: {
@@ -131,17 +105,35 @@ export default {
         },
     },
     methods: {
+        getAlertName(alertName) {
+            switch (alertName) {
+                case 'Precaución por vientos fuertes (mayores a 40 km/h)':
+                    return 'vientosIcon';
+                case 'Precaución por bajas temperaturas (menor a 10° C)':
+                    return 'frioIcon';
+                case 'Precaución por tormentas fuertes':
+                    return 'tormentasIcon';
+                case 'Precaución por lluvias':
+                    return 'lluviaIcon';
+                case 'Aprovechar temperaturas agradables (mayor a 18° C)':
+                    return 'agradableIcon';
+                default:
+                    return '';
+            }
+        },
+        getGlobalIndex(fechaIndex, index) {
+            // Obtener el índice global sumando la cantidad de resultados anteriores.
+            let count = 0;
+            for (let i = 0; i < fechaIndex; i++) {
+                count += this.agrupadosPorFecha[Object.keys(this.agrupadosPorFecha)[i]].length;
+            }
+            return count + index;
+        },
         toggleRow(index) {
             this.resultados.forEach((resultado, idx) => {
                 if (idx !== index) resultado.expanded = false;
             });
             this.resultados[index].expanded = !this.resultados[index].expanded;
-        },
-        getImage(alert) {
-            if (alert === "Precaución por lluvias") {
-                return thunderIcon;
-            }
-            return "";
         },
         async cargarDatos() {
             try {
@@ -233,9 +225,10 @@ export default {
                     expanded: false,
                     date: dateFecha,
                     icon: "icono",
-                    alert: resultado.alerta,
+                    alertas: resultado.alertas,
                 });
             });
+            console.log(this.resultados);
         },
     },
     mounted() {
@@ -256,6 +249,10 @@ export default {
     display: flex;
     width: 100%;
     justify-content: space-between;
+}
+
+.iconAlert {
+    width: 30px;
 }
 
 .fade-enter-active,
@@ -359,15 +356,15 @@ export default {
 }
 
 .claseLluviaExpanded {
-    background: linear-gradient(180deg, rgba(46,65,255,1) 0%, rgba(105,133,206,1) 57%);
+    background: linear-gradient(180deg, rgba(46, 65, 255, 1) 0%, rgba(105, 133, 206, 1) 57%);
 }
 
 .claseVientoExpanded {
-    background: linear-gradient(180deg, rgba(205,126,7,1) 0%, rgba(226,168,80,1) 100%);
+    background: linear-gradient(180deg, rgba(205, 126, 7, 1) 0%, rgba(226, 168, 80, 1) 100%);
 }
 
 .claseTormentaExpanded {
-    background: linear-gradient(180deg, rgba(100,67,178,1) 0%, rgba(161,152,243,1) 100%);
+    background: linear-gradient(180deg, rgba(100, 67, 178, 1) 0%, rgba(161, 152, 243, 1) 100%);
 }
 
 .claseAgradableExpanded {
