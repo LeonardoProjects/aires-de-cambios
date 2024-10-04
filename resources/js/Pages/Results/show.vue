@@ -7,10 +7,8 @@
             <div class="d-flex justify-content-center">
                 <div class="text-center resultsTable">
                     <div v-for="(resultado, index) in resultadosPorFecha" :key="getGlobalIndex(fechaIndex, index)"
-                        :data-index="getGlobalIndex(fechaIndex, index)"
                         @click="toggleRow(getGlobalIndex(fechaIndex, index))" role="button"
                         :class="[resultado.expanded ? 'resultsHourExpanded' : 'resultsHourMinimized']">
-
                         <div v-if="!resultado.expanded" :class="['hourRow', {
                             claseLluviaMinimized: resultado.alertas[0] == 'Precaución por lluvias',
                             claseFrioMinimized: resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
@@ -228,7 +226,6 @@ export default {
                     alertas: resultado.alertas,
                 });
             });
-            console.log(this.resultados);
         },
     },
     mounted() {
