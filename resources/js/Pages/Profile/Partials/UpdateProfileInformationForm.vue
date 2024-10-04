@@ -97,9 +97,15 @@ const sendEmailVerification = () => {
     width: 40vw;
 }
 
-@media (min-width: 450px) {
+@media (max-width: 768px) {
+    .formActualizar {
+        width: 70vw;
+    }
+
     .btnPrimary {
-        width: 30vw;
+        width: 100%;
+        font-size: 1rem;
+        padding: 10px;
     }
 }
 </style>

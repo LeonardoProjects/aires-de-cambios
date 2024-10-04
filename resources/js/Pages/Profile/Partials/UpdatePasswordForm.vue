@@ -42,7 +42,7 @@ const updatePassword = () => {
 
         <!-- Campo de contraseña actual -->
         <div class="form-group">
-            <label for="current_password" class="labelCeleste">Contraseña actual</label>
+            <label for="current_password" class="labelCeleste mt-2">Contraseña actual</label>
             <TextInput
                 id="current_password"
                 ref="currentPasswordInput"
@@ -56,7 +56,7 @@ const updatePassword = () => {
 
         <!-- Campo de nueva contraseña -->
         <div class="form-group">
-            <label for="password" class="labelCeleste">Nueva contraseña</label>
+            <label for="password" class="labelCeleste mt-4">Nueva contraseña</label>
             <TextInput
                 id="password"
                 ref="passwordInput"
@@ -70,7 +70,7 @@ const updatePassword = () => {
 
         <!-- Confirmar nueva contraseña -->
         <div class="form-group">
-            <label for="password_confirmation" class="labelCeleste">Confirmar contraseña</label>
+            <label for="password_confirmation" class="labelCeleste mt-4">Confirmar contraseña</label>
             <TextInput
                 id="password_confirmation"
                 v-model="form.password_confirmation"
@@ -104,12 +104,35 @@ const updatePassword = () => {
 </template>
 
 <style>
-.formActualizarContraseña{
+.formActualizarContraseña {
     width: 40vw;
+    margin: 0 auto;
 }
-@media (min-width: 450px) {
+
+.btnPrimary {
+    width: 20vw;
+}
+
+@media (max-width: 768px) {
+    .formActualizarContraseña {
+        width: 70vw;
+    }
+
     .btnPrimary {
-        width: 30vw;
+        width: 100%;
+        font-size: 1rem;
+        padding: 10px;
+    }
+}
+
+@media(min-width: 769px){
+    .formActualizarContraseña {
+        width: 40vw;
+    }
+
+    .btnPrimary {
+        width: 100%;
+        font-size: 1rem;
     }
 }
 </style>
