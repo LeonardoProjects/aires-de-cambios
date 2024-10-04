@@ -48,21 +48,6 @@ const sendEmailVerification = () => {
                 <input id="email" v-model="form.email" type="email" class="form-control" required
                     autocomplete="username" />
                 <span v-if="form.errors.email" class="text-red-500 text-sm mt-2">{{ form.errors.email }}</span>
-
-                <div v-if="$page.props.jetstream.hasEmailVerification && user.email_verified_at === null" class="mt-2">
-                    <p class="text-sm text-gray-600">
-                        Your email address is unverified.
-
-                        <button @click.prevent="sendEmailVerification"
-                            class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Click here to re-send the verification email.
-                        </button>
-                    </p>
-
-                    <div v-show="verificationLinkSent" class="mt-2 font-medium text-sm text-green-600">
-                        A new verification link has been sent to your email address.
-                    </div>
-                </div>
             </div>
         </div>
 

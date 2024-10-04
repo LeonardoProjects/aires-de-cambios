@@ -125,7 +125,7 @@ const updatePassword = () => {
     }
 }
 
-@media( (min-width:768px) and (max-width: 1645px)){
+@media((min-width:768px) and (max-width: 1645px)){
     .formActualizarContraseña {
         width: 40vw;
     }
