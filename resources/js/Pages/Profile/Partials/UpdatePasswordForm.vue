@@ -105,7 +105,7 @@ const updatePassword = () => {
 
 <style>
 .formActualizarContraseña {
-    width: 40vw;
+    width: 20vw;
     margin: 0 auto;
 }
 
@@ -125,7 +125,7 @@ const updatePassword = () => {
     }
 }
 
-@media(min-width: 769px){
+@media( (min-width:768px) and (max-width: 1645px)){
     .formActualizarContraseña {
         width: 40vw;
     }

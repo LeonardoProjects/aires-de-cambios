@@ -94,7 +94,8 @@ const sendEmailVerification = () => {
 @import "../../../../css/app.css";
 
 .formActualizar {
-    width: 40vw;
+    width: 20vw;
+    margin: auto;
 }
 
 @media (max-width: 768px) {
@@ -106,6 +107,17 @@ const sendEmailVerification = () => {
         width: 100%;
         font-size: 1rem;
         padding: 10px;
+    }
+}
+
+@media((min-width:768px) and (max-width: 1645px)){
+    .formActualizar {
+        width: 40vw;
+    }
+
+    .btnPrimary {
+        width: 100%;
+        font-size: 1rem;
     }
 }
 </style>
