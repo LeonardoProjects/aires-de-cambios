@@ -95,7 +95,7 @@ const updatePassword = () => {
 
         <!-- Mensaje de acción y botón de envío -->
         <div class="mt-2">
-            <button type="submit" :disabled="form.processing" class="btn btn-primary mt-2 btnPrimary mb-5"
+            <button type="submit" :disabled="form.processing" class="btn btn-primary mt-2 btnPrimaryUpdatePassword mb-5"
                 :class="{ 'opacity-25': form.processing }">
                 Actualizar contraseña
             </button>
@@ -109,8 +109,43 @@ const updatePassword = () => {
     margin: 0 auto;
 }
 
-.btnPrimary {
+.btnPrimaryUpdatePassword {
+    position: relative;
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
     width: 20vw;
+}
+
+.btnPrimaryUpdatePassword::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0 0 0 0;
+    background: hsl(204, 26%, 7%);
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+}
+
+.btnPrimaryUpdatePassword:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.btnPrimaryUpdatePassword:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
@@ -118,7 +153,7 @@ const updatePassword = () => {
         width: 70vw;
     }
 
-    .btnPrimary {
+    .btnPrimaryUpdatePassword {
         width: 100%;
         font-size: 1rem;
         padding: 10px;
@@ -130,7 +165,7 @@ const updatePassword = () => {
         width: 40vw;
     }
 
-    .btnPrimary {
+    .btnPrimaryUpdatePassword {
         width: 100%;
         font-size: 1rem;
     }

@@ -83,6 +83,10 @@ const sendEmailVerification = () => {
     margin: auto;
 }
 
+.btnPrimary {
+    width: 20vw;
+}
+
 @media (max-width: 768px) {
     .formActualizar {
         width: 70vw;
