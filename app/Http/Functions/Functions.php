@@ -186,7 +186,10 @@ class Functions
             $resultado[] = MensajesEnum::Frio;
         }
         if ($temperatura > 18) {
-            count($resultado) == 0 ? $resultado[] = MensajesEnum::Nada : $resultado[] = MensajesEnum::Agradable;
+            $resultado[] = MensajesEnum::Agradable;
+        }
+        if (count($resultado) == 0) {
+            $resultado[] = MensajesEnum::Nada;
         }
         return $resultado;
     }

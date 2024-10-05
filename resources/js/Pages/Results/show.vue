@@ -179,7 +179,7 @@ export default {
             );
 
             if (startIndex !== -1) {
-                for (let i = 0; i < 26; i++) {
+                for (let i = 0; i < 15; i++) {
                     result.push(combinedData[startIndex + i]);
                 }
             }
