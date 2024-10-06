@@ -43,6 +43,7 @@ export default {
             if (index !== -1) {
                 this.ambientes.splice(index, 1, ambiente); // Reemplaza el ambiente con el nuevo
             }
+            this.$refs.resultados.cargarDatos();
         },
         cargarResultados($idAmbiente) {
             this.idAmbiente = Number($idAmbiente);
@@ -92,7 +93,7 @@ export default {
                     <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas" />
                 </div>
             </div>
-            <Show :idAmbiente="idAmbiente" :cantPersonas="cantPersonas" />
+            <Show ref="resultados" :idAmbiente="idAmbiente" :cantPersonas="cantPersonas" />
         </div>
     </div>
 </template>

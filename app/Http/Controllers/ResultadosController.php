@@ -11,9 +11,10 @@ class ResultadosController extends Controller
 {
     public function index($idAmbiente, $cantPersonas)
     {
-        $forecastData = $this->getApiData();
-        $objectAPI = $this->processApiData($forecastData);
         $ambiente = User::find(1)->ambiente()->where('id', $idAmbiente)->first();
+        $ubi = $ambiente->ubicacion;
+        $forecastData = $this->getApiData($ubi->latitud, $ubi->longitud);
+        $objectAPI = $this->processApiData($forecastData);
         $firstDayData = [];
         $secondDayData = [];
         $resultData = [];
@@ -44,9 +45,11 @@ class ResultadosController extends Controller
     /*
      * Obtiene los datos de la API, y los devuelve en formato Json
      */
-    public function getApiData()
+    public function getApiData($latitud, $longitud)
     {
-        $response = Http::get('https://api.weatherapi.com/v1/forecast.json?key=8e0af554efe14fa99f7192419240509&q=-32.319339,-58.076054&days=2&lang=es');
+        $latParsed = (string)$latitud;
+        $longParsed = (string)$longitud;
+        $response = Http::get("https://api.weatherapi.com/v1/forecast.json?key=8e0af554efe14fa99f7192419240509&q={$latParsed},{$longParsed}&days=2&lang=es");
         $forecastData = $response->json();
         return $forecastData;
     }
