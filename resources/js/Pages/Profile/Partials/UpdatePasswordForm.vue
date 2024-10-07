@@ -119,7 +119,7 @@ const updatePassword = () => {
     cursor: pointer;
     overflow: hidden;
     z-index: 1;
-    width: 20vw;
+    width: 100%;
 }
 
 .btnPrimaryUpdatePassword::before {
