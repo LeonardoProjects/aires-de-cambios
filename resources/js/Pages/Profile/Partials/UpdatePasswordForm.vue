@@ -34,7 +34,7 @@ const updatePassword = () => {
 </script>
 
 <template>
-    <form @submit.prevent="updatePassword" class="formActualizarContraseña text-center">
+    <form @submit.prevent="updatePassword" class="formActualizarContraseña text-center p-3">
         <!-- Título -->
         <div class="mb-4">
             <h3 class="">Actualiza la contraseña</h3>
@@ -105,8 +105,9 @@ const updatePassword = () => {
 
 <style>
 .formActualizarContraseña {
-    width: 20vw;
+    min-width: 30vw;
     margin: 0 auto;
+    width: 100%;
 }
 
 .btnPrimaryUpdatePassword {
@@ -154,20 +155,10 @@ const updatePassword = () => {
     }
 
     .btnPrimaryUpdatePassword {
-        width: 100%;
+        min-width: 200px;
+        max-width: 350px;
         font-size: 1rem;
         padding: 10px;
-    }
-}
-
-@media((min-width:768px) and (max-width: 1645px)){
-    .formActualizarContraseña {
-        width: 40vw;
-    }
-
-    .btnPrimaryUpdatePassword {
-        width: 100%;
-        font-size: 1rem;
     }
 }
 </style>

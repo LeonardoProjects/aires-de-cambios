@@ -79,8 +79,9 @@ const sendEmailVerification = () => {
 @import "../../../../css/app.css";
 
 .formActualizar {
-    width: 20vw;
+    min-width: 30vw;
     margin: auto;
+    width: 100%;
 }
 
 .btnPrimaryUpdateProfile {
@@ -93,20 +94,7 @@ const sendEmailVerification = () => {
     cursor: pointer;
     overflow: hidden;
     z-index: 1;
-    width: 20vw;
-}
-
-.btnPrimaryUpdateProfile {
-    position: relative;
-    font-size: 1.2rem;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    overflow: hidden;
-    z-index: 1;
-    width: 20vw;
+    width: 100%;
 }
 
 .btnPrimaryUpdateProfile::before {
@@ -141,20 +129,10 @@ const sendEmailVerification = () => {
     }
 
     .btnPrimaryUpdateProfile {
-        width: 100%;
+        min-width: 300px;
+        max-width: 350px;
         font-size: 1rem;
         padding: 10px;
-    }
-}
-
-@media((min-width:768px) and (max-width: 1645px)){
-    .formActualizar {
-        width: 40vw;
-    }
-
-    .btnPrimaryUpdateProfile {
-        width: 100%;
-        font-size: 1rem;
     }
 }
 </style>

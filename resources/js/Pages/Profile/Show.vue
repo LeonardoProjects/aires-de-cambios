@@ -15,8 +15,8 @@ defineProps({
 
 <template>
     <AppLayout title="Profile">
-        <div>
-            <div>
+        <div class="w-100 d-flex justify-content-center">
+            <div class="divComponentes flex-column">
                 <div v-if="$page.props.jetstream.canUpdateProfileInformation" class="d-flex justify-content-center">
                     <UpdateProfileInformationForm :user="$page.props.auth.user" class="p-3" />
 
@@ -49,3 +49,11 @@ defineProps({
         </div>
     </AppLayout>
 </template>
+<style>
+
+@media (max-width: 768px) {
+    .divComponentes{
+        width: 100%;
+    }
+}
+</style>
