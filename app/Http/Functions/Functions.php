@@ -23,7 +23,7 @@ class Functions
             DensidadEnum::ElCampo->value => 0.70,
             DensidadEnum::UnBarrioPocoDenso->value => 0.50,
             DensidadEnum::UnBarrioMuyDenso->value => 0.20,
-            DensidadEnum::ElCentroConEdificiosAltos->value => 0.00,
+            DensidadEnum::ElCentroConEdificiosAltos->value => 0.10,
         ],
         AlturaEnum::PrimerOsegundoPiso->value => [
             DensidadEnum::FrenteAlMar->value => 1.15,
@@ -164,7 +164,7 @@ class Functions
 
     //Función para calcular la apertura de la ventana en centímentros
     public static function aperturaVentana(float $valorAE, float $alturaVentana)
-    {   
+    {
         return round((($valorAE / $alturaVentana) * 100), 0);
     }
     //Esta funcion depende de los datos de la API
@@ -172,22 +172,26 @@ class Functions
     {
         //Se manejará una alerta y la prioridad será tomada primero el viento, segundo la tormenta,
         // tercero si hay lluvia cuarto va el frio y por ultimo la temperatura agradable.
+        $resultado = [];
         if ($velocidadViento > 40) {
-            return MensajesEnum::VientosFuertes;
+            $resultado[] = MensajesEnum::VientosFuertes;
         }
         if ($tormenta) {
-            return MensajesEnum::Tormenta;
+            $resultado[] = MensajesEnum::Tormenta;
         }
         if ($llueve) {
-            return MensajesEnum::Lluvia;
+            $resultado[] = MensajesEnum::Lluvia;
         }
         if ($temperatura < 10) {
-            return MensajesEnum::Frio;
+            $resultado[] = MensajesEnum::Frio;
         }
         if ($temperatura > 18) {
-            return MensajesEnum::Agradable;
+            $resultado[] = MensajesEnum::Agradable;
         }
-        return MensajesEnum::Nada;
+        if (count($resultado) == 0) {
+            $resultado[] = MensajesEnum::Nada;
+        }
+        return $resultado;
     }
 
     //Inicio método AN
@@ -292,7 +296,7 @@ class Functions
 
         /* Datos de ocupación
         $cantPersonas = $ambiente->ocupacion->cantPersonas; */
-        
+
         //Datos de Ventana
         $largoVentana = $ambiente->ventana->largo;
         $altoVentana = $ambiente->ventana->alto;
@@ -300,7 +304,10 @@ class Functions
 
         //Datos climáticos y manejo de alertas API
         $vientoKXh = $datosAPI->getWindKph();
-        $vientoMXs = ($datosAPI->getWindKph() / 3.6);
+        if ($vientoKXh == 0) {
+            $vientoKXh = 0.1;
+        }
+        $vientoMXs = ($vientoKXh / 3.6);
         $condicionClimatica = $datosAPI->getCondition();
 
         $codigosDeLluvia = [
@@ -370,10 +377,10 @@ class Functions
             $centimetrosParaAbrirVentana = self::aperturaVentana($AE, $altoVentana);
         }
 
-        $alerta = self::determinarAlerta($temperatura, $vientoKXh, $lluvia, $tormenta);
+        $alertas = self::determinarAlerta($temperatura, $vientoKXh, $lluvia, $tormenta);
         return [
             'apertura' => $centimetrosParaAbrirVentana,
-            'alerta' => $alerta
+            'alertas' => $alertas
         ];
     }
 }
