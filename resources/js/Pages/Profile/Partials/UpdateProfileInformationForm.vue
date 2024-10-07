@@ -83,7 +83,7 @@ const sendEmailVerification = () => {
     margin: auto;
 }
 
-.btnPrimaryUpdatePassword {
+.btnPrimaryUpdateProfile {
     position: relative;
     font-size: 1.2rem;
     padding: 10px 20px;
