@@ -304,7 +304,10 @@ class Functions
 
         //Datos climáticos y manejo de alertas API
         $vientoKXh = $datosAPI->getWindKph();
-        $vientoMXs = ($datosAPI->getWindKph() / 3.6);
+        if ($vientoKXh == 0) {
+            $vientoKXh = 0.1;
+        }
+        $vientoMXs = ($vientoKXh / 3.6);
         $condicionClimatica = $datosAPI->getCondition();
 
         $codigosDeLluvia = [
