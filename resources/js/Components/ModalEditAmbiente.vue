@@ -376,7 +376,7 @@ label,
 input,
 option,
 select {
-    font-size: max(0.8vw, 0.9rem) !important;
+    font-size: max(0.5vw, 0.9rem) !important;
 }
 
 select {

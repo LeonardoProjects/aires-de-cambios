@@ -1,7 +1,8 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import { Tooltip } from 'bootstrap';
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
@@ -44,6 +45,11 @@ async function submit() {
         }
     }
 }
+
+onMounted(() => {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new Tooltip(tooltipTriggerEl));
+});
 
 // Funcionalidad para el mapa Leaflet
 const marcador = ref(null);
@@ -147,8 +153,8 @@ function closeModal() {
 </script>
 
 <template>
-    <button type="button" @click="crearMapa" class="btn btn-outline-primary mx-1 rounded-5 p-0 px-2" data-bs-toggle="modal"
-        data-bs-target="#staticBackdrop">
+    <button type="button" @click="crearMapa" class="btn btn-outline-primary mx-1 rounded-5 p-0 px-2"
+        data-bs-toggle="modal" data-bs-target="#staticBackdrop">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle"
             viewBox="0 0 16 16">
             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -178,15 +184,16 @@ function closeModal() {
                                 <label for="nombreAmbiente" class="form-label">Nombre de ambiente</label>
                                 <input id="nombreAmbiente" type="text" class="form-control w-0"
                                     v-model="formAdd.nombreAmbiente" />
-                                <div v-if="formAdd.errors.nombreAmbiente" class="error">{{ formAdd.errors.nombreAmbiente[0]
-                                }}
+                                <div v-if="formAdd.errors.nombreAmbiente" class="error">{{
+                                    formAdd.errors.nombreAmbiente[0]
+                                    }}
                                 </div>
                             </div>
                             <div class="d-flex h-50 flex-row">
                                 <div class="mx-4 w-25 text-center">
                                     <label for="anchoAmbiente" class="form-label">Ancho (m)</label>
-                                    <input id="anchoAmbiente" type="number" min="0.1" max="20" step="0.1" class="form-control"
-                                        v-model="formAdd.anchoAmbiente" />
+                                    <input id="anchoAmbiente" type="number" min="0.1" max="20" step="0.1"
+                                        class="form-control" v-model="formAdd.anchoAmbiente" />
                                 </div>
                                 <div class="mx-4 w-25 text-center">
                                     <label for="largoAmbiente" class="form-label">Largo (m)</label>
@@ -210,8 +217,9 @@ function closeModal() {
                                         Estar o comedor
                                     </option>
                                 </select>
-                                <div v-if="formAdd.errors.tipoHabitacion" class="error">{{ formAdd.errors.tipoHabitacion[0]
-                                }}
+                                <div v-if="formAdd.errors.tipoHabitacion" class="error">{{
+                                    formAdd.errors.tipoHabitacion[0]
+                                    }}
                                 </div>
                             </div>
                         </div>
@@ -223,6 +231,17 @@ function closeModal() {
                                 <div class="me-3 w-50 text-center">
                                     <label for="alturaSelect" class="form-label">
                                         Altura</label>
+                                    <button type="button" class="btn btnTooltip" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+                                        data-bs-title="La altura sobre el suelo afecta la velocidad del viento.">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                <path
+                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                                            </svg>
+                                    </button>
                                     <select name="alturaSelect" id="altura" v-model="formAdd.alturaSelect"
                                         class="form-select" @change="formAdd.clearErrors('alturaSelect')">
                                         <option value="Planta baja">
@@ -238,16 +257,29 @@ function closeModal() {
                                             6° piso o más
                                         </option>
                                     </select>
-                                    <div v-if="formAdd.errors.alturaSelect" class="error">{{ formAdd.errors.alturaSelect[0]
-                                    }}
+                                    <div v-if="formAdd.errors.alturaSelect" class="error">{{
+                                        formAdd.errors.alturaSelect[0]
+                                        }}
                                     </div>
                                 </div>
 
                                 <div class="ms-3 w-50 text-center">
                                     <label for="densidadSelect" class="form-label">
                                         Vivo en</label>
+                                    <button type="button" class="btn btnTooltip" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+                                        data-bs-title="Las características del terreno y lugar afectan la velocidad del viento por la rugosidad.">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                <path
+                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                                            </svg>
+                                    </button>
                                     <select name="densidadSelect" id="densidad" class="form-select"
-                                        v-model="formAdd.densidadSelect" @change="formAdd.clearErrors('densidadSelect')">
+                                        v-model="formAdd.densidadSelect"
+                                        @change="formAdd.clearErrors('densidadSelect')">
                                         <option value="Frente al mar">
                                             Frente al mar
                                         </option>
@@ -279,14 +311,14 @@ function closeModal() {
                                 <div class="mx-4 w-50 text-center">
                                     <label for="largoVentana" class="form-label">
                                         Largo (m)</label>
-                                    <input id="largoVentana" type="number" min="0.1" max="20" step="0.1" class="form-control"
-                                        v-model="formAdd.largoVentana" />
+                                    <input id="largoVentana" type="number" min="0.1" max="20" step="0.1"
+                                        class="form-control" v-model="formAdd.largoVentana" />
                                 </div>
                                 <div class="mx-4 w-50 text-center">
                                     <label for="altoVentana" class="form-label">
                                         Alto (m)</label>
-                                    <input id="altoVentana" type="number" min="0.1" max="20" step="0.1" class="form-control"
-                                        v-model="formAdd.altoVentana" />
+                                    <input id="altoVentana" type="number" min="0.1" max="20" step="0.1"
+                                        class="form-control" v-model="formAdd.altoVentana" />
                                 </div>
                             </div>
                             <div class="d-flex mt-4 flex-row">
@@ -299,14 +331,29 @@ function closeModal() {
                                             Corrediza
                                         </option>
                                     </select>
-                                    <div v-if="formAdd.errors.tipoVentana" class="error">{{ formAdd.errors.tipoVentana[0] }}
+                                    <div v-if="formAdd.errors.tipoVentana" class="error">{{
+                                        formAdd.errors.tipoVentana[0] }}
                                     </div>
                                 </div>
                                 <div class="mx-3 w-50 text-center">
-                                    <label for="calidadVentana" class="form-label">
-                                        Calidad de ventana</label>
+                                    <div class="d-flex align-items-baseline">
+                                        <label for="calidadVentana" class="form-label">
+                                            Calidad de ventana</label>
+                                        <button type="button" class="btn btnTooltip" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+                                            data-bs-title="La calidad de las aberturas afecta en las infiltraciones de aire.">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                <path
+                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                     <select name="calidadSelect" id="calidadVentana" class="form-select"
-                                        v-model="formAdd.calidadVentana" @change="formAdd.clearErrors('calidadVentana')">
+                                        v-model="formAdd.calidadVentana"
+                                        @change="formAdd.clearErrors('calidadVentana')">
                                         <option value="Normal">Normal</option>
                                         <option value="Mejorada">
                                             Mejorada
@@ -353,7 +400,15 @@ label,
 input,
 option,
 select {
-    font-size: max(0.8vw, 0.9rem) !important;
+    font-size: max(0.5vw, 0.9rem) !important;
+}
+
+.btnTooltip {
+    background: transparent;
+    border: none;
+    border-radius: 100px;
+    padding: 0;
+    margin-left: 3px;
 }
 
 
