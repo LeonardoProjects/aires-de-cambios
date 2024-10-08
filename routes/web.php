@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AmbienteController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\ResultadosController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,3 +36,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::get('/pruebita', [ResultadosController::class, 'index']);
 
 Route::get('/api/resultados/{idAmbiente}/{cantPersonas}', [ResultadosController::class, 'index'])->name('resultados.index');
+Route::get('/countries-data', [ChartController::class, 'getCountriesData']);
