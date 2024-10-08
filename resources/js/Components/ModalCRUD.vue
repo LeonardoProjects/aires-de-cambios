@@ -448,6 +448,10 @@ select {
     margin-left: 3px;
 }
 
+.btnTooltip svg {
+    vertical-align: middle; /* Alinea el ícono svg dentro del botón */
+}
+
 
 /*Resolución para tablets (pantallas entre 768px y 1024px)*/
 @media (min-width: 768px) and (min-width: 1024px) {
