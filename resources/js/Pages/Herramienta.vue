@@ -34,6 +34,7 @@ export default {
             const ambienteAdd = Object.values($data)[0];
             this.ambientes.push(ambienteAdd);
             this.idAmbiente = ambienteAdd.id;
+            localStorage.setItem(`loggedAmbiente${ambienteAdd.idUsuario}`, ambienteAdd.id.toString());
         },
         actualizarAmbientesPostEdit($data) {
             // Extraer el ambiente desde el objeto anidado
@@ -44,9 +45,11 @@ export default {
                 this.ambientes.splice(index, 1, ambiente); // Reemplaza el ambiente con el nuevo
             }
             this.$refs.resultados.cargarDatos();
+            localStorage.setItem(`loggedAmbiente${ambiente.idUsuario}`, ambiente.id.toString());
         },
         cargarResultados($idAmbiente) {
             this.idAmbiente = Number($idAmbiente);
+            localStorage.setItem(`loggedAmbiente${userId.value.id}`, $idAmbiente.toString());
         },
         obtenerAmbienteXid($idAmbiente) {
             let $ambiente = null;
@@ -60,15 +63,23 @@ export default {
         }
     },
     mounted() {
-        // Llama a la función asincrónica y espera a que termine
         this.obtenerAmbientes().then(() => {
-            // Verifica si hay ambientes después de que se hayan cargado
             if (this.ambientes.length > 0) {
-                this.idAmbiente = this.ambientes[0];
-                this.cargarResultados(this.ambientes[0].id); // Asegúrate de usar this.cargarResultados
+                const loggedAmbiente = localStorage.getItem(`loggedAmbiente${userId.value.id}`);
+
+                if (loggedAmbiente) {
+                    const ambienteId = Number(loggedAmbiente); // Convierte el string a número
+                    this.idAmbiente = ambienteId;
+                    this.cargarResultados(ambienteId); // Usa el ID numérico
+                } else {
+                    const primerAmbienteId = this.ambientes[0].id;
+                    localStorage.setItem(`loggedAmbiente${userId.value.id}`, primerAmbienteId.toString());
+                    this.idAmbiente = primerAmbienteId;
+                    this.cargarResultados(primerAmbienteId);
+                }
             }
         });
-    },
+    }
 };
 </script>
 
