@@ -63,7 +63,7 @@ class ResultadosController extends Controller
         }
         $ubi = $ambiente->ubicacion;
         $forecastData = $this->getApiData($ubi->latitud, $ubi->longitud);
-        $objectAPI = $this->processApiData($forecastData);
+        $objectAPI = $this->processApiData($forecastData, $idAmbiente, $ambiente->idUsuario);
         $firstDayData = [];
         $secondDayData = [];
         $resultData = [];
@@ -99,18 +99,22 @@ class ResultadosController extends Controller
     {
         $latParsed = (string)$latitud;
         $longParsed = (string)$longitud;
-        $response = Http::get("https://api.weatherapi.com/v1/forecast.json?key=8e0af554efe14fa99f7192419240509&q={$latParsed},{$longParsed}&days=2&lang=es");
+        $response = Http::get("https://api.weatherapi.com/v1/forecast.json?key=8e0af554efe14fa99f7192419240509&q={$latParsed},{$longParsed}&days=2&lang=en");
         $forecastData = $response->json();
         return $forecastData;
     }
 
-    /*
-     * Procesa los datos de la API, y los devuelve como objeto ForecastWeatberData
-     */
-    public function processApiData($forecastData)
+    public function processApiData($forecastData, $idAmbiente, $idUsuario)
     {
         $this->timezone = $forecastData['location']['tz_id'];
         $objectAPI = new ForecastWeatherData($forecastData['location']['localtime'], $forecastData['forecast']['forecastday'][0]['hour'], $forecastData['forecast']['forecastday'][1]['hour']);
+        if ($idUsuario) {
+            $pais = $forecastData['location']['country'];
+            $ambiente = User::find($idUsuario)->ambiente()->where('id', $idAmbiente)->first();
+            $ambiente->pais = $pais;
+            $ambiente->save();
+        }
+
         return $objectAPI;
     }
 }
