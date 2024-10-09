@@ -15,7 +15,8 @@ export default {
         return {
             ambientes: [],
             idAmbiente: -1,
-            cantPersonas: 1
+            cantPersonas: 1,
+            ambienteCreado: false
         };
     },
     components: {
@@ -25,10 +26,12 @@ export default {
     },
     methods: {
         async obtenerAmbientes() {
-            const response = await axios.get(
-                route("ambiente.getAll", { id: userId.value })
-            );
-            this.ambientes = response.data.data;
+            if (page.props.auth.user) {
+                const response = await axios.get(
+                    route("ambiente.getAll", { id: userId.value })
+                );
+                this.ambientes = response.data.data;
+            }
         },
         actualizarAmbientesPostAdd($data) {
             const ambienteAdd = Object.values($data)[0];
@@ -46,6 +49,10 @@ export default {
             }
             this.$refs.resultados.cargarDatos();
             localStorage.setItem(`loggedAmbiente${ambiente.idUsuario}`, ambiente.id.toString());
+        },
+        addAmbienteLocalStorage() {
+            this.idAmbiente = -2;
+            this.$refs.resultados.cargarDatos();
         },
         cargarResultados($idAmbiente) {
             this.idAmbiente = Number($idAmbiente);
@@ -77,6 +84,13 @@ export default {
                     this.idAmbiente = primerAmbienteId;
                     this.cargarResultados(primerAmbienteId);
                 }
+            } else {
+                const ambienteNotLogged = localStorage.getItem('ambienteNotLogged');
+                if (ambienteNotLogged) {
+                    this.idAmbiente = -2;
+                    this.$refs.resultados.cargarDatos();
+                    this.ambienteCreado = true;
+                }
             }
         });
     }
@@ -86,7 +100,7 @@ export default {
 <template>
     <div class="d-flex justify-content-center">
         <div class="d-flex justify-content-start align-items-center flex-column min-vh-100 divPrincipal">
-            <div class="d-flex flex-row position-relative divSelect">
+            <div v-if="$page.props.auth.user" class="d-flex flex-row position-relative divSelect">
                 <ModalCRUD @updateAmbientes="actualizarAmbientesPostAdd" />
                 <select name="selectAmbientes" id="selectAmbientes" class="form-select w-50"
                     @change="cargarResultados($event.target.value)" v-model="idAmbiente">
@@ -104,6 +118,12 @@ export default {
                     <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas" />
                 </div>
             </div>
+            <div v-else class="d-flex justify-content-center position-relative divSelect">
+                <ModalCRUD v-if="!ambienteCreado" :notLogged="true" @updateLocalStorage="addAmbienteLocalStorage"/>
+                <ModalEditAmbiente v-if="ambienteCreado " @updateAmbientesEdit="actualizarAmbientesPostEdit"
+                    :ambiente="obtenerAmbienteXid(idAmbiente)" />
+                <p>Si quieres más ambientes, ¡inicia sesión!</p>
+            </div>
             <Show ref="resultados" :idAmbiente="idAmbiente" :cantPersonas="cantPersonas" />
         </div>
     </div>
@@ -118,6 +138,12 @@ export default {
 .divSelect {
     width: 100%;
     margin-bottom: 30px;
+
+    p {
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
 }
 
 .divCantPersonas {

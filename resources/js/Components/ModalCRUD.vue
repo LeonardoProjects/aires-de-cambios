@@ -1,12 +1,21 @@
 <script setup>
-import { useForm } from "@inertiajs/vue3";
-import { computed, ref } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { useForm, usePage } from "@inertiajs/vue3";
+import { computed, ref, onMounted } from 'vue';
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
 
-const emit = defineEmits(['updateAmbientes']); // Definir el evento que vas a emitir
+const props = defineProps({
+    notLogged: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const emit = defineEmits([
+    'updateAmbientes',
+    'updateLocalStorage'
+]); // Definir el evento que vas a emitir
 
 const formAdd = useForm({
     anchoAmbiente: 0,
@@ -22,17 +31,40 @@ const formAdd = useForm({
     altoVentana: 0,
     tipoVentana: "Corrediza",
     calidadVentana: "",
-    idUser: userId.value,
+    idUser: page.props.auth.user ? userId.value : '',
     errors: {}
 });
 
+
 async function submit() {
     try {
-        const response = await axios.post(route("ambiente.store"), formAdd);
-        // Si la solicitud es exitosa (status 200)
-        if (response.status === 200) {
-            closeModal(); // Cerrar el modal
-            emitirAmbiente(response.data.data); // Emitir los ambientes actualizados
+        
+        if (!props.notLogged) {
+            const response = await axios.post(route("ambiente.store"), formAdd);
+            // Si la solicitud es exitosa (status 200)
+            if (response.status === 200) {
+                closeModal(); // Cerrar el modal
+                emitirAmbiente(response.data.data); // Emitir los ambientes actualizados
+            }
+        } else {
+            const ambienteNotLogged = {
+                nombreAmbiente: formAdd.nombreAmbiente,
+                anchoAmbiente: formAdd.anchoAmbiente,
+                largoAmbiente: formAdd.largoAmbiente,
+                altoAmbiente: formAdd.altoAmbiente,
+                tipoHabitacion: formAdd.tipoHabitacion,
+                alturaSelect: formAdd.alturaSelect,
+                longitud: formAdd.longitud,
+                latitud: formAdd.latitud,
+                densidadSelect: formAdd.densidadSelect,
+                largoVentana: formAdd.largoVentana,
+                altoVentana: formAdd.altoVentana,
+                tipoVentana: formAdd.tipoVentana,
+                calidadVentana: formAdd.calidadVentana,
+            };
+            localStorage.setItem('ambienteNotLogged', JSON.stringify(ambienteNotLogged));
+            closeModal();
+            addAmbienteLocalStorage();
         }
     } catch (error) {
         // Si hay un error de validación o cualquier otro error
@@ -127,6 +159,10 @@ function emitirAmbiente($ambiente) {
     emit('updateAmbientes', $ambiente);
 }
 
+function addAmbienteLocalStorage() {
+    emit('updateLocalStorage');
+}
+
 function clearInputs() {
     // Limpiar marcadores y volver a la posicion original del mapa
     if (marcador.value) {
@@ -147,7 +183,7 @@ function closeModal() {
 </script>
 
 <template>
-    <button type="button" @click="crearMapa" class="btn btn-outline-primary mx-1 rounded-5 p-0 px-2" data-bs-toggle="modal"
+    <button type="button" @click="crearMapa" class="btn btn-outline-primary mx-1 rounded-5 px-2" data-bs-toggle="modal"
         data-bs-target="#staticBackdrop">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle"
             viewBox="0 0 16 16">

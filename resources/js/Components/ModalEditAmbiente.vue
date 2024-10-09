@@ -48,7 +48,7 @@ const form = useForm({
     altoVentana: 0,
     tipoVentana: "Corrediza",
     calidadVentana: "",
-    idUser: userId.value,
+    idUser: page.props.auth.user ? userId.value : "",
     errors: {}
 });
 
@@ -175,7 +175,7 @@ function crearMapaEdit($latitud, $longitud) {
 </script>
 
 <template>
-    <button type="button" class="btn btn-outline-primary mx-1 rounded-5 p-0 px-2" data-bs-toggle="modal"
+    <button type="button" class="btn btn-outline-primary mx-1 rounded-5 px-2" data-bs-toggle="modal"
         data-bs-target="#modalEdit" @click="cargarAmbiente(ambiente)">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square"
             viewBox="0 0 16 16">

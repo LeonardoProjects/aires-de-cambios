@@ -135,8 +135,22 @@ export default {
         },
         async cargarDatos() {
             try {
-                if (this.idAmbiente != -1) {
-                    let response = await axios.get(
+                if (this.idAmbiente == -2) {
+                    let ambienteNotLogged = JSON.parse(localStorage.getItem('ambienteNotLogged'));
+                    let response = await axios({
+                        method: 'POST',
+                        url: this.route("resultados.index"),
+                        data: {
+                            idAmbiente: this.idAmbiente,
+                            cantPersonas: this.cantPersonas,
+                            ambiente: ambienteNotLogged
+                        }
+                    });
+                    this.datosCalculos = response.data;
+                    this.setDatos();
+                }
+                else if (this.idAmbiente != -1) {
+                    let response = await axios.post(
                         this.route("resultados.index", {
                             idAmbiente: this.idAmbiente,
                             cantPersonas: this.cantPersonas
@@ -196,7 +210,6 @@ export default {
                 firstDayData,
                 secondDayData
             );
-
             let currentDate = new Date(localTime);
             let tomorrowDate = new Date(localTime);
             tomorrowDate.setDate(currentDate.getDate() + 1);
@@ -205,17 +218,18 @@ export default {
             let formattedTomorrowDate = tomorrowDate.toISOString().slice(0, 10);
 
             tenHoursData.forEach((resultado, index) => {
-                let date =
-                    index +
-                        Number(this.roundDownHour(localTime).split(":")[0]) <
-                        24
-                        ? formattedCurrentDate
-                        : formattedTomorrowDate;
-                let dateFecha = new Date(date).toLocaleDateString('es-UY', {
+                let date = index + Number(this.roundDownHour(localTime).split(":")[0]) < 24
+                    ? formattedCurrentDate
+                    : formattedTomorrowDate;
+
+                // Agregar la hora manualmente para evitar la conversión de zona horaria
+                let dateWithTime = `${date}T00:00:00`;
+
+                let dateFecha = new Date(dateWithTime).toLocaleDateString('es-UY', {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
-                    timeZone: "America/Argentina/Buenos_Aires"
+                    timeZone: `${this.datosCalculos["timezone"]}`
                 });
                 this.resultados.push({
                     hour: resultado.hora,
