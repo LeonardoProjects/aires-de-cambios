@@ -150,12 +150,14 @@ export default {
                     this.setDatos();
                 }
                 else if (this.idAmbiente != -1) {
-                    let response = await axios.post(
-                        this.route("resultados.index", {
+                    let response = await axios({
+                        method: 'POST',
+                        url: this.route("resultados.index"),
+                        data: {
                             idAmbiente: this.idAmbiente,
                             cantPersonas: this.cantPersonas
-                        })
-                    );
+                        }
+                    });
                     this.datosCalculos = response.data;
                     this.setDatos();
                 }
