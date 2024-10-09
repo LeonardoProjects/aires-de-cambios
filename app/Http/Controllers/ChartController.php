@@ -9,6 +9,6 @@ class ChartController extends Controller
 {
     public function getCountriesData() {
         $ambientesPorPais = Ambiente::select('pais', DB::raw('count(*) as total'))->groupBy('pais')->get();
-        return inertia('home', ['ambientesPorPais' => $ambientesPorPais]);
+        return response()->json($ambientesPorPais);
     }
 }
