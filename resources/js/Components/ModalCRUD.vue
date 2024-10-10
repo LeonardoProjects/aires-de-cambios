@@ -392,7 +392,7 @@ function closeModal() {
                                         <input id="largoVentana" type="number" min="0.1" max="20" step="0.1"
                                             class="form-control m-0" v-model="formAdd.largoVentana" />
                                     </div>
-                                    <div class="text-center">
+                                    <div class="text-center mt-3">
                                         <label for="tipoVentana" class="form-label">
                                             Tipo de ventana</label>
                                         <select name="tipoVentanaSelect" id="tipoVentana" class="form-select m-0"
@@ -413,7 +413,7 @@ function closeModal() {
                                         <input id="altoVentana" type="number" min="0.1" max="20" step="0.1"
                                             class="form-control m-0" v-model="formAdd.altoVentana" />
                                     </div>
-                                    <div class="text-center">
+                                    <div class="text-center mt-3">
                                         <label for="calidadVentana" class="form-label">
                                             Calidad de ventana</label>
                                         <div class="d-flex">
