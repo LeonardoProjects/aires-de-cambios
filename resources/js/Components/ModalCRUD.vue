@@ -2,10 +2,6 @@
 import { useForm, usePage } from "@inertiajs/vue3";
 import { computed, ref, onMounted } from 'vue';
 import { Tooltip } from 'bootstrap';
-import { useForm } from "@inertiajs/vue3";
-import { computed, ref, onMounted } from 'vue';
-import { usePage } from '@inertiajs/vue3';
-import { Tooltip } from 'bootstrap';
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
@@ -304,9 +300,10 @@ function closeModal() {
                                             </svg>
                                         </button>
                                     </div>
-                                    <div v-if="formAdd.errors.alturaSelect" class="error">{{
-                                        formAdd.errors.alturaSelect[0]
-                                        }}
+                                </div>
+                                <div v-if="formAdd.errors.alturaSelect" class="error">{{
+                                    formAdd.errors.alturaSelect[0]
+                                }}
                                     <div class="d-flex">
                                         <select name="alturaSelect" id="altura" v-model="formAdd.alturaSelect"
                                             class="form-select" @change="formAdd.clearErrors('alturaSelect')">
@@ -337,7 +334,7 @@ function closeModal() {
                                     </div>
                                     <div v-if="formAdd.errors.alturaSelect" class="error">{{
                                         formAdd.errors.alturaSelect[0]
-                                        }}
+                                    }}
                                     </div>
                                 </div>
 
@@ -439,8 +436,9 @@ function closeModal() {
                                 </div>
                                 <div class="d-flex align-items-end">
                                     <div class="flex-column">
-                                        <button type="button" class="btn btnTooltip tooltipVentana" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+                                        <button type="button" class="btn btnTooltip tooltipVentana"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            data-bs-custom-class="custom-tooltip"
                                             data-bs-title="La calidad de las aberturas afecta en las infiltraciones de aire.">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                 fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
@@ -508,7 +506,7 @@ select {
     fill: #0d6efd;
 }
 
-.tooltipVentana{
+.tooltipVentana {
     margin-bottom: 5px;
 }
 
