@@ -47,10 +47,6 @@ export default {
                 minZoom: 2,
                 maxZoom: 4,
                 worldCopyJump: false,
-                maxBounds: [
-                    [40.712, -74.227],
-                    [40.774, -74.125],
-                ],
                 maxBoundsViscosity: 1,
             }).setView([20, 0], 2);
 
@@ -60,7 +56,6 @@ export default {
             map2.value.setMaxBounds(bounds);
 
             L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                maxZoom: 18,
                 attribution:
                     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             }).addTo(map2.value);
