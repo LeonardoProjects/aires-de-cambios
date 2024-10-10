@@ -1,10 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { Link, router, useForm } from '@inertiajs/vue3';
-import ActionMessage from '@/Components/ActionMessage.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
     user: Object,
@@ -18,170 +14,125 @@ const form = useForm({
 });
 
 const verificationLinkSent = ref(null);
-const photoPreview = ref(null);
-const photoInput = ref(null);
 
 const updateProfileInformation = () => {
-    if (photoInput.value) {
-        form.photo = photoInput.value.files[0];
-    }
-
     form.post(route('user-profile-information.update'), {
         errorBag: 'updateProfileInformation',
-        preserveScroll: true,
-        onSuccess: () => clearPhotoFileInput(),
+        preserveScroll: true
     });
 };
 
 const sendEmailVerification = () => {
     verificationLinkSent.value = true;
 };
-
-const selectNewPhoto = () => {
-    photoInput.value.click();
-};
-
-const updatePhotoPreview = () => {
-    const photo = photoInput.value.files[0];
-
-    if (! photo) return;
-
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-        photoPreview.value = e.target.result;
-    };
-
-    reader.readAsDataURL(photo);
-};
-
-const deletePhoto = () => {
-    router.delete(route('current-user-photo.destroy'), {
-        preserveScroll: true,
-        onSuccess: () => {
-            photoPreview.value = null;
-            clearPhotoFileInput();
-        },
-    });
-};
-
-const clearPhotoFileInput = () => {
-    if (photoInput.value?.value) {
-        photoInput.value.value = null;
-    }
-};
 </script>
 
 <template>
-    <!-- <FormSection @submitted="updateProfileInformation">
-        <template #title>
-            Profile Information
-        </template>
+    <form @submit.prevent="updateProfileInformation" class="formActualizar text-center">
 
-        <template #description>
-            Update your account's profile information and email address.
-        </template>
+        <!-- Descripción -->
+        <h3>Editar perfil</h3>
 
-        <template #form>
-            
-            <div v-if="$page.props.jetstream.managesProfilePhotos" class="col-span-6 sm:col-span-4">
-                 Profile Photo File Input 
-                <input
-                    id="photo"
-                    ref="photoInput"
-                    type="file"
-                    class="hidden"
-                    @change="updatePhotoPreview"
-                >
-
-                <InputLabel for="photo" value="Photo" />
-
-                 Current Profile Photo 
-                <div v-show="! photoPreview" class="mt-2">
-                    <img :src="user.profile_photo_url" :alt="user.name" class="rounded-full h-20 w-20 object-cover">
-                </div>
-
-                 New Profile Photo Preview 
-                <div v-show="photoPreview" class="mt-2">
-                    <span
-                        class="block rounded-full w-20 h-20 bg-cover bg-no-repeat bg-center"
-                        :style="'background-image: url(\'' + photoPreview + '\');'"
-                    />
-                </div>
-
-                <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="selectNewPhoto">
-                    Select A New Photo
-                </SecondaryButton>
-
-                <SecondaryButton
-                    v-if="user.profile_photo_path"
-                    type="button"
-                    class="mt-2"
-                    @click.prevent="deletePhoto"
-                >
-                    Remove Photo
-                </SecondaryButton>
-
-                <InputError :message="form.errors.photo" class="mt-2" />
-            </div>
-
-             Name 
+        <!-- Formulario -->
+        <div class="mt-4">
+            <!-- Nombre -->
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="name" value="Name" />
-                <TextInput
-                    id="name"
-                    v-model="form.name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="name"
-                />
-                <InputError :message="form.errors.name" class="mt-2" />
+                <label for="name" class="labelCeleste">Nombre</label>
+                <input id="name" v-model="form.name" type="text" class="form-control" required autocomplete="name" />
+                <span v-if="form.errors.name" class="text-red-500 text-sm mt-2">{{ form.errors.name }}</span>
             </div>
 
-            Email 
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="email" value="Email" />
-                <TextInput
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    required
-                    autocomplete="username"
-                />
-                <InputError :message="form.errors.email" class="mt-2" />
-
-                <div v-if="$page.props.jetstream.hasEmailVerification && user.email_verified_at === null">
-                    <p class="text-sm mt-2">
-                        Your email address is unverified.
-
-                        <Link
-                            :href="route('verification.send')"
-                            method="post"
-                            as="button"
-                            class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            @click.prevent="sendEmailVerification"
-                        >
-                            Click here to re-send the verification email.
-                        </Link>
-                    </p>
-
-                    <div v-show="verificationLinkSent" class="mt-2 font-medium text-sm text-green-600">
-                        A new verification link has been sent to your email address.
-                    </div>
-                </div>
+            <!-- Email -->
+            <div class="col-span-6 sm:col-span-4 mt-4">
+                <label for="email" class="labelCeleste">Correo electrónico</label>
+                <input id="email" v-model="form.email" type="email" class="form-control" required
+                    autocomplete="username" />
+                <span v-if="form.errors.email" class="text-red-500 text-sm mt-2">{{ form.errors.email }}</span>
             </div>
-        </template>
+        </div>
 
-        <template #actions>
-            <ActionMessage :on="form.recentlySuccessful" class="me-3">
-                Saved.
-            </ActionMessage>
+        <!-- Mensaje de éxito -->
+        <div class="mt-4">
+            <span v-if="form.recentlySuccessful"
+                class="text-success">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    class="bi bi-check2-circle" viewBox="0 0 16 16">
+                    <path
+                        d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0" />
+                    <path
+                        d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
+                </svg>
+                Guardado</span>
+        </div>
 
-            <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
-            </PrimaryButton>
-        </template>
-    </FormSection> -->
+        <!-- Botón de guardar -->
+        <div class="mb-4 d-flex justify-content-center align-content-center">
+            <button type="submit" :disabled="form.processing" class="btn btn-primary mt-3 btnPrimaryUpdateProfile"
+                :class="{ 'opacity-25': form.processing }">
+                Guardar
+            </button>
+        </div>
+    </form>
 </template>
+
+<style>
+@import "../../../../css/app.css";
+
+.formActualizar {
+    min-width: 30vw;
+    margin: auto;
+    width: 100%;
+}
+
+.btnPrimaryUpdateProfile {
+    position: relative;
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+    width: 100%;
+}
+
+.btnPrimaryUpdateProfile::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0 0 0 0;
+    background: hsl(204, 26%, 7%);
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+}
+
+.btnPrimaryUpdateProfile:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.btnPrimaryUpdateProfile:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .formActualizar {
+        width: 70vw;
+    }
+
+    .btnPrimaryUpdateProfile {
+        min-width: 300px;
+        max-width: 350px;
+        font-size: 1rem;
+        padding: 10px;
+    }
+}
+</style>
