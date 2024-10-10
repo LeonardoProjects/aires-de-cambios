@@ -41,10 +41,14 @@
         </div>
     </section>
     <section class="app-data">
-        <div class="ambientesXPaises w-100 d-flex">
+        <div
+            class="ambientesXPaises w-100 d-flex flex-column align-items-center"
+        >
             <div class="chartDescription">
-                <h4>Ambientes creados</h4>
-                <p>Cantidad de ambientes creados en diferentes ubicaciones:</p>
+                <h4 class="text-center">Ambientes creados</h4>
+                <p class="text-center">
+                    Cantidad de ambientes creados en diferentes ubicaciones:
+                </p>
             </div>
             <CountryMap />
         </div>
@@ -57,7 +61,7 @@
                 realizada por el Área Clima y Confort del Instituto de
                 Tecnologías de la FADU - UdelaR, esta misma fue adaptada a una
                 aplicación web por estudiantes de la carrera de Tecnólogo en
-                Informática de Paysandú - UTEC.
+                Informática de Paysandú.
             </p>
         </div>
         <div class="aboutUsDescription d-flex justify-content-center my-5">
@@ -84,79 +88,30 @@
             </a>
             <a
                 target="_blank"
-                href="https://utec.edu.uy/es/"
-                class="aboutUTEC align-items-center d-flex"
+                href="https://utec.edu.uy/es/educacion/carrera/tecnologo-en-informatica/"
+                class="aboutTIPY align-items-center d-flex"
             >
                 <img
-                    src="../../images/utec.png"
+                    src="../../images/tipy.png"
                     class="logo-aboutUs utecLogo"
                     alt=""
                 />
                 <div>
-                    <h2 class="fs-5">
-                        UTEC (Universidad Tecnológica del Uruguay)
-                    </h2>
+                    <h2 class="fs-5">Tecnólogo en Informática</h2>
                     <p>
-                        UTEC es una propuesta de educación terciaria
-                        universitaria pública de perfil tecnológico, orientada a
-                        la investigación y la innovación. Comprometida con los
-                        lineamientos estratégicos del país, abierta a las
-                        necesidades del Uruguay productivo, que tiene entre sus
-                        objetivos centrales hacer más equitativo el acceso a la
-                        oferta educativa en el interior del país.
+                        El Tecnólogo en Informática es una carrera co-gestionada
+                        por UTEC, UdelaR y DGETP-UTU ofrecida en varios
+                        puntos de Uruguay. Está orientada a la formación de
+                        profesionales con competencias técnicas en áreas como
+                        desarrollo de software, bases de datos y redes de
+                        comunicación. El programa combina una sólida base
+                        teórica con práctica aplicada, preparando a los
+                        estudiantes para enfrentar los desafíos tecnológicos
+                        actuales y contribuir al crecimiento del sector
+                        informático en Uruguay.
                     </p>
                 </div>
             </a>
-        </div>
-        <div class="aboutTIPY align-items-center d-flex">
-            <a
-                target="_blank"
-                href="https://utec.edu.uy/es/educacion/carrera/tecnologo-en-informatica/"
-                ><img
-                    src="../../images/utec.png"
-                    class="logo-aboutUs utecLogo"
-                    alt=""
-            /></a>
-            <div>
-                <a
-                    target="_blank"
-                    class="anchorTitle"
-                    href="https://utec.edu.uy/es/educacion/carrera/tecnologo-en-informatica/"
-                    ><h2 class="fs-5">Tecnólogo en Informática</h2></a
-                >
-                <p>
-                    El Tecnólogo en Informática es una carrera ofrecida en en
-                    varios puntos de Uruguay a través de la colaboración entre
-                    UTEC, UTU y la Universidad de la República. Está orientada a
-                    la formación de profesionales con competencias técnicas en
-                    áreas como desarrollo de software, bases de datos y redes de
-                    comunicación. El programa combina una sólida base teórica
-                    con práctica aplicada, preparando a los estudiantes para
-                    enfrentar los desafíos tecnológicos actuales y contribuir al
-                    crecimiento del sector informático en Uruguay.
-                </p>
-                <span>
-                    Autores:
-                    <a
-                        target="_blank"
-                        class="studentsLink"
-                        href="https://www.linkedin.com/in/angelo-festino-337706177/"
-                        >Angelo Festino</a
-                    >,
-                    <a
-                        target="_blank"
-                        class="studentsLink"
-                        href="http://www.linkedin.com/in/franco-sancristóbal-b17541298"
-                        >Franco Sancristobal</a
-                    >,
-                    <a
-                        target="_blank"
-                        class="studentsLink"
-                        href="https://www.linkedin.com/in/leo-coronel-62287131a/"
-                        >Leonardo Coronel</a
-                    >.
-                </span>
-            </div>
         </div>
     </section>
 </template>
@@ -276,6 +231,17 @@ export default {
     padding-bottom: 20px;
 }
 
+.aboutLogos {
+    padding: 40px;
+    width: 84%;
+    position: relative;
+    z-index: 1;
+    transition: background 0.5s ease-in-out;
+    border-radius: 10px;
+    text-decoration: none;
+    color: black;
+}
+
 .aboutFADU {
     padding: 40px;
     margin-right: 3vw;
@@ -323,7 +289,7 @@ export default {
     }
 }
 
-.aboutUTEC {
+.aboutTIPY {
     padding: 40px;
     max-width: 40%;
     border: solid 1px #00a9e0;
@@ -337,7 +303,7 @@ export default {
     cursor: pointer;
 }
 
-.aboutUTEC::before {
+.aboutTIPY::before {
     content: "";
     position: absolute;
     top: 0;
@@ -355,7 +321,7 @@ export default {
     z-index: -1;
 }
 
-.aboutUTEC:hover::before {
+.aboutTIPY:hover::before {
     opacity: 1;
     animation: gradientSlideUTEC 1s ease-in-out forwards;
 }
@@ -370,19 +336,6 @@ export default {
         background-position: 0% 0%;
         /* El gradiente se desplaza hacia arriba */
     }
-}
-
-.aboutTIPY {
-    padding: 40px;
-    max-width: 83%;
-    border: solid 1px #0022e0;
-    background: white;
-    position: relative;
-    z-index: 1;
-    transition: background 0.5s ease-in-out;
-    border-radius: 10px;
-    text-decoration: none;
-    color: black;
 }
 
 @media screen and (max-width: 768px) {
@@ -455,7 +408,7 @@ export default {
         object-fit: contain;
     }
 
-    .aboutUTEC {
+    .aboutTIPY {
         padding: 40px;
         border: solid 1px #00a9e0;
         margin: 10vw;
@@ -496,7 +449,7 @@ export default {
         flex-direction: column;
         margin-bottom: 20px;
     }
-    .aboutUTEC {
+    .aboutTIPY {
         padding: 40px;
         border: solid 1px #00a9e0;
         margin: 10vw;
