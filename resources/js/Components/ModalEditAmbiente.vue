@@ -333,61 +333,65 @@ function crearMapaEdit($latitud, $longitud) {
                         <div class="mb-0">
                             <h3>Detalles de ventana</h3>
                             <hr />
-                            <div class="d-flex h-50 flex-row">
-                                <div class="mx-4 w-50 text-center">
-                                    <label for="largoVentana" class="form-label">
-                                        Largo (m)</label>
-                                    <input id="largoVentana" type="number" min="0.1" max="20" step="0.1"
-                                        class="form-control" v-model="form.largoVentana" />
-                                </div>
-                                <div class="mx-4 w-50 text-center">
-                                    <label for="altoVentana" class="form-label">
-                                        Alto (m)</label>
-                                    <input id="altoVentana" type="number" min="0.1" max="20" step="0.1"
-                                        class="form-control" v-model="form.altoVentana" />
-                                </div>
-                            </div>
-                            <div class="d-flex mt-4 flex-row">
-                                <div class="mx-3 w-50 text-center">
-                                    <label for="tipoVentana" class="form-label">
-                                        Tipo de ventana</label>
-                                    <select name="tipoVentanaSelect" id="tipoVentana" class="form-select"
-                                        v-model="form.tipoVentana" @change="form.clearErrors('tipoVentana')">
-                                        <option value="Corrediza">
-                                            Corrediza
-                                        </option>
-                                    </select>
-                                    <div v-if="form.errors.tipoVentana" class="error">{{ form.errors.tipoVentana[0] }}
+                            <div class="d-flex">
+                                <div class="flex-column w-50">
+                                    <div class="mx-4 text-center">
+                                        <label for="largoVentana" class="form-label">
+                                            Largo (m)</label>
+                                        <input id="largoVentana" type="number" min="0.1" max="20" step="0.1"
+                                            class="form-control" v-model="form.largoVentana" />
                                     </div>
-                                </div>
-                                <div class="mx-3 w-50 text-center">
-                                    <label for="calidadVentana" class="form-label">
-                                        Calidad de ventana</label>
-                                    <div class="d-flex">
-                                        <select name="calidadSelect" id="calidadVentana" class="form-select"
-                                            v-model="form.calidadVentana" @change="form.clearErrors('calidadVentana')">
-                                            <option value="Normal">Normal</option>
-                                            <option value="Mejorada">
-                                                Mejorada
-                                            </option>
-                                            <option value="Reforzada">
-                                                Reforzada
+                                    <div class="mx-4 text-center">
+                                        <label for="tipoVentana" class="form-label">
+                                            Tipo de ventana</label>
+                                        <select name="tipoVentanaSelect" id="tipoVentana" class="form-select"
+                                            v-model="form.tipoVentana" @change="form.clearErrors('tipoVentana')">
+                                            <option value="Corrediza">
+                                                Corrediza
                                             </option>
                                         </select>
-                                        <button type="button" class="btn btnTooltip" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                            data-bs-title="La calidad de las aberturas afecta en las infiltraciones de aire.">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                                <path
-                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
-                                            </svg>
-                                        </button>
+                                        <div v-if="form.errors.tipoVentana" class="error">{{ form.errors.tipoVentana[0]
+                                            }}
+                                        </div>
                                     </div>
-                                    <div v-if="form.errors.calidadVentana" class="error">{{
-                                        form.errors.calidadVentana[0] }}
+                                </div>
+                                <div class="flex-column w-50">
+                                    <div class="text-center">
+                                        <label for="altoVentana" class="form-label">
+                                            Alto (m)</label>
+                                        <input id="altoVentana" type="number" min="0.1" max="20" step="0.1"
+                                            class="form-control" v-model="form.altoVentana" />
+                                    </div>
+                                    <div class="text-center">
+                                        <label for="calidadVentana" class="form-label">
+                                            Calidad de ventana</label>
+                                        <div class="d-flex">
+                                            <select name="calidadSelect" id="calidadVentana" class="form-select"
+                                                v-model="form.calidadVentana"
+                                                @change="form.clearErrors('calidadVentana')">
+                                                <option value="Normal">Normal</option>
+                                                <option value="Mejorada">
+                                                    Mejorada
+                                                </option>
+                                                <option value="Reforzada">
+                                                    Reforzada
+                                                </option>
+                                            </select>
+                                            <button type="button" class="btn btnTooltip" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="La calidad de las aberturas afecta en las infiltraciones de aire.">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                    <path
+                                                        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div v-if="form.errors.calidadVentana" class="error">{{
+                                            form.errors.calidadVentana[0] }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
