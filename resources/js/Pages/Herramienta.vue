@@ -15,7 +15,8 @@ export default {
         return {
             ambientes: [],
             idAmbiente: -1,
-            cantPersonas: 1
+            cantPersonas: 1,
+            ambienteCreado: false
         };
     },
     components: {
@@ -25,15 +26,18 @@ export default {
     },
     methods: {
         async obtenerAmbientes() {
-            const response = await axios.get(
-                route("ambiente.getAll", { id: userId.value })
-            );
-            this.ambientes = response.data.data;
+            if (page.props.auth.user) {
+                const response = await axios.get(
+                    route("ambiente.getAll", { id: userId.value })
+                );
+                this.ambientes = response.data.data;
+            }
         },
         actualizarAmbientesPostAdd($data) {
             const ambienteAdd = Object.values($data)[0];
             this.ambientes.push(ambienteAdd);
             this.idAmbiente = ambienteAdd.id;
+            localStorage.setItem(`loggedAmbiente${ambienteAdd.idUsuario}`, ambienteAdd.id.toString());
         },
         actualizarAmbientesPostEdit($data) {
             // Extraer el ambiente desde el objeto anidado
@@ -44,9 +48,16 @@ export default {
                 this.ambientes.splice(index, 1, ambiente); // Reemplaza el ambiente con el nuevo
             }
             this.$refs.resultados.cargarDatos();
+            localStorage.setItem(`loggedAmbiente${ambiente.idUsuario}`, ambiente.id.toString());
+        },
+        addAmbienteLocalStorage() {
+            this.idAmbiente = -2;
+            this.$refs.resultados.cargarDatos();
+            this.ambienteCreado = true;
         },
         cargarResultados($idAmbiente) {
             this.idAmbiente = Number($idAmbiente);
+            localStorage.setItem(`loggedAmbiente${userId.value.id}`, $idAmbiente.toString());
         },
         obtenerAmbienteXid($idAmbiente) {
             let $ambiente = null;
@@ -60,22 +71,37 @@ export default {
         }
     },
     mounted() {
-        // Llama a la función asincrónica y espera a que termine
         this.obtenerAmbientes().then(() => {
-            // Verifica si hay ambientes después de que se hayan cargado
             if (this.ambientes.length > 0) {
-                this.idAmbiente = this.ambientes[0];
-                this.cargarResultados(this.ambientes[0].id); // Asegúrate de usar this.cargarResultados
+                const loggedAmbiente = localStorage.getItem(`loggedAmbiente${userId.value.id}`);
+
+                if (loggedAmbiente) {
+                    const ambienteId = Number(loggedAmbiente); // Convierte el string a número
+                    this.idAmbiente = ambienteId;
+                    this.cargarResultados(ambienteId); // Usa el ID numérico
+                } else {
+                    const primerAmbienteId = this.ambientes[0].id;
+                    localStorage.setItem(`loggedAmbiente${userId.value.id}`, primerAmbienteId.toString());
+                    this.idAmbiente = primerAmbienteId;
+                    this.cargarResultados(primerAmbienteId);
+                }
+            } else if(!page.props.auth.user) {
+                const ambienteNotLogged = localStorage.getItem('ambienteNotLogged');
+                if (ambienteNotLogged) {
+                    this.idAmbiente = -2;
+                    this.$refs.resultados.cargarDatos();
+                    this.ambienteCreado = true;
+                }
             }
         });
-    },
+    }
 };
 </script>
 
 <template>
     <div class="d-flex justify-content-center">
         <div class="d-flex justify-content-start align-items-center flex-column min-vh-100 divPrincipal">
-            <div class="d-flex flex-row position-relative divSelect">
+            <div v-if="$page.props.auth.user" class="d-flex flex-row position-relative divSelect">
                 <ModalCRUD @updateAmbientes="actualizarAmbientesPostAdd" />
                 <select name="selectAmbientes" id="selectAmbientes" class="form-select w-50"
                     @change="cargarResultados($event.target.value)" v-model="idAmbiente">
@@ -93,6 +119,12 @@ export default {
                     <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas" />
                 </div>
             </div>
+            <div v-else class="d-flex justify-content-center position-relative divSelect">
+                <ModalCRUD v-if="!ambienteCreado" :notLogged="true" @updateLocalStorage="addAmbienteLocalStorage"/>
+                <ModalEditAmbiente v-if="ambienteCreado " @updateAmbientesEdit="actualizarAmbientesPostEdit"
+                    :ambiente="obtenerAmbienteXid(idAmbiente)" />
+                <p v-if="ambienteCreado">Si quieres más ambientes, ¡Inicia sesión!</p>
+            </div>
             <Show ref="resultados" :idAmbiente="idAmbiente" :cantPersonas="cantPersonas" />
         </div>
     </div>
@@ -107,6 +139,12 @@ export default {
 .divSelect {
     width: 100%;
     margin-bottom: 30px;
+
+    p {
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
 }
 
 .divCantPersonas {

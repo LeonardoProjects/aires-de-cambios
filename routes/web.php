@@ -19,7 +19,7 @@ Route::get('/', function () {
     return Inertia::render('Home');
 })->name('home');
 
-Route::middleware(['auth:sanctum'])->get('/herramienta', function () {
+Route::get('/herramienta', function () {
     return Inertia::render('Herramienta');
 })->name('herramienta');
 
@@ -32,6 +32,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     )->name('ambiente.getAll');
 });
 
-Route::get('/pruebita', [ResultadosController::class, 'index']);
-
-Route::get('/api/resultados/{idAmbiente}/{cantPersonas}', [ResultadosController::class, 'index'])->name('resultados.index');
+Route::post('/api/resultados', [ResultadosController::class, 'index'])->name('resultados.index');
