@@ -69,6 +69,7 @@
 import { usePage } from "@inertiajs/vue3";
 import { computed } from "vue";
 import AlertIcon from "@/Components/AlertIcon.vue";
+import { DateTime } from 'luxon';
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
@@ -218,27 +219,26 @@ export default {
                 firstDayData,
                 secondDayData
             );
-            let currentDate = new Date(localTime);
-            let tomorrowDate = new Date(localTime);
-            tomorrowDate.setDate(currentDate.getDate() + 1);
-
-            let formattedCurrentDate = currentDate.toISOString().slice(0, 10);
-            let formattedTomorrowDate = tomorrowDate.toISOString().slice(0, 10);
+            let isoLocalTime = localTime.replace(" ", "T"); //Fixea localTime que llega de API para que sea ISO
+            let currentDate = DateTime.fromISO(isoLocalTime, { zone: this.datosCalculos["timezone"] });
+            let tomorrowDate = currentDate.plus({ days: 1 });   
+            
+            let formattedCurrentDate = currentDate.toFormat('yyyy-MM-dd');
+            let formattedTomorrowDate = tomorrowDate.toFormat('yyyy-MM-dd');
 
             tenHoursData.forEach((resultado, index) => {
+                // Calcula la fecha correcta basado en la hora actual y la comparación
                 let date = index + Number(this.roundDownHour(localTime).split(":")[0]) < 24
                     ? formattedCurrentDate
                     : formattedTomorrowDate;
 
-                // Agregar la hora manualmente para evitar la conversión de zona horaria
-                let dateWithTime = `${date}T00:00:00`;
-
-                let dateFecha = new Date(date).toLocaleDateString('es-UY', {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                    timeZone: `${this.datosCalculos["timezone"]}`
+                // Utiliza Luxon para crear un objeto DateTime con la zona horaria adecuada
+                let dateWithTime = DateTime.fromISO(`${date}T00:00:00`, {
+                    zone: this.datosCalculos["timezone"], 
                 });
+                // Formatea la fecha en el formato deseado (día, mes, año)
+                let dateFecha = dateWithTime.setLocale("es").toLocaleString(DateTime.DATE_FULL);
+
                 this.resultados.push({
                     hour: resultado.hora,
                     cm: resultado.apertura,
