@@ -1,7 +1,6 @@
 <script setup>
 import { useForm, usePage } from "@inertiajs/vue3";
 import { computed, ref, onMounted } from 'vue';
-import { usePage } from '@inertiajs/vue3';
 import { Tooltip } from 'bootstrap';
 
 const page = usePage();
@@ -40,7 +39,7 @@ const formAdd = useForm({
 
 async function submit() {
     try {
-        
+
         if (!props.notLogged) {
             const response = await axios.post(route("ambiente.store"), formAdd);
             // Si la solicitud es exitosa (status 200)
@@ -349,14 +348,14 @@ function closeModal() {
                             <h3>Detalles de ventana</h3>
                             <hr />
                             <div class="d-flex">
-                                <div class="flex-column w-50">
-                                    <div class="mx-4 text-center">
+                                <div class="flex-column w-50 me-2">
+                                    <div class="text-center">
                                         <label for="largoVentana" class="form-label">
                                             Largo (m)</label>
                                         <input id="largoVentana" type="number" min="0.1" max="20" step="0.1"
                                             class="form-control m-0" v-model="formAdd.largoVentana" />
                                     </div>
-                                    <div class="mx-4 text-center">
+                                    <div class="text-center">
                                         <label for="tipoVentana" class="form-label">
                                             Tipo de ventana</label>
                                         <select name="tipoVentanaSelect" id="tipoVentana" class="form-select m-0"
@@ -392,21 +391,25 @@ function closeModal() {
                                                     Reforzada
                                                 </option>
                                             </select>
-                                            <button type="button" class="btn btnTooltip" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                                data-bs-title="La calidad de las aberturas afecta en las infiltraciones de aire.">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                                    <path
-                                                        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
-                                                </svg>
-                                            </button>
                                         </div>
                                         <div v-if="formAdd.errors.calidadVentana" class="error">{{
                                             formAdd.errors.calidadVentana[0] }}
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-end">
+                                    <div class="flex-column">
+                                        <button type="button" class="btn btnTooltip tooltipVentana" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+                                            data-bs-title="La calidad de las aberturas afecta en las infiltraciones de aire.">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                <path
+                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -446,10 +449,6 @@ select {
     font-size: max(0.5vw, 0.9rem) !important;
 }
 
-#altoVentana{
-    width: 198px;
-}
-
 .btnTooltip {
     background: transparent;
     border: none;
@@ -469,6 +468,9 @@ select {
     fill: #0d6efd;
 }
 
+.tooltipVentana{
+    margin-bottom: 5px;
+}
 
 /*Resolución para tablets (pantallas entre 768px y 1024px)*/
 @media (min-width: 768px) and (min-width: 1024px) {
