@@ -31,7 +31,7 @@ defineProps({
             </header>
 
             <!-- Page Content -->
-            <main class="container-fluid">
+            <main class="container-fluid p-0">
                 <slot />
             </main>
             <footer>

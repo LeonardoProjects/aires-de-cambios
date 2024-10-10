@@ -11,7 +11,8 @@ class Ambiente extends Model
 
     protected $fillable = [
         'nombre',
-        'idUsuario'
+        'idUsuario',
+        'pais'
     ];
 
     public function ubicacion()
