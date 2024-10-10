@@ -53,6 +53,7 @@ export default {
         addAmbienteLocalStorage() {
             this.idAmbiente = -2;
             this.$refs.resultados.cargarDatos();
+            this.ambienteCreado = true;
         },
         cargarResultados($idAmbiente) {
             this.idAmbiente = Number($idAmbiente);
