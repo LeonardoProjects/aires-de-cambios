@@ -390,8 +390,4 @@ select {
         height: 350px;
     }
 }
-
-svg {
-    vertical-align: text-bottom;
-}
 </style>

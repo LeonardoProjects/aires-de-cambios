@@ -1,6 +1,7 @@
 <script>
 import ModalCRUD from "@/Components/ModalCRUD.vue";
 import ModalEditAmbiente from "@/Components/ModalEditAmbiente.vue";
+import DeleteAmbienteConfirm from "@/Components/DeleteAmbienteConfirm.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { computed } from "vue";
 import { usePage } from "@inertiajs/vue3";
@@ -22,7 +23,8 @@ export default {
     components: {
         ModalCRUD,
         Show,
-        ModalEditAmbiente
+        ModalEditAmbiente,
+        DeleteAmbienteConfirm
     },
     methods: {
         async obtenerAmbientes() {
@@ -68,6 +70,20 @@ export default {
                 }
             };
             return $ambiente;
+        },
+        deleteAmbiente($data) {
+            const index = this.ambientes.findIndex(item => item.id === $data);
+            if (index !== -1) {
+                this.ambientes.splice(index, 1);
+            }
+            if (this.ambientes.length > 0) {
+                this.idAmbiente = this.ambientes[0].id;
+                this.$forceUpdate();
+                this.cargarResultados(this.ambientes[0].id);
+            } else {
+                this.idAmbiente = -1;
+                this.$refs.resultados.datosCalculos = [];
+            }
         }
     },
     mounted() {
@@ -85,7 +101,7 @@ export default {
                     this.idAmbiente = primerAmbienteId;
                     this.cargarResultados(primerAmbienteId);
                 }
-            } else if(!page.props.auth.user) {
+            } else if (!page.props.auth.user) {
                 const ambienteNotLogged = localStorage.getItem('ambienteNotLogged');
                 if (ambienteNotLogged) {
                     this.idAmbiente = -2;
@@ -114,14 +130,15 @@ export default {
                 </select>
                 <ModalEditAmbiente v-if="idAmbiente != -1" @updateAmbientesEdit="actualizarAmbientesPostEdit"
                     :ambiente="obtenerAmbienteXid(idAmbiente)" />
+                <DeleteAmbienteConfirm :idAmbiente="idAmbiente" @deleteAmbiente="deleteAmbiente" />
                 <div v-if="idAmbiente != -1" class="d-flex flex-column position-absolute divCantPersonas text-center">
                     <label for="cantPersonas" class="form-label">Cant. personas</label>
                     <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas" />
                 </div>
             </div>
             <div v-else class="d-flex justify-content-center position-relative divSelect">
-                <ModalCRUD v-if="!ambienteCreado" :notLogged="true" @updateLocalStorage="addAmbienteLocalStorage"/>
-                <ModalEditAmbiente v-if="ambienteCreado " @updateAmbientesEdit="actualizarAmbientesPostEdit"
+                <ModalCRUD v-if="!ambienteCreado" :notLogged="true" @updateLocalStorage="addAmbienteLocalStorage" />
+                <ModalEditAmbiente v-if="ambienteCreado" @updateAmbientesEdit="actualizarAmbientesPostEdit"
                     :ambiente="obtenerAmbienteXid(idAmbiente)" />
                 <p v-if="ambienteCreado">Si quieres más ambientes, ¡Inicia sesión!</p>
             </div>
@@ -131,6 +148,10 @@ export default {
 </template>
 
 <style>
+svg {
+    vertical-align: middle;
+}
+
 .divPrincipal {
     width: 650px;
     padding: 50px 0 0 0;
