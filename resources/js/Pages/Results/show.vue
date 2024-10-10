@@ -66,7 +66,12 @@
 </template>
 
 <script>
+import { usePage } from "@inertiajs/vue3";
+import { computed } from "vue";
 import AlertIcon from "@/Components/AlertIcon.vue";
+
+const page = usePage();
+const userId = computed(() => page.props.auth.user.id);
 
 export default {
     props: {
@@ -155,7 +160,8 @@ export default {
                         url: this.route("resultados.index"),
                         data: {
                             idAmbiente: this.idAmbiente,
-                            cantPersonas: this.cantPersonas
+                            cantPersonas: this.cantPersonas,
+                            idUsuario: userId.value
                         }
                     });
                     this.datosCalculos = response.data;
@@ -227,7 +233,7 @@ export default {
                 // Agregar la hora manualmente para evitar la conversión de zona horaria
                 let dateWithTime = `${date}T00:00:00`;
 
-                let dateFecha = new Date(dateWithTime).toLocaleDateString('es-UY', {
+                let dateFecha = new Date(date).toLocaleDateString('es-UY', {
                     day: "numeric",
                     month: "long",
                     year: "numeric",

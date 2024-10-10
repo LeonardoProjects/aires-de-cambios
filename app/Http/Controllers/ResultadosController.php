@@ -59,7 +59,7 @@ class ResultadosController extends Controller
                 'idAmbiente' => null,
             ]);
         } else {
-            $ambiente = User::find(1)->ambiente()->where('id', $idAmbiente)->first();
+            $ambiente = User::find($request['idUsuario'])->ambiente()->where('id', $idAmbiente)->first();
         }
         $ubi = $ambiente->ubicacion;
         $forecastData = $this->getApiData($ubi->latitud, $ubi->longitud);

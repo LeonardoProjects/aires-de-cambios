@@ -32,6 +32,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     )->name('ambiente.getAll');
 });
 
-Route::get('/pruebita', [ResultadosController::class, 'index']);
-
 Route::post('/api/resultados', [ResultadosController::class, 'index'])->name('resultados.index');

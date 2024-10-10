@@ -84,7 +84,7 @@ export default {
                     this.idAmbiente = primerAmbienteId;
                     this.cargarResultados(primerAmbienteId);
                 }
-            } else {
+            } else if(!page.props.auth.user) {
                 const ambienteNotLogged = localStorage.getItem('ambienteNotLogged');
                 if (ambienteNotLogged) {
                     this.idAmbiente = -2;
@@ -122,7 +122,7 @@ export default {
                 <ModalCRUD v-if="!ambienteCreado" :notLogged="true" @updateLocalStorage="addAmbienteLocalStorage"/>
                 <ModalEditAmbiente v-if="ambienteCreado " @updateAmbientesEdit="actualizarAmbientesPostEdit"
                     :ambiente="obtenerAmbienteXid(idAmbiente)" />
-                <p>Si quieres más ambientes, ¡inicia sesión!</p>
+                <p v-if="ambienteCreado">Si quieres más ambientes, ¡Inicia sesión!</p>
             </div>
             <Show ref="resultados" :idAmbiente="idAmbiente" :cantPersonas="cantPersonas" />
         </div>
