@@ -23,7 +23,7 @@ class Functions
             DensidadEnum::ElCampo->value => 0.70,
             DensidadEnum::UnBarrioPocoDenso->value => 0.50,
             DensidadEnum::UnBarrioMuyDenso->value => 0.20,
-            DensidadEnum::ElCentroConEdificiosAltos->value => 0.10,
+            DensidadEnum::ElCentroConEdificiosAltos->value => 0.01,
         ],
         AlturaEnum::PrimerOsegundoPiso->value => [
             DensidadEnum::FrenteAlMar->value => 1.15,
