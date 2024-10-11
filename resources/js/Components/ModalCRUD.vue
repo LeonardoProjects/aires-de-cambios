@@ -401,7 +401,4 @@ select {
     }
 }
 
-svg {
-    vertical-align: text-bottom;
-}
 </style>

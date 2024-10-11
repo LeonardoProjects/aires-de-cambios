@@ -127,6 +127,16 @@ class AmbienteController extends Controller
         return response()->json(['message' => 'Ambiente creado correctamente', 'data' => $ambiente->with(['ubicacion', 'ventana', 'local', 'ocupacion'])->get()->where('id', $ambiente->id)], 200);
     }
 
+    public function delete(Request $request)
+    {
+        $ambiente = Ambiente::destroy($request['idAmbiente']);
+        if ($ambiente) {
+            return response()->json(['message' => 'Ambiente eliminado correctamente', 'data' => $request['idAmbiente']], 200);
+        } else {
+            return back()->with('error', 'Fallo al eliminar ambiente');
+        }
+    }
+
     public function obtenerAmbientes($userId)
     {
         $user = User::findOrFail($userId);
