@@ -42,7 +42,7 @@
                         }]" v-else>
                             <div class="dUP">
                                 <strong>{{ resultado.hour }}</strong>
-                                <span class="m-0">Apertura<br><span class="fs-3">{{ resultado.cm }}cm</span></span>
+                                <span class="m-0">Apertura de ventana<br><span class="fs-3">{{ resultado.cm }}cm</span></span>
                             </div>
                             <div class="dDOWN">
                                 <div class="alertIcons">
