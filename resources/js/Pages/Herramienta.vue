@@ -125,7 +125,7 @@ export default {
                         {{ ambiente.nombre }}
                     </option>
                     <option v-if="ambientes && ambientes.length === 0" :value="-1">
-                        No hay ambientes creados
+                        No hay locales creados
                     </option>
                 </select>
                 <ModalEditAmbiente v-if="idAmbiente != -1" @updateAmbientesEdit="actualizarAmbientesPostEdit"
@@ -140,7 +140,7 @@ export default {
                 <ModalCRUD v-if="!ambienteCreado" :notLogged="true" @updateLocalStorage="addAmbienteLocalStorage" />
                 <ModalEditAmbiente v-if="ambienteCreado" @updateAmbientesEdit="actualizarAmbientesPostEdit"
                     :ambiente="obtenerAmbienteXid(idAmbiente)" />
-                <p v-if="ambienteCreado">Si quieres más ambientes, ¡Inicia sesión!</p>
+                <p v-if="ambienteCreado">Si quieres más locales, ¡Inicia sesión!</p>
             </div>
             <Show ref="resultados" :idAmbiente="idAmbiente" :cantPersonas="cantPersonas" />
         </div>

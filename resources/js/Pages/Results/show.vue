@@ -61,7 +61,7 @@
         </div>
     </div>
     <div v-else class="d-flex justify-content-center flex-column w-75 text-center">
-        <p class="fs-5">¡Crea un ambiente para saber cómo ventilar!</p>
+        <p class="fs-5">¡Crea un local para saber cómo ventilar!</p>
     </div>
 </template>
 
