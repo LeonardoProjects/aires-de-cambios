@@ -41,7 +41,7 @@
 
                 <div
                     v-if="$page.props.auth.user"
-                    class="dropdown mx-3 d-md-flex align-items-center"
+                    class="dropdown mx-3 d-md-flex align-items-center justify-content-end"
                 >
                     <!-- Settings Dropdown -->
                     <Dropdown align="right" width="48">
@@ -49,7 +49,9 @@
                             <button
                                 class="btn profile-button align-items-center"
                             >
-                                {{ $page.props.auth.user.name }}
+                                <span class="profile-text">{{
+                                    $page.props.auth.user.name
+                                }}</span>
                                 <i class="ms-2 bi bi-chevron-down"></i>
                             </button>
                         </template>
@@ -70,7 +72,13 @@
                 </div>
 
                 <!-- Mostrar "Iniciar sesión" si el usuario no está autenticado -->
-                <div v-else>
+                <div v-else class="d-none d-md-flex">
+                    <Link
+                        :href="route('register')"
+                        class="btn btn-outline-primary mx-2"
+                    >
+                        Registrarse
+                    </Link>
                     <Link
                         :href="route('login')"
                         class="btn btn-outline-primary mx-3"
@@ -109,8 +117,7 @@
                         }"
                         class="d-md-none dropdown-content"
                     >
-                        <div class="">
-                        </div>
+                        <div class=""></div>
                         <div class="border-top" v-if="$page.props.auth.user">
                             <ResponsiveNavLink
                                 :href="route('profile.show')"
@@ -136,13 +143,14 @@
                             <ResponsiveNavLink :href="route('login')">
                                 Iniciar sesión
                             </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('register')">
+                                Registrarse
+                            </ResponsiveNavLink>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Responsive Navigation Menu -->
     </nav>
 </template>
 
@@ -183,6 +191,7 @@ nav {
     background-color: white;
     border: 1px solid #ddd;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: var(--bs-border-radius);
 }
 
 .logo-container {
@@ -196,6 +205,21 @@ nav {
     border: solid 1px #0099ff;
     color: #0099ff;
     position: relative;
+    max-width: 230px;
+    min-width: 130px;
+    overflow: visible;
+    white-space: nowrap;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2px;
+
+    .profile-text {
+        /* Estilos para el texto del nombre */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
+    }
 }
 
 .profile-button:hover {
@@ -235,8 +259,12 @@ button.hamburger:hover {
         display: none;
     }
 
-    .hamburguerDiv{
+    .hamburguerDiv {
         display: block !important;
+    }
+
+    .dropdown-content {
+        width: 130px;
     }
 }
 </style>
