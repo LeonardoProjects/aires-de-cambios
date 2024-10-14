@@ -15,17 +15,17 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteAmbienteLabel">Eliminar ambiente</h5>
+                    <h5 class="modal-title" id="confirmDeleteAmbienteLabel">Eliminar local</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex flex-column align-items-center">
-                    <p>¿Estás seguro de eliminar el ambiente?</p>
+                    <p>¿Estás seguro de eliminar el local?</p>
                     <p>Se eliminarán todos sus datos</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="deleteAmbientecloseModalButton" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-danger" @click="deleteAmbiente">
-                        Borrar ambiente
+                        Borrar local
                     </button>
                 </div>
             </div>

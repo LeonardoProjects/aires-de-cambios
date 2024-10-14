@@ -200,7 +200,7 @@ function closeModal() {
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                        <span>Crear ambiente</span>
+                        <span>Crear local</span>
                     </h1>
                     <button type="button" class="btn-close" @click="clearInputs" data-bs-dismiss="modal"
                         aria-label="Close"></button>
@@ -208,10 +208,10 @@ function closeModal() {
                 <div class="modal-body text-center">
                     <form @submit.prevent="submit" id="crudFORM">
                         <div class="mb-5">
-                            <h3>Detalles del ambiente</h3>
+                            <h3>Detalles del local</h3>
                             <hr />
                             <div class="mt-1 mb-4 mx-4 text-center">
-                                <label for="nombreAmbiente" class="form-label">Nombre de ambiente</label>
+                                <label for="nombreAmbiente" class="form-label">Nombre de local</label>
                                 <input id="nombreAmbiente" type="text" class="form-control w-0"
                                     v-model="formAdd.nombreAmbiente" />
                                 <div v-if="formAdd.errors.nombreAmbiente" class="error">{{ formAdd.errors.nombreAmbiente[0]
