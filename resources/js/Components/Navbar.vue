@@ -41,7 +41,7 @@
 
                 <div
                     v-if="$page.props.auth.user"
-                    class="dropdown mx-3 d-md-flex align-items-center justify-content-end"
+                    class="dropdown mx-3 d-md-flex align-items-center"
                 >
                     <!-- Settings Dropdown -->
                     <Dropdown align="right" width="48">
