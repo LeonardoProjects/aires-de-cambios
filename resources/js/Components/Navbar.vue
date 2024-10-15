@@ -81,7 +81,7 @@
                     </Link>
                     <Link
                         :href="route('login')"
-                        class="btn btn-outline-primary mx-3"
+                        class="btn btn-primary mx-3"
                     >
                         Iniciar sesión
                     </Link>
@@ -115,7 +115,7 @@
                             'd-block': showingNavigationDropdown,
                             'd-none': !showingNavigationDropdown,
                         }"
-                        class="d-md-none dropdown-content"
+                        class="d-md-none dropdown-content mx-3 mt-1"
                     >
                         <div class=""></div>
                         <div class="border-top" v-if="$page.props.auth.user">
@@ -260,7 +260,8 @@ button.hamburger:hover {
     }
 
     .hamburguerDiv {
-        display: block !important;
+        display: flex !important;
+        justify-content: end;
     }
 
     .dropdown-content {
