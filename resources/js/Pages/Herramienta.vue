@@ -179,7 +179,7 @@ svg {
         width: 65% !important;
         padding-top: 10px;
 
-        select {
+        #selectAmbiente {
             width: 40% !important;
             text-overflow: ellipsis;
         }
