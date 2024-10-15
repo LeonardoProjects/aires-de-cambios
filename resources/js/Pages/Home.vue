@@ -1,11 +1,12 @@
 <template>
+    <button id="btnVolverArriba" ref="btnVolverArriba" @click="scrollArriba"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
+            fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5" />
+        </svg></button>
     <section class="hero-section">
         <div class="filter-banner-div">
-            <img
-                src="../../images/heroSection.jpg"
-                alt="Banner"
-                class="banner-image"
-            />
+            <img src="../../images/heroSection.jpg" alt="Banner" class="banner-image" />
         </div>
         <div class="banner-text">
             <h1>Aires de cambios</h1>
@@ -14,13 +15,9 @@
                 adecuada para mantener una buena calidad del aire.
             </p>
 
-            <a v-if="!isMobile" href="/herramienta" class="try-button"
-                >Probar herramienta</a
-            >
+            <a v-if="!isMobile" href="/herramienta" class="try-button">Probar herramienta</a>
         </div>
-        <a v-if="isMobile" href="/herramienta" class="try-button-mobile"
-            >Probar herramienta</a
-        >
+        <a v-if="isMobile" href="/herramienta" class="try-button-mobile">Probar herramienta</a>
     </section>
     <section class="app-info my-5 d-flex justify-content-center">
         <div class="text-center w-50">
@@ -41,9 +38,7 @@
         </div>
     </section>
     <section class="app-data">
-        <div
-            class="ambientesXPaises w-100 d-flex flex-column align-items-center"
-        >
+        <div class="ambientesXPaises w-100 d-flex flex-column align-items-center">
             <div class="chartDescription">
                 <h4 class="text-center">Ambientes creados</h4>
                 <p class="text-center">
@@ -65,11 +60,7 @@
             </p>
         </div>
         <div class="aboutUsDescription d-flex justify-content-center my-5">
-            <a
-                target="_blank"
-                href="https://www.fadu.edu.uy/"
-                class="aboutFADU align-items-center d-flex"
-            >
+            <a target="_blank" href="https://www.fadu.edu.uy/" class="aboutFADU align-items-center d-flex">
                 <img src="../../images/fadu.png" class="logo-aboutUs" alt="" />
                 <div>
                     <h2 class="fs-5">
@@ -86,16 +77,9 @@
                     </p>
                 </div>
             </a>
-            <a
-                target="_blank"
-                href="https://utec.edu.uy/es/educacion/carrera/tecnologo-en-informatica/"
-                class="aboutTIPY align-items-center d-flex"
-            >
-                <img
-                    src="../../images/tipy.png"
-                    class="logo-aboutUs utecLogo"
-                    alt=""
-                />
+            <a target="_blank" href="https://utec.edu.uy/es/educacion/carrera/tecnologo-en-informatica/"
+                class="aboutTIPY align-items-center d-flex">
+                <img src="../../images/tipy.png" class="logo-aboutUs utecLogo" alt="" />
                 <div>
                     <h2 class="fs-5">Tecnólogo en Informática</h2>
                     <p>
@@ -128,27 +112,45 @@ export default {
     },
     setup() {
         const isMobile = ref(false);
+        let btnVolverArriba = ref(null);
         const checkDeviceSize = () => {
             isMobile.value = window.innerWidth < 768;
+        };
+
+        const scrollArriba = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        const mostrarBtnScroll = () => {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                btnVolverArriba.value.style.display = "block";
+            } else {
+                btnVolverArriba.value.style.display = "none";
+            }
         };
 
         onMounted(() => {
             checkDeviceSize();
             window.addEventListener("resize", checkDeviceSize);
+            btnVolverArriba.value = document.getElementById("btnVolverArriba");
+            console.log(btnVolverArriba);
+            window.addEventListener("scroll", mostrarBtnScroll);
         });
 
         onBeforeMount(() => {
             window.removeEventListener("resize", checkDeviceSize);
+            window.addEventListener("scroll", mostrarBtnScroll);
         });
 
         return {
             isMobile,
+            scrollArriba,
         };
     },
     props: {
         ambientesPorPais: Array,
     },
-    mounted() {},
+    mounted() { },
 };
 </script>
 
@@ -160,14 +162,12 @@ export default {
 
 .filter-banner-div {
     background: rgb(38, 38, 38);
-    background: linear-gradient(
-        180deg,
-        rgba(38, 38, 38, 0) 0%,
-        rgba(61, 61, 61, 0) 20%,
-        rgba(0, 130, 217, 1) 85%,
-        rgba(0, 117, 195, 1) 93%,
-        rgba(3, 68, 111, 0.9962185557816877) 100%
-    );
+    background: linear-gradient(180deg,
+            rgba(38, 38, 38, 0) 0%,
+            rgba(61, 61, 61, 0) 20%,
+            rgba(0, 130, 217, 1) 85%,
+            rgba(0, 117, 195, 1) 93%,
+            rgba(3, 68, 111, 0.9962185557816877) 100%);
     height: 100%;
 }
 
@@ -209,6 +209,27 @@ export default {
 .try-button:hover {
     background-color: #ffffff;
     color: #000000;
+}
+
+#btnVolverArriba {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 100;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #0099ff;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    display: none;
+    cursor: pointer;
+}
+
+#btnVolverArriba:hover {
+    background-color: transparent;
+    color: black;
+    border: solid 1px black;
 }
 
 .logo-aboutUs {
@@ -264,12 +285,10 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        180deg,
-        rgba(229, 128, 28, 0.3) 0%,
-        rgba(229, 128, 28, 0.4) 47%,
-        rgba(229, 128, 28, 7) 100%
-    );
+    background: linear-gradient(180deg,
+            rgba(229, 128, 28, 0.3) 0%,
+            rgba(229, 128, 28, 0.4) 47%,
+            rgba(229, 128, 28, 7) 100%);
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
     z-index: -1;
@@ -284,6 +303,7 @@ export default {
     0% {
         background-position: 0% 100%;
     }
+
     100% {
         background-position: 0% 0%;
     }
@@ -310,12 +330,10 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        180deg,
-        rgba(0, 169, 224, 0.3) 0%,
-        rgba(0, 169, 224, 0.4) 47%,
-        rgba(0, 169, 224, 0.7) 100%
-    );
+    background: linear-gradient(180deg,
+            rgba(0, 169, 224, 0.3) 0%,
+            rgba(0, 169, 224, 0.4) 47%,
+            rgba(0, 169, 224, 0.7) 100%);
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
     z-index: -1;
@@ -449,6 +467,7 @@ export default {
         flex-direction: column;
         margin-bottom: 20px;
     }
+
     .aboutTIPY {
         padding: 40px;
         border: solid 1px #00a9e0;

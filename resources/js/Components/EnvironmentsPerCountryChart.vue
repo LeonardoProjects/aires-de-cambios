@@ -157,6 +157,7 @@ export default {
 #map2 {
     height: 500px;
     width: 1000px;
+    z-index: 1;
 }
 
 .info.legend {
