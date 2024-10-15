@@ -133,7 +133,6 @@ export default {
             checkDeviceSize();
             window.addEventListener("resize", checkDeviceSize);
             btnVolverArriba.value = document.getElementById("btnVolverArriba");
-            console.log(btnVolverArriba);
             window.addEventListener("scroll", mostrarBtnScroll);
         });
 
