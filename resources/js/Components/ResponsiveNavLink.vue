@@ -43,6 +43,9 @@ const classes = computed(() => {
     text-decoration: none;
     text-align: start;
     transition: background-color 0.15s ease-in-out;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .btnResponsiveNavLinkActive:hover {
@@ -59,6 +62,9 @@ const classes = computed(() => {
     text-decoration: none;
     text-align: start;
     transition: background-color 0.15s ease-in-out;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }  
 
 .btnResponsiveNavLinkInactive:hover {
