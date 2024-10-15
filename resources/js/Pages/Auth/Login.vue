@@ -31,6 +31,7 @@ const submit = () => {
 </script>
 
 <template>
+
     <Head title="Iniciar Sesión" />
 
     <div class="min-vh-100 d-flex justify-content-center align-items-center main">
@@ -45,16 +46,9 @@ const submit = () => {
 
             <form @submit.prevent="submit">
                 <div class="mb-3">
-                    <label for="email" class="form-label labelCeleste">Correo Electrónico</label>
-                    <input
-                        id="email"
-                        v-model="form.email"
-                        type="email"
-                        class="form-control"
-                        required
-                        autofocus
-                        autocomplete="username"
-                    />
+                    <label for="email" class="form-label labelCeleste">Correo electrónico</label>
+                    <input id="email" v-model="form.email" type="email" class="form-control" required autofocus
+                        autocomplete="username" />
                     <div class="text-danger mt-2">
                         <InputError :message="form.errors.email" />
                     </div>
@@ -62,14 +56,8 @@ const submit = () => {
 
                 <div class="mb-3">
                     <label for="password" class="form-label labelCeleste">Contraseña</label>
-                    <input
-                        id="password"
-                        v-model="form.password"
-                        type="password"
-                        class="form-control"
-                        required
-                        autocomplete="current-password"
-                    />
+                    <input id="password" v-model="form.password" type="password" class="form-control" required
+                        autocomplete="current-password" />
                     <div class="text-danger mt-2">
                         <InputError :message="form.errors.password" />
                     </div>
@@ -83,17 +71,14 @@ const submit = () => {
                 </div>
 
                 <div class="d-flex flex-column justify-content-center align-content-center">
-                    <div class="row row-cols-2 text-center">
-                        <Link v-if="canResetPassword" :href="route('password.request')" class="nav-link labelCeleste mt-2">
-                            ¿Has olvidado tu contraseña?
-                        </Link>
-    
+                    <div class="text-center">
                         <Link :href="route('register')" class="nav-link labelCeleste mt-2">
-                            No tengo cuenta
+                        No tengo cuenta
                         </Link>
                     </div>
 
-                    <button type="submit" class="btn btn-primary mt-3 btnPrimary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    <button type="submit" class="btn btn-primary mt-3 btnPrimary"
+                        :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         Iniciar sesión
                     </button>
                 </div>

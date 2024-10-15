@@ -46,7 +46,7 @@ const submit = () => {
                 </div>
 
                 <div class="mb-3">
-                    <label for="email" class="form-label labelCeleste">Correo Electrónico</label>
+                    <label for="email" class="form-label labelCeleste">Correo electrónico</label>
                     <input
                         id="email"
                         v-model="form.email"
@@ -76,7 +76,7 @@ const submit = () => {
                 </div>
 
                 <div class="mb-3">
-                    <label for="password_confirmation" class="form-label labelCeleste">Confirmar Contraseña</label>
+                    <label for="password_confirmation" class="form-label labelCeleste">Confirmar contraseña</label>
                     <input
                         id="password_confirmation"
                         v-model="form.password_confirmation"
@@ -93,20 +93,20 @@ const submit = () => {
                 <div v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature" class="form-check mb-3">
                     <Checkbox id="terms" v-model="form.terms" class="form-check-input" />
                     <label for="terms" class="form-check-label labelCeleste">
-                        Acepto los <a target="_blank" :href="route('terms.show')" class="labelCeleste">Términos de Servicio</a> y la <a target="_blank" :href="route('policy.show')" class="labelLogin">Política de Privacidad</a>.
+                        Acepto los <a target="_blank" :href="route('terms.show')" class="labelCeleste">Términos de servicio</a> y la <a target="_blank" :href="route('policy.show')" class="labelLogin">Política de Privacidad</a>.
                     </label>
                     <div class="text-danger mt-2">
                         <InputError :message="form.errors.terms" />
                     </div>
                 </div>
 
-                <div class="d-flex flex-column justify-content-center align-content-center">
-                    <Link :href="route('login')" class="underline text-sm labelCeleste">
+                <div class="d-flex flex-column justify-content-center align-content-center text-center">
+                    <Link :href="route('login')" class="nav-link labelCeleste">
                         ¿Ya tiene cuenta?
                     </Link>
 
                     <button type="submit" class="btn btn-primary mt-2 btnPrimary" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                        Registrar
+                        Registrarse
                     </button>
                 </div>
             </form>
