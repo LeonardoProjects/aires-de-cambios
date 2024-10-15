@@ -100,8 +100,8 @@ const submit = () => {
                     </div>
                 </div>
 
-                <div class="d-flex flex-column justify-content-center align-content-center text-center">
-                    <Link :href="route('login')" class="nav-link labelCeleste">
+                <div class="d-flex flex-column justify-content-center align-content-center">
+                    <Link :href="route('login')" class="nav-link labelCeleste anchor">
                         ¿Ya tiene cuenta?
                     </Link>
 

@@ -71,8 +71,8 @@ const submit = () => {
                 </div>
 
                 <div class="d-flex flex-column justify-content-center align-content-center">
-                    <div class="text-center">
-                        <Link :href="route('register')" class="nav-link labelCeleste mt-2">
+                    <div>
+                        <Link :href="route('register')" class="nav-link labelCeleste mt-2 anchor">
                         No tengo cuenta
                         </Link>
                     </div>
