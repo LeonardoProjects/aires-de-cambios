@@ -7,7 +7,7 @@
             <div class="d-flex justify-content-center">
                 <div class="text-center resultsTable">
                     <div v-for="(resultado, index) in resultadosPorFecha" :key="getGlobalIndex(fechaIndex, index)"
-                        @click="toggleRow(getGlobalIndex(fechaIndex, index))" role="button"
+                        @click="toggleRow(getGlobalIndex(fechaIndex, index), $event)" role="button"
                         :class="[resultado.expanded ? 'resultsHourExpanded' : 'resultsHourMinimized']">
                         <div v-if="!resultado.expanded" :class="['hourRow', {
                             claseLluviaMinimized: resultado.alertas[0] == 'Precaución por lluvias',
@@ -17,14 +17,14 @@
                             claseTormentaMinimized: resultado.alertas[0] == 'Precaución por tormentas fuertes',
                             claseNadaMinimized: resultado.alertas[0] == ''
                         }]">
-                            <div class="d-flex">
+                            <div class="d-flex w-33">
                                 <div class="iconAlert">
                                     <AlertIcon :alertName="getAlertName(resultado.alertas[0])" />
                                 </div>
                                 <span class="ps-2">{{ resultado.hour }}</span>
                             </div>
-                            <span>{{ resultado.cm }} cm</span>
-                            <span>
+                            <span class="w-33">{{ resultado.cm }} cm</span>
+                            <span class="w-33 d-flex justify-content-end">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                                     <path d="M0 0h24v24H0z" fill="none" />
                                     <circle cx="12" cy="12" r="10" stroke="black" stroke-width="2" fill="none" />
@@ -39,7 +39,14 @@
                             claseAgradableExpanded: resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
                             claseTormentaExpanded: resultado.alertas[0] == 'Precaución por tormentas fuertes',
                             claseNadaExpanded: resultado.alertas[0] == ''
-                        }]" v-else>
+                        }]" :data-originalAlert="{
+    'lluvia': resultado.alertas[0] == 'Precaución por lluvias',
+    'frio': resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
+    'viento': resultado.alertas[0] == 'Precaución por vientos fuertes (mayores a 40 km/h)',
+    'agradable': resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
+    'tormenta': resultado.alertas[0] == 'Precaución por tormentas fuertes',
+    'nada': resultado.alertas[0] == ''
+}" v-else>
                             <div class="dUP">
                                 <strong>{{ resultado.hour }}</strong>
                                 <span class="m-0">Apertura de ventana<br><span class="fs-3">{{ resultado.cm
@@ -47,23 +54,30 @@
                             </div>
                             <div class="dDOWN">
                                 <div class="alertIcons">
-                                    <template v-if="!isMobileHerramienta || (isMobileHerramienta && resultado.alertas.length < 4)" v-for="(alerta, index) in resultado.alertas" :key="index">
+                                    <template
+                                        v-if="!isMobileHerramienta || (isMobileHerramienta && resultado.alertas.length < 4)"
+                                        v-for="(alerta, index) in resultado.alertas" :key="index">
                                         <div v-if="alerta != ''">
-                                            <AlertIcon :alertName="getAlertName(alerta)" />
+                                            <AlertIcon :alertName="getAlertName(alerta)"
+                                                :class="{ 'alertSelected': index == 0 }" @updateAlertName="cambiarAlerta" />
                                         </div>
                                     </template>
                                     <template v-else>
                                         <div>
-                                            <AlertIcon :alertName="getAlertName(resultado.alertas[0])" />
-                                            <AlertIcon :alertName="getAlertName(resultado.alertas[1])" />
+                                            <AlertIcon :alertName="getAlertName(resultado.alertas[0])"
+                                                :class="alertSelected" @updateAlertName="cambiarAlerta" />
+                                            <AlertIcon :alertName="getAlertName(resultado.alertas[1])"
+                                                @updateAlertName="cambiarAlerta" />
                                         </div>
                                         <div>
-                                            <AlertIcon :alertName="getAlertName(resultado.alertas[2])" />
-                                            <AlertIcon :alertName="getAlertName(resultado.alertas[3])" />
+                                            <AlertIcon :alertName="getAlertName(resultado.alertas[2])"
+                                                @updateAlertName="cambiarAlerta" />
+                                            <AlertIcon :alertName="getAlertName(resultado.alertas[3])"
+                                                @updateAlertName="cambiarAlerta" />
                                         </div>
                                     </template>
                                 </div>
-                                <p class="m-0 align-self-center">{{ resultado.alertas[0] }}</p>
+                                <p class="m-0 align-self-center alertName">{{ resultado.alertas[0] }}</p>
                             </div>
                         </span>
                     </div>
@@ -155,6 +169,28 @@ export default {
                     return '';
             }
         },
+        getAlertClass(alertName, divResults) {
+            let pAlert = divResults.querySelector('.alertName');
+            switch (alertName) {
+                case 'vientosIcon':
+                    pAlert.textContent = 'Precaución por vientos fuertes (mayores a 40 km/h)'
+                    return 'claseVientoExpanded';
+                case 'frioIcon':
+                    pAlert.textContent = 'Precaución por bajas temperaturas (menor a 10° C)'
+                    return 'claseFrioExpanded';
+                case 'tormentasIcon':
+                    pAlert.textContent = 'Precaución por tormentas'
+                    return 'claseTormentaExpanded';
+                case 'lluviaIcon':
+                    pAlert.textContent = 'Precaución por lluvias'
+                    return 'claseLluviaExpanded';
+                case 'agradableIcon':
+                    pAlert.textContent = 'Aprovechar temperaturas agradables (mayor a 18° C)'
+                    return 'claseAgradableExpanded';
+                default:
+                    return '';
+            }
+        },
         getGlobalIndex(fechaIndex, index) {
             // Obtener el índice global sumando la cantidad de resultados anteriores.
             let count = 0;
@@ -163,11 +199,13 @@ export default {
             }
             return count + index;
         },
-        toggleRow(index) {
-            this.resultados.forEach((resultado, idx) => {
-                if (idx !== index) resultado.expanded = false;
-            });
-            this.resultados[index].expanded = !this.resultados[index].expanded;
+        toggleRow(index, event) {
+            if (event.target.tagName !== 'svg' && event.target.tagName !== 'path') {
+                this.resultados.forEach((resultado, idx) => {
+                    if (idx !== index) resultado.expanded = false;
+                });
+                this.resultados[index].expanded = !this.resultados[index].expanded;
+            }
         },
         async cargarDatos() {
             try {
@@ -268,7 +306,7 @@ export default {
                 });
                 // Formatea la fecha en el formato deseado (día, mes, año)
                 let dateFecha = dateWithTime.setLocale("es").toLocaleString(DateTime.DATE_FULL);
-                
+
                 this.resultados.push({
                     hour: resultado.hora,
                     cm: resultado.apertura,
@@ -279,6 +317,23 @@ export default {
                 });
             });
         },
+        cambiarAlerta($alertName) {
+            let results = document.querySelector('.resultExpanded');
+            results.className = '';
+            results.classList.add('text-center');
+            results.classList.add('resultExpanded');
+            results.classList.add(this.getAlertClass($alertName, results));
+            // Clases para fade de color
+
+            let alertDeselect = results.querySelector('.alertSelected');
+            alertDeselect.className = '';
+
+            let alertIcon = results.querySelector(`#${$alertName}`);
+            alertIcon.parentElement.classList.add('alertSelected');
+            // Pintar svg
+
+
+        }
     },
     mounted() {
         this.cargarDatos();
@@ -292,6 +347,20 @@ export default {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
+}
+
+.w-33 {
+    width: 33%;
+}
+
+.alertIcons {
+    div {
+        fill: #3D5A73;
+    }
+}
+
+.alertSelected {
+    fill: black !important;
 }
 
 .dDOWN {
@@ -378,6 +447,7 @@ export default {
     flex-flow: row wrap;
     align-content: center;
     width: auto;
+    z-index: 999;
 }
 
 .claseFrioMinimized:hover {
@@ -406,7 +476,7 @@ export default {
 }
 
 .claseLluviaExpanded {
-    background: linear-gradient(180deg, rgba(46, 65, 255, 1) 0%, rgba(105, 133, 206, 1) 57%);
+    background: linear-gradient(180deg, rgb(92, 119, 254) 0%, rgb(195, 205, 255) 100%);
 }
 
 .claseVientoExpanded {
@@ -414,11 +484,11 @@ export default {
 }
 
 .claseTormentaExpanded {
-    background: linear-gradient(180deg, rgba(100, 67, 178, 1) 0%, rgba(161, 152, 243, 1) 100%);
+    background: linear-gradient(180deg, rgb(139, 94, 228) 0%, rgb(181, 170, 244) 100%);
 }
 
 .claseAgradableExpanded {
-    background: linear-gradient(180deg, rgba(63, 161, 61, 1) 0%, rgba(118, 218, 116, 1) 100%);
+    background: linear-gradient(180deg, rgb(101, 214, 72) 0%, rgb(165, 212, 164) 100%);
 }
 
 @media screen and (max-width: 767px) {

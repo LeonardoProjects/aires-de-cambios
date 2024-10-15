@@ -20,13 +20,16 @@
                             Herramienta
                         </NavLink>
                         <NavLink 
+                        :href="route().current('#webIntroduction') ? '#webIntroduction' : '/#webIntroduction'"
+                        :active="route().current('#webIntroduction')"
+                        >
+                            Introducción
+                        </NavLink>
+                        <NavLink 
                         :href="route().current('#sobreNosotros') ? '#sobreNosotros' : '/#sobreNosotros'"
                         :active="route().current('#sobreNosotros')"
                             :class="'text-nowrap'">
                             Sobre nosotros
-                        </NavLink>
-                        <NavLink :href="route('herramienta')" :active="route().current('herramienta')">
-                            Ayuda
                         </NavLink>
                     </div>
                 </div>
