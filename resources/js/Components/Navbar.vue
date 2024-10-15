@@ -20,7 +20,7 @@
                             Herramienta
                         </NavLink>
                         <NavLink 
-                        :href="[route().current('#sobreNosotros') ? '#sobreNosotros' : '/#sobreNosotros']"
+                        :href="route().current('#sobreNosotros') ? '#sobreNosotros' : '/#sobreNosotros'"
                         :active="route().current('#sobreNosotros')"
                             :class="'text-nowrap'">
                             Sobre nosotros

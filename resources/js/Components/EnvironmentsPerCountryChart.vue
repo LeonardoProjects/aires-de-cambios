@@ -48,6 +48,7 @@ export default {
                 maxZoom: 4,
                 worldCopyJump: false,
                 maxBoundsViscosity: 1,
+                scrollWheelZoom: false
             }).setView([20, 0], 2);
 
             const southWest = L.latLng(-85, -180);
@@ -70,24 +71,40 @@ export default {
                     maxAmbientes.value = roundToNearestPowerOfTen(
                         maxAmbientesCalculado
                     );
-
+                    var geojson;
+                    var info = L.control();
                     axios
                         .get("/country-data/ne_10m_admin_0_countries_arg.json")
                         .then((geoJsonResponse) => {
-                            L.geoJSON(geoJsonResponse.data, {
+                            info.onAdd = function () {
+                                this._div = L.DomUtil.create('div'); // create a div with a class "info"
+                                this.update();
+                                this._div.style.background = 'rgba(255, 255, 255, 0.6)';
+                                this._div.style.padding = '10px';
+                                this._div.style.borderRadius = '7px';
+                                return this._div;
+                            };
+
+                            // method that we will use to update the control based on feature properties passed
+                            info.update = function (props) {
+                                this._div.innerHTML = '<h4>Información del país</h4>' +
+                                    (props ?
+                                        '<p class="m-0 fs-6 fw-bold">' + props.ADMIN + '</p><p class="m-0 fs-6">Ambientes: ' +
+                                        (ambientesPorPais.find(a => a.pais === props.ADMIN)?.total || 0) + '</p>'
+                                        : 'Posicione el mouse sobre un país </p>');
+                            };
+
+                            info.addTo(map2.value);
+
+                            geojson = L.geoJSON(geoJsonResponse.data, {
                                 style: (feature) => {
                                     const pais = feature.properties.ADMIN;
-                                    const ambiente = ambientesPorPais.find(
-                                        (a) => a.pais === pais
-                                    );
+                                    const ambiente = ambientesPorPais.find((a) => a.pais === pais);
 
                                     let fillColor = "lightgray";
                                     if (ambiente) {
                                         const total = ambiente.total;
-                                        fillColor = getColor(
-                                            total,
-                                            maxAmbientes.value
-                                        );
+                                        fillColor = getColor(total, maxAmbientes.value);
                                     }
 
                                     return {
@@ -97,23 +114,48 @@ export default {
                                         weight: 1,
                                     };
                                 },
-
                                 onEachFeature: (feature, layer) => {
-                                    const pais = feature.properties.ADMIN;
-                                    const ambiente = ambientesPorPais.find(
-                                        (a) => a.pais === pais
-                                    );
-                                    const totalAmbientes = ambiente
-                                        ? ambiente.total
-                                        : 0;
-
-                                    layer.bindPopup(`
-                                        <strong>País:</strong> ${pais}<br>
-                                        <strong>Ambientes:</strong> ${totalAmbientes}
-                                    `);
-                                },
+                                    // Evento 'mouseover' para resaltar la capa y actualizar el control info
+                                    layer.on({
+                                        mouseover: (e) => {
+                                            highlightFeature(e);
+                                            info.update(e.target.feature.properties);
+                                        },
+                                        mouseout: (e) => {
+                                            resetHighlight(e);
+                                            info.update();
+                                        }
+                                    });
+                                }
                             }).addTo(map2.value);
 
+                            // Función para resaltar el país al hacer hover
+                            function highlightFeature(e) {
+                                var layer = e.target;
+
+                                layer.setStyle({
+                                    weight: 2,
+                                    color: '#fff',
+                                    dashArray: '',
+                                    fillOpacity: 0.8
+                                });
+
+                                layer.bringToFront();
+                            }
+
+                            // Función para quitar el resaltado al salir del hover
+                            function resetHighlight(e) {
+                                geojson.resetStyle(e.target); // Asegúrate de que `geojson` esté definido correctamente
+                            }
+
+                            map2.value.on('click', function () {
+                                map2.value.scrollWheelZoom.enable();
+                            });
+
+
+                            map2.value.on('blur', function () {
+                                map2.value.scrollWheelZoom.disable();
+                            });
                             // Añadir leyenda
                             var legend = L.control({ position: "bottomright" });
 
@@ -124,9 +166,9 @@ export default {
                                 );
                                 const gradient =
                                     "linear-gradient(to right, rgba(255, 237, 160, 0.7), rgba(255, 69, 0, 0.7))";
-                                div.innerHTML += `<div style="width: 200px; height: 20px; background: ${gradient};"></div>`;
+                                div.innerHTML += `<div style="width: 200px; height: 20px; background: ${gradient}; border: 1px solid;"></div>`;
                                 div.innerHTML += `<div style="display: flex; justify-content: space-between;">
-                        <span>0</span><span>${maxAmbientes.value}</span>
+                        <span class="fw-bold">0</span><span class="fw-bold">${maxAmbientes.value}</span>
                       </div>`;
 
                                 return div;
