@@ -1,5 +1,5 @@
 <template>
-    <div v-if="datosCalculos.length != 0" class="d-flex justify-content-center flex-column w-75 text-center">
+    <div v-if="datosCalculos.length != 0" class="d-flex justify-content-center flex-column text-center">
         <!-- Iterar sobre los grupos de resultados agrupados por fecha -->
         <div v-for="(resultadosPorFecha, date, fechaIndex) in agrupadosPorFecha" :key="date" class="mb-4">
             <!-- Mostrar la fecha por encima de la tabla -->
@@ -42,17 +42,28 @@
                         }]" v-else>
                             <div class="dUP">
                                 <strong>{{ resultado.hour }}</strong>
-                                <span class="m-0">Apertura de ventana<br><span class="fs-3">{{ resultado.cm }}cm</span></span>
+                                <span class="m-0">Apertura de ventana<br><span class="fs-3">{{ resultado.cm
+                                }}cm</span></span>
                             </div>
                             <div class="dDOWN">
                                 <div class="alertIcons">
-                                    <div v-for="(alerta, index) in resultado.alertas" :key="index">
+                                    <template v-if="!isMobileHerramienta || (isMobileHerramienta && resultado.alertas.length < 4)" v-for="(alerta, index) in resultado.alertas" :key="index">
                                         <div v-if="alerta != ''">
                                             <AlertIcon :alertName="getAlertName(alerta)" />
                                         </div>
-                                    </div>
+                                    </template>
+                                    <template v-else>
+                                        <div>
+                                            <AlertIcon :alertName="getAlertName(resultado.alertas[0])" />
+                                            <AlertIcon :alertName="getAlertName(resultado.alertas[1])" />
+                                        </div>
+                                        <div>
+                                            <AlertIcon :alertName="getAlertName(resultado.alertas[2])" />
+                                            <AlertIcon :alertName="getAlertName(resultado.alertas[3])" />
+                                        </div>
+                                    </template>
                                 </div>
-                                <p class="m-0">{{ resultado.alertas[0] }}</p>
+                                <p class="m-0 align-self-center">{{ resultado.alertas[0] }}</p>
                             </div>
                         </span>
                     </div>
@@ -67,7 +78,7 @@
 
 <script>
 import { usePage } from "@inertiajs/vue3";
-import { computed } from "vue";
+import { computed, ref, onMounted, onBeforeMount } from "vue";
 import AlertIcon from "@/Components/AlertIcon.vue";
 import { DateTime } from 'luxon';
 
@@ -78,6 +89,25 @@ export default {
     props: {
         idAmbiente: Number,
         cantPersonas: Number,
+    },
+    setup() {
+        const isMobileHerramienta = ref(false);
+        const checkDeviceSize = () => {
+            isMobileHerramienta.value = window.innerWidth < 768;
+        };
+
+        onMounted(() => {
+            checkDeviceSize();
+            window.addEventListener("resize", checkDeviceSize);
+        });
+
+        onBeforeMount(() => {
+            window.removeEventListener("resize", checkDeviceSize);
+        });
+
+        return {
+            isMobileHerramienta,
+        };
     },
     components: {
         AlertIcon
@@ -221,8 +251,8 @@ export default {
             );
             let isoLocalTime = localTime.replace(" ", "T"); //Fixea localTime que llega de API para que sea ISO
             let currentDate = DateTime.fromISO(isoLocalTime, { zone: this.datosCalculos["timezone"] });
-            let tomorrowDate = currentDate.plus({ days: 1 });   
-            
+            let tomorrowDate = currentDate.plus({ days: 1 });
+
             let formattedCurrentDate = currentDate.toFormat('yyyy-MM-dd');
             let formattedTomorrowDate = tomorrowDate.toFormat('yyyy-MM-dd');
 
@@ -234,11 +264,11 @@ export default {
 
                 // Utiliza Luxon para crear un objeto DateTime con la zona horaria adecuada
                 let dateWithTime = DateTime.fromISO(`${date}T00:00:00`, {
-                    zone: this.datosCalculos["timezone"], 
+                    zone: this.datosCalculos["timezone"],
                 });
                 // Formatea la fecha en el formato deseado (día, mes, año)
                 let dateFecha = dateWithTime.setLocale("es").toLocaleString(DateTime.DATE_FULL);
-
+                
                 this.resultados.push({
                     hour: resultado.hora,
                     cm: resultado.apertura,
@@ -287,7 +317,6 @@ export default {
 .resultsTable {
     width: 600px;
     height: auto;
-    flex-shrink: 0;
 }
 
 .resultsHourMinimized {
@@ -347,6 +376,7 @@ export default {
 .alertIcons {
     display: flex;
     flex-flow: row wrap;
+    align-content: center;
     width: auto;
 }
 
@@ -389,5 +419,23 @@ export default {
 
 .claseAgradableExpanded {
     background: linear-gradient(180deg, rgba(63, 161, 61, 1) 0%, rgba(118, 218, 116, 1) 100%);
+}
+
+@media screen and (max-width: 767px) {
+    .resultsTable {
+        width: max(330px, 90vw);
+    }
+
+    .dDOWN {
+        .alertIcons {
+            flex-shrink: 0;
+            width: max(18vw, 60px);
+        }
+
+        p {
+            font-size: min(4vw, 1rem);
+            text-align: end;
+        }
+    }
 }
 </style>

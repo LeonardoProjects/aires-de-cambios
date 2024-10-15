@@ -53,7 +53,7 @@
             <CountryMap />
         </div>
     </section>
-    <section class="about-us my-5 d-flex flex-column align-items-center">
+    <section id="sobreNosotros" class="about-us my-5 d-flex flex-column align-items-center">
         <div class="aboutUsPresentation text-center w-50">
             <h1>Sobre nosotros</h1>
             <p>
@@ -338,7 +338,7 @@ export default {
     }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
     .hero-section {
         position: relative;
         width: 100vw;

@@ -47,7 +47,6 @@ defineProps({
     color: #0099ff;
     text-decoration: none;
     text-align: start;
-    transition: background-color 0.15s ease-in-out;
 }
 
 .btnDropdownLink:hover,
@@ -59,11 +58,13 @@ defineProps({
     background-color: #0099ff;
     outline: none;
     color: white;
+    border-radius: var(--bs-border-radius);
 }
 
 .btnDropdownLink {
     width: 100%;
     text-align: start;
+    transition: none;
 }
 
 .logout {
