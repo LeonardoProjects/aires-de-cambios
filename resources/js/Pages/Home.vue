@@ -1,4 +1,9 @@
 <template>
+    <button id="btnVolverArriba" ref="btnVolverArriba" @click="scrollArriba"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
+            fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5" />
+        </svg></button>
     <section class="hero-section">
         <div class="filter-banner-div">
             <img src="../../images/heroSection.jpg" alt="Banner" class="banner-image" />
@@ -129,21 +134,38 @@ export default {
     },
     setup() {
         const isMobile = ref(false);
+        let btnVolverArriba = ref(null);
         const checkDeviceSize = () => {
             isMobile.value = window.innerWidth < 768;
+        };
+
+        const scrollArriba = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        const mostrarBtnScroll = () => {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                btnVolverArriba.value.style.display = "block";
+            } else {
+                btnVolverArriba.value.style.display = "none";
+            }
         };
 
         onMounted(() => {
             checkDeviceSize();
             window.addEventListener("resize", checkDeviceSize);
+            btnVolverArriba.value = document.getElementById("btnVolverArriba");
+            window.addEventListener("scroll", mostrarBtnScroll);
         });
 
         onBeforeMount(() => {
             window.removeEventListener("resize", checkDeviceSize);
+            window.addEventListener("scroll", mostrarBtnScroll);
         });
 
         return {
             isMobile,
+            scrollArriba,
         };
     },
     props: {
@@ -253,6 +275,27 @@ export default {
 .try-button:hover {
     background-color: #ffffff;
     color: #000000;
+}
+
+#btnVolverArriba {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 100;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #0099ff;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    display: none;
+    cursor: pointer;
+}
+
+#btnVolverArriba:hover {
+    background-color: transparent;
+    color: black;
+    border: solid 1px black;
 }
 
 .logo-aboutUs {
