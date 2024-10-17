@@ -97,9 +97,10 @@ class ResultadosController extends Controller
      */
     public function getApiData($latitud, $longitud)
     {
+        $apiKey = env('WEATHER_API_KEY');
         $latParsed = (string)$latitud;
         $longParsed = (string)$longitud;
-        $response = Http::get("https://api.weatherapi.com/v1/forecast.json?key=8e0af554efe14fa99f7192419240509&q={$latParsed},{$longParsed}&days=2&lang=en");
+        $response = Http::get("https://api.weatherapi.com/v1/forecast.json?key={$apiKey}&q={$latParsed},{$longParsed}&days=2&lang=en");
         $forecastData = $response->json();
         return $forecastData;
     }

@@ -51,7 +51,7 @@ defineProps({
 </template>
 <style>
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .divComponentes{
         width: 100%;
     }
