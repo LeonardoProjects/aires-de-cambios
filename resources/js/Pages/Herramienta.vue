@@ -220,9 +220,9 @@ svg {
 @media screen and (max-width: 767px) {
     .divSelect {
         padding-top: 10px;
-        justify-content: center;
-        select {
-            width: 50%;
+        
+        #selectAmbiente {
+            width: 40% !important;
             text-overflow: ellipsis;
         }
     }
