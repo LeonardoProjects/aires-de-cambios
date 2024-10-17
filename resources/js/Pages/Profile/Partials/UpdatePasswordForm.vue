@@ -149,7 +149,7 @@ const updatePassword = () => {
     cursor: not-allowed;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .formActualizarContraseña {
         width: 70vw;
     }

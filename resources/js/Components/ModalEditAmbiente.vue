@@ -384,7 +384,7 @@ select {
 }
 
 /*Resolución para tablets (pantallas entre 768px y 1024px)*/
-@media (min-width: 768px) and (min-width: 1024px) {
+@media (min-width: 767px) and (min-width: 1024px) {
     #mapEdit {
         width: 90%;
         height: 350px;

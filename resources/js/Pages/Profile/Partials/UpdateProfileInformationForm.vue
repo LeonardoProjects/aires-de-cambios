@@ -123,7 +123,7 @@ const sendEmailVerification = () => {
     cursor: not-allowed;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .formActualizar {
         width: 70vw;
     }

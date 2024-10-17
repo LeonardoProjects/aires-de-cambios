@@ -84,6 +84,16 @@ export default {
                 this.idAmbiente = -1;
                 this.$refs.resultados.datosCalculos = [];
             }
+        },
+        aumentarCantPersonas() {
+            this.cantPersonas++;
+            this.$refs.resultados.cargarDatos();
+        },
+        disminuirCantPersonas() {
+            if (this.cantPersonas > 1) {
+                this.cantPersonas--;
+                this.$refs.resultados.cargarDatos();
+            }
         }
     },
     mounted() {
@@ -117,23 +127,49 @@ export default {
 <template>
     <div class="d-flex justify-content-center">
         <div class="d-flex justify-content-start align-items-center flex-column min-vh-100 divPrincipal">
-            <div v-if="$page.props.auth.user" class="d-flex flex-row position-relative divSelect">
-                <ModalCRUD @updateAmbientes="actualizarAmbientesPostAdd" />
-                <select name="selectAmbientes" id="selectAmbientes" class="form-select w-50"
-                    @change="cargarResultados($event.target.value)" v-model="idAmbiente">
-                    <option v-for="ambiente in ambientes" :key="ambiente.id" :value="ambiente.id">
-                        {{ ambiente.nombre }}
-                    </option>
-                    <option v-if="ambientes && ambientes.length === 0" :value="-1">
-                        No hay locales creados
-                    </option>
-                </select>
-                <ModalEditAmbiente v-if="idAmbiente != -1" @updateAmbientesEdit="actualizarAmbientesPostEdit"
-                    :ambiente="obtenerAmbienteXid(idAmbiente)" />
-                <DeleteAmbienteConfirm :idAmbiente="idAmbiente" @deleteAmbiente="deleteAmbiente" />
-                <div v-if="idAmbiente != -1" class="d-flex flex-column position-absolute divCantPersonas text-center">
+            <h3 class="d-md-none d-block">Ajustes de local</h3>
+            <div v-if="$page.props.auth.user" class="divAjustes">
+                <div v-if="idAmbiente != -1" class="d-md-none d-flex flex-column flex-wrap divCa text-center">
                     <label for="cantPersonas" class="form-label">Cant. personas</label>
-                    <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas" />
+                    <div class="d-flex justify-content-center mb-2">
+                        <button class="btn btn-danger rounded-5 p-1 mx-2" @click="disminuirCantPersonas">
+                            <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24"
+                                viewBox="0 0 24 24" width="24">
+                                <g>
+                                    <rect fill="none" fill-rule="evenodd" height="24" width="24" />
+                                    <rect fill="white" fill-rule="evenodd" height="2" width="16" x="4" y="11" />
+                                </g>
+                            </svg>
+                        </button>
+                        <input type="text" id="cantPersonas" class="form-control text-center" min="1"
+                            v-model="cantPersonas" />
+                        <button class="btn btn-success rounded-5 p-1 mx-2" @click="aumentarCantPersonas">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                <path d="M0 0h24v24H0z" fill="none" />
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="white" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="d-flex flex-row position-relative divSelect w-100">
+                    <ModalCRUD @updateAmbientes="actualizarAmbientesPostAdd" />
+                    <select name="selectAmbientes" id="selectAmbientes" class="form-select"
+                        @change="cargarResultados($event.target.value)" v-model="idAmbiente">
+                        <option v-for="ambiente in ambientes" :key="ambiente.id" :value="ambiente.id">
+                            {{ ambiente.nombre }}
+                        </option>
+                        <option v-if="ambientes && ambientes.length === 0" :value="-1">
+                            No hay locales creados
+                        </option>
+                    </select>
+                    <ModalEditAmbiente v-if="idAmbiente != -1" @updateAmbientesEdit="actualizarAmbientesPostEdit"
+                        :ambiente="obtenerAmbienteXid(idAmbiente)" />
+                    <DeleteAmbienteConfirm :idAmbiente="idAmbiente" @deleteAmbiente="deleteAmbiente" />
+                    <div v-if="idAmbiente != -1"
+                        class="d-none d-md-flex flex-column position-absolute divCantPersonas text-center">
+                        <label for="cantPersonas" class="form-label">Cant. personas</label>
+                        <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas" />
+                    </div>
                 </div>
             </div>
             <div v-else class="d-flex justify-content-center position-relative divSelect">
@@ -158,8 +194,11 @@ svg {
 }
 
 .divSelect {
-    width: 100%;
     margin-bottom: 30px;
+
+    select {
+        width: 50%;
+    }
 
     p {
         margin: 0;
@@ -174,13 +213,16 @@ svg {
     width: 20%;
 }
 
-@media screen and (max-width: 768px) {
-    .divSelect {
-        width: 65% !important;
-        padding-top: 10px;
+.divAjustes {
+    width: 100%;
+}
 
+@media screen and (max-width: 767px) {
+    .divSelect {
+        padding-top: 10px;
+        justify-content: center;
         select {
-            width: 40% !important;
+            width: 50%;
             text-overflow: ellipsis;
         }
     }
@@ -189,8 +231,15 @@ svg {
         width: 30% !important;
     }
 
+    #cantPersonas {
+        width: 15% !important;
+    }
+
     label {
         font-size: 0.9em !important;
     }
-}
-</style>
+
+    .divAjustes {
+        width: 400px;
+    }
+}</style>

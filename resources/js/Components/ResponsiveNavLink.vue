@@ -70,6 +70,7 @@ const classes = computed(() => {
 .btnResponsiveNavLinkInactive:hover {
     background-color: #0099ff;
     color: white;
+    border-radius: var(--bs-border-radius);
 }
 
 .logout {
