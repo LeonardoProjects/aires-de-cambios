@@ -1,17 +1,6 @@
 <template>
     <div class="footer-container">
         <a
-            :href="'https://utec.edu.uy/es/'"
-            target="_blank"
-            class="logo-footer d-flex align-items-center justify-content-center"
-        >
-            <img
-                src="../../images/utec.png"
-                alt="logoProyecto"
-                class="h-100 w-50"
-            />
-        </a>
-        <a
             :href="'https://www.fadu.edu.uy/'"
             target="_blank"
             class="logo-footer d-flex justify-content-center align-items-center"
@@ -20,6 +9,17 @@
                 src="../../images/fadu.png"
                 alt="logoProyecto"
                 class="h-100 w-100"
+            />
+        </a>
+        <a
+            :href="'https://utec.edu.uy/es/'"
+            target="_blank"
+            class="logo-footer d-flex align-items-center justify-content-center"
+        >
+            <img
+                src="../../images/utec.png"
+                alt="logoProyecto"
+                class="h-100 w-50"
             />
         </a>
         <a
