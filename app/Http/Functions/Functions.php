@@ -312,8 +312,12 @@ class Functions
 
         $codigosDeLluvia = [
             //Comentar significado code
+            1069,
+            1072,
             1150,
             1153,
+            1168,
+            1171,
             1180,
             1183,
             1186,
@@ -322,18 +326,25 @@ class Functions
             1195,
             1198,
             1201,
+            1204,
             1240,
+            1249,
             1243,
-            1246
+            1246,
+            1063
         ];
 
         $codigosDeTormeta = [
             //Comentar significado code
+            1087,
+
             1207,
             1273,
             1252,
             1264,
-            1276
+            1276,
+            1279,
+            1282
         ];
 
         if (in_array($condicionClimatica['code'], $codigosDeLluvia)) {
