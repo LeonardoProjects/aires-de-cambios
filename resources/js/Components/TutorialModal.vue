@@ -1,6 +1,5 @@
 <template>
-    <button class="btn btn-outline-primary mx-1 rounded-5 p-0 px-2 botonTutorial"
-        @click="openTutorialModal">
+    <button class="btn btn-outline-primary mx-1 rounded-5 p-0 px-2 botonTutorial" @click="openTutorialModal">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-patch-question"
             viewBox="0 0 16 16">
             <path
@@ -22,7 +21,7 @@
 
                 <!-- Cuerpo del modal para mostrar el GIF -->
                 <div class="modal-body text-center">
-                    <img :src="currentGif.src" alt="⚠" class="img-fluid" />
+                    <img :src="currentGif.src" alt="⚠" class="img-fluid imgTutorial" />
                     <p class="mt-3">{{ currentGif.description }}</p>
                 </div>
 
@@ -115,10 +114,25 @@ export default {
 
 <style>
 .modalTutorial {
-    max-width: 600px;
+    max-width: 1200px;
+    margin-bottom: 0;
+    margin-top: 30px;
 }
 
 .botonTutorial {
     max-height: 35px;
+}
+
+.imgTutorial {
+    width: 100%;
+}
+
+@media (max-width: 767px) {
+
+    .modalTutorial {
+        max-width: 100%;
+        margin-bottom: 0;
+        margin-top: 0;
+    }
 }
 </style>
