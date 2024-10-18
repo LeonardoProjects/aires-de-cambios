@@ -196,7 +196,7 @@ svg {
 .divSelect {
     margin-bottom: 30px;
 
-    select {
+    #selectAmbientes {
         width: 50%;
     }
 
@@ -220,13 +220,13 @@ svg {
 @media screen and (max-width: 767px) {
     .divSelect {
         padding-top: 10px;
-        
-        #selectAmbiente {
-            width: 40% !important;
-            text-overflow: ellipsis;
-        }
+        justify-content: center;
     }
-
+    
+    #selectAmbiente {
+        width: 40% !important;
+        text-overflow: ellipsis;
+    }
     .divCantPersonas {
         width: 30% !important;
     }

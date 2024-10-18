@@ -209,31 +209,31 @@ function crearMapaEdit($latitud, $longitud) {
                         <div class="mb-5">
                             <h3>Detalles del local</h3>
                             <hr />
-                            <div class="mt-1 mb-4 mx-4 text-center">
+                            <div class="mt-1 mb-4 px-4 text-center">
                                 <label for="nombreAmbiente" class="form-label">Nombre de local</label>
                                 <input id="nombreAmbiente" type="text" class="form-control w-0"
                                     v-model="form.nombreAmbiente" />
                                 <div v-if="form.errors.nombreAmbiente" class="error">{{ form.errors.nombreAmbiente[0] }}
                                 </div>
                             </div>
-                            <div class="d-flex h-50 flex-row">
-                                <div class="mx-4 w-25 text-center">
+                            <div class="d-flex justify-content-between px-4 h-50 flex-row">
+                                <div class="w-25 text-center">
                                     <label for="anchoAmbiente" class="form-label">Ancho (m)</label>
                                     <input id="anchoAmbiente" type="number" min="0.1" max="20" step="0.1"
                                         class="form-control" v-model="form.anchoAmbiente" />
                                 </div>
-                                <div class="mx-4 w-25 text-center">
+                                <div class="w-25 text-center">
                                     <label for="largoAmbiente" class="form-label">Largo (m)</label>
                                     <input id="largoAmbiente" type="number" min="0.1" max="20" step="0.1" value="0"
                                         class="form-control w-0" v-model="form.largoAmbiente" />
                                 </div>
-                                <div class="mx-4 w-25 text-center">
+                                <div class="w-25 text-center">
                                     <label for="altoAmbiente" class="form-label">Alto (m)</label>
                                     <input id="altoAmbiente" type="number" min="0.1" max="20" step="0.1" value="0"
                                         class="form-control w-0" v-model="form.altoAmbiente" />
                                 </div>
                             </div>
-                            <div class="mx-5 mt-4 w-75 text-center">
+                            <div class="px-5 mt-4 w-100 text-center">
                                 <label for="tipoHabitacion" class="form-label">Tipo de habitación</label>
                                 <select name="tipoHabitacionSelect" id="tipoHabitacion" class="form-select"
                                     v-model="form.tipoHabitacion" @change="form.clearErrors('tipoHabitacion')">
@@ -252,13 +252,13 @@ function crearMapaEdit($latitud, $longitud) {
                         <div class="mb-5">
                             <h3>Ubicación</h3>
                             <hr />
-                            <div class="d-flex h-50">
-                                <div class="me-3 w-50 text-center">
+                            <div class="d-flex h-50 mt-2 px-4">
+                                <div class="pe-3 w-50 text-center">
                                     <label for="alturaSelect" class="form-label">
                                         Altura</label>
                                     <div class="d-flex">
                                         <select name="alturaSelect" id="altura" v-model="form.alturaSelect"
-                                            class="form-select" @change="form.clearErrors('alturaSelect')">
+                                            class="form-select w-80" @change="form.clearErrors('alturaSelect')">
                                             <option value="Planta baja">
                                                 Planta baja
                                             </option>
@@ -288,11 +288,11 @@ function crearMapaEdit($latitud, $longitud) {
                                     </div>
                                 </div>
 
-                                <div class="ms-3 w-50 text-center">
+                                <div class="ps-3 w-50 text-center">
                                     <label for="densidadSelect" class="form-label">
                                         Vivo en</label>
                                     <div class="d-flex">
-                                        <select name="densidadSelect" id="densidad" class="form-select"
+                                        <select name="densidadSelect" id="densidad" class="form-select w-80"
                                             v-model="form.densidadSelect" @change="form.clearErrors('densidadSelect')">
                                             <option value="Frente al mar">
                                                 Frente al mar
@@ -327,24 +327,26 @@ function crearMapaEdit($latitud, $longitud) {
                                     </div>
                                 </div>
                             </div>
-                            <div id="mapEdit" class="mt-4"></div>
+                            <div class="w-100 mt-4 d-flex justify-content-center">
+                                <div id="mapEdit"></div>
+                            </div>
                         </div>
 
                         <div class="mb-0">
                             <h3>Detalles de ventana</h3>
                             <hr />
-                            <div class="d-flex">
-                                <div class="flex-column w-50">
-                                    <div class="mx-4 text-center">
+                            <div class="d-flex mt-2">
+                                <div class="flex-column w-50 ps-4">
+                                    <div class="text-center d-flex flex-column align-items-center">
                                         <label for="largoVentana" class="form-label">
                                             Largo (m)</label>
                                         <input id="largoVentana" type="number" min="0.1" max="20" step="0.1"
-                                            class="form-control" v-model="form.largoVentana" />
+                                            class="form-control w-80" v-model="form.largoVentana" />
                                     </div>
-                                    <div class="mx-4 text-center">
+                                    <div class="text-center d-flex flex-column align-items-center mt-2">
                                         <label for="tipoVentana" class="form-label">
                                             Tipo de ventana</label>
-                                        <select name="tipoVentanaSelect" id="tipoVentana" class="form-select"
+                                        <select name="tipoVentanaSelect" id="tipoVentana" class="form-select w-80"
                                             v-model="form.tipoVentana" @change="form.clearErrors('tipoVentana')">
                                             <option value="Corrediza">
                                                 Corrediza
@@ -355,18 +357,18 @@ function crearMapaEdit($latitud, $longitud) {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex-column w-50">
-                                    <div class="text-center">
+                                <div class="flex-column w-50 pe-4">
+                                    <div class="text-center d-flex flex-column align-items-center">
                                         <label for="altoVentana" class="form-label">
                                             Alto (m)</label>
                                         <input id="altoVentana" type="number" min="0.1" max="20" step="0.1"
-                                            class="form-control" v-model="form.altoVentana" />
+                                            class="form-control w-80" v-model="form.altoVentana" />
                                     </div>
-                                    <div class="text-center">
+                                    <div class="text-center d-flex flex-column align-items-center mt-2">
                                         <label for="calidadVentana" class="form-label">
                                             Calidad de ventana</label>
                                         <div class="d-flex">
-                                            <select name="calidadSelect" id="calidadVentana" class="form-select"
+                                            <select name="calidadSelect" id="calidadVentana" class="form-select w-80"
                                                 v-model="form.calidadVentana"
                                                 @change="form.clearErrors('calidadVentana')">
                                                 <option value="Normal">Normal</option>
@@ -416,7 +418,6 @@ function crearMapaEdit($latitud, $longitud) {
 #mapEdit {
     width: 100%;
     height: 400px;
-    margin: 0 auto;
 }
 
 .error {
@@ -433,6 +434,14 @@ select {
 
 select {
     text-overflow: ellipsis;
+}
+
+.w-80 {
+    width: 80% !important;
+}
+
+hr {
+    margin: 0;
 }
 
 /*Resolución para tablets (pantallas entre 768px y 1024px)*/

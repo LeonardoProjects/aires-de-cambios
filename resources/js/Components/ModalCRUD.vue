@@ -191,7 +191,7 @@ function closeModal() {
 <template>
     <button type="button" @click="crearMapa" class="btn btn-outline-primary mx-1 rounded-5 p-1" data-bs-toggle="modal"
         data-bs-target="#staticBackdrop">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="28">
             <path d="M0 0h24v24H0z" fill="none" />
             <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentcolor" />
         </svg>
@@ -214,7 +214,7 @@ function closeModal() {
                         <div class="mb-5">
                             <h3>Detalles del local</h3>
                             <hr />
-                            <div class="mt-1 mb-4 mx-4 text-center">
+                            <div class="mt-1 mb-4 px-4 text-center">
                                 <label for="nombreAmbiente" class="form-label">Nombre de local</label>
                                 <input id="nombreAmbiente" type="text" class="form-control w-0"
                                     v-model="formAdd.nombreAmbiente" />
@@ -223,24 +223,24 @@ function closeModal() {
                                     }}
                                 </div>
                             </div>
-                            <div class="d-flex h-50 flex-row">
-                                <div class="mx-4 w-25 text-center">
+                            <div class="d-flex h-50 px-4 justify-content-between flex-row">
+                                <div class="w-25 text-center">
                                     <label for="anchoAmbiente" class="form-label">Ancho (m)</label>
                                     <input id="anchoAmbiente" type="number" min="0.1" max="20" step="0.1"
                                         class="form-control" v-model="formAdd.anchoAmbiente" />
                                 </div>
-                                <div class="mx-4 w-25 text-center">
+                                <div class="w-25 text-center">
                                     <label for="largoAmbiente" class="form-label">Largo (m)</label>
                                     <input id="largoAmbiente" type="number" min="0.1" max="20" step="0.1" value="0"
                                         class="form-control w-0" v-model="formAdd.largoAmbiente" />
                                 </div>
-                                <div class="mx-4 w-25 text-center">
+                                <div class="w-25 text-center">
                                     <label for="altoAmbiente" class="form-label">Alto (m)</label>
                                     <input id="altoAmbiente" type="number" min="0.1" max="20" step="0.1" value="0"
                                         class="form-control w-0" v-model="formAdd.altoAmbiente" />
                                 </div>
                             </div>
-                            <div class="mx-5 mt-4 w-75 text-center">
+                            <div class="px-5 mt-4 w-100 text-center">
                                 <label for="tipoHabitacion" class="form-label">Tipo de habitación</label>
                                 <select name="tipoHabitacionSelect" id="tipoHabitacion" class="form-select"
                                     v-model="formAdd.tipoHabitacion" @change="formAdd.clearErrors('tipoHabitacion')">
@@ -261,13 +261,13 @@ function closeModal() {
                         <div class="mb-5 padreMapa">
                             <h3>Ubicación</h3>
                             <hr />
-                            <div class="d-flex h-50">
-                                <div class="me-3 w-50 text-center">
+                            <div class="d-flex h-50 mt-2 px-4">
+                                <div class="pe-3 w-50 text-center">
                                     <label for="alturaSelect" class="form-label">
                                         Altura</label>
                                     <div class="d-flex">
                                         <select name="alturaSelect" id="altura" v-model="formAdd.alturaSelect"
-                                            class="form-select" @change="formAdd.clearErrors('alturaSelect')">
+                                            class="form-select w-80" @change="formAdd.clearErrors('alturaSelect')">
                                             <option value="Planta baja">
                                                 Planta baja
                                             </option>
@@ -299,11 +299,11 @@ function closeModal() {
                                     </div>
                                 </div>
 
-                                <div class="ms-3 w-50 text-center">
+                                <div class="ps-3 w-50 text-center">
                                     <label for="densidadSelect" class="form-label">
                                         Vivo en</label>
                                     <div class="d-flex">
-                                        <select name="densidadSelect" id="densidad" class="form-select"
+                                        <select name="densidadSelect" id="densidad" class="form-select w-80"
                                             v-model="formAdd.densidadSelect"
                                             @change="formAdd.clearErrors('densidadSelect')">
                                             <option value="Frente al mar">
@@ -339,24 +339,26 @@ function closeModal() {
                                     </div>
                                 </div>
                             </div>
-                            <div id="map" class="mt-4"></div>
+                            <div class="w-100 mt-4 d-flex justify-content-center">
+                                <div id="map"></div>
+                            </div>
                         </div>
 
                         <div class="mb-0">
                             <h3>Detalles de ventana</h3>
                             <hr />
-                            <div class="d-flex">
-                                <div class="flex-column w-50 me-2">
-                                    <div class="text-center">
+                            <div class="d-flex mt-2">
+                                <div class="flex-column w-50 ps-4">
+                                    <div class="text-center d-flex flex-column align-items-center">
                                         <label for="largoVentana" class="form-label">
                                             Largo (m)</label>
                                         <input id="largoVentana" type="number" min="0.1" max="20" step="0.1"
-                                            class="form-control m-0" v-model="formAdd.largoVentana" />
+                                            class="form-control w-80" v-model="formAdd.largoVentana" />
                                     </div>
-                                    <div class="text-center mt-3">
+                                    <div class="text-center mt-2 d-flex flex-column align-items-center">
                                         <label for="tipoVentana" class="form-label">
                                             Tipo de ventana</label>
-                                        <select name="tipoVentanaSelect" id="tipoVentana" class="form-select m-0"
+                                        <select name="tipoVentanaSelect" id="tipoVentana" class="form-select w-80"
                                             v-model="formAdd.tipoVentana" @change="formAdd.clearErrors('tipoVentana')">
                                             <option value="Corrediza">
                                                 Corrediza
@@ -367,18 +369,18 @@ function closeModal() {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex-column w-50">
-                                    <div class="text-center">
+                                <div class="flex-column w-50 pe-4">
+                                    <div class="text-center d-flex flex-column align-items-center">
                                         <label for="altoVentana" class="form-label">
                                             Alto (m)</label>
                                         <input id="altoVentana" type="number" min="0.1" max="20" step="0.1"
-                                            class="form-control m-0" v-model="formAdd.altoVentana" />
+                                            class="form-control w-80" v-model="formAdd.altoVentana" />
                                     </div>
-                                    <div class="text-center mt-3">
+                                    <div class="text-center mt-2 d-flex flex-column align-items-center">
                                         <label for="calidadVentana" class="form-label">
                                             Calidad de ventana</label>
                                         <div class="d-flex">
-                                            <select name="calidadSelect" id="calidadVentana" class="form-select m-0"
+                                            <select name="calidadSelect" id="calidadVentana" class="form-select"
                                                 v-model="formAdd.calidadVentana"
                                                 @change="formAdd.clearErrors('calidadVentana')">
                                                 <option value="Normal">Normal</option>
@@ -389,15 +391,7 @@ function closeModal() {
                                                     Reforzada
                                                 </option>
                                             </select>
-                                        </div>
-                                        <div v-if="formAdd.errors.calidadVentana" class="error">{{
-                                            formAdd.errors.calidadVentana[0] }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-end">
-                                    <div class="flex-column">
-                                        <button type="button" class="btn btnTooltip tooltipVentana"
+                                            <button type="button" class="btn btnTooltip tooltipVentana"
                                             data-bs-toggle="tooltip" data-bs-placement="top"
                                             data-bs-custom-class="custom-tooltip"
                                             data-bs-title="La calidad de las aberturas afecta en las infiltraciones de aire.">
@@ -409,6 +403,10 @@ function closeModal() {
                                                     d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
                                             </svg>
                                         </button>
+                                        </div>
+                                        <div v-if="formAdd.errors.calidadVentana" class="error">{{
+                                            formAdd.errors.calidadVentana[0] }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -433,7 +431,6 @@ function closeModal() {
 #map {
     width: 100%;
     height: 400px;
-    margin: 0 auto;
 }
 
 .error {
@@ -471,6 +468,9 @@ select {
     margin-bottom: 5px;
 }
 
+.w-80 {
+    width: 80% !important;
+}
 
 /*Resolución para tablets (pantallas entre 768px y 1024px)*/
 @media (min-width: 767px) and (min-width: 1024px) {
