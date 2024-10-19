@@ -21,7 +21,7 @@
 
                 <!-- Cuerpo del modal para mostrar el GIF -->
                 <div class="modal-body text-center">
-                    <img :src="currentImage.src" alt="⚠" class="img-fluid imgTutorial" />
+                    <img :src="currentImage.src" alt="⚠" class="img-fluid" />
                     <p class="mt-3">{{ currentImage.description }}</p>
                 </div>
 
@@ -48,7 +48,7 @@ export default {
             showingTutorialModal: false,
             currentImageIndex: 0,
             images: [{
-                src: null,
+                src: '/imagesTutorial/libro-de-instrucciones.png',
                 description: 'CREAR AMBIENTE'
             },
             {
@@ -60,33 +60,33 @@ export default {
                 description: 'Paso 2: Complete los campos: Nombre, dimensiones en metros y tipo de habitación para el local.',
             }, {
                 src: '/imagesTutorial/ubicacionLocal.png',
-                description: 'Paso 3: Complete los campos: Altura, vivo en y la ubicación del local o clickea en el mapa como se mostrará en el siguiente ejemplo.'
+                description: 'Paso 3: Complete los campos: Altura, vivo en luego presione el botón "Lupa" para buscar la ubicación del local o clickea en el mapa como se mostrará en el siguiente ejemplo.'
             }, {
                 src: '/imagesTutorial/ubicacionClickeada.png',
                 description: 'Navega por el mapa y clickea un punto determinado'
             }, {
                 src: '/imagesTutorial/ventanaLocal.png',
-                description: 'Paso 4: Complete los campos con las dimensiones y selecciona la calidad de la ventana luego hacer click en el botón "Guardar cambios".'
+                description: 'Paso 4: Complete los campos con las dimensiones y selecciona la calidad de la ventana, por ultimo hacer click en el botón "Guardar cambios".'
             }, {
                 src: '/imagesTutorial/resultados.png',
-                description: 'Paso 5: Se podrán visualizar los resultados divididos en dos días con sus 24 horas mostrando icono de alerta climatica relevante y apertura de ventana en centímetros. Con la posiblidad de desplegar cada item, observando sus detalles pudiendo intercambiar de alerta mediante un click.'
+                description: 'Paso 5: Se podrán visualizar los resultados divididos en dos días con sus 24 horas mostrando icono de alerta climatica relevante y apertura de ventana en centímetros. Haciendo click por cada hora se desplegará informacion detallada pudiendo intercambiar de alerta climática en caso que hayan varias.'
             }, {
-                src: null,
+                src: '/imagesTutorial/libro-de-instrucciones.png',
                 description: 'EDITAR AMBIENTE'
             }, {
                 src: '/imagesTutorial/btnEditarLocal.png',
-                description: 'Paso 1: Click en el botón "Editar" para cambiar los datos de un local.'
+                description: 'Paso 1: Click en el botón "Editar" para modificar los datos de un local.'
             },{
                 src: '/imagesTutorial/modalEditarLocal.png',
                 description: 'Paso 2: Modifique los campos y haga click en el botón "Guardar cambios".'
             },{
-                src: null,
+                src: '/imagesTutorial/libro-de-instrucciones.png',
                 description: 'ALTERNAR CANTIDAD DE PERSONAS'
             }, {
                 src: '/imagesTutorial/cantidadPersonas.png',
                 description: 'Paso 1: Cambiar valor del campo "cant.personas" para visualizar diferentes resultados.'
             },{
-                src: null,
+                src: '/imagesTutorial/libro-de-instrucciones.png',
                 description: 'ELIMINAR LOCAL'
             }, {
                 src: '/imagesTutorial/btnEliminarLocal.png',
@@ -134,10 +134,6 @@ export default {
 .botonTutorial {
     max-height: 35px;
     margin-top: calc(1.75rem + 25px);
-}
-
-.imgTutorial {
-    width: 100%;
 }
 
 @media (max-width: 767px) {
