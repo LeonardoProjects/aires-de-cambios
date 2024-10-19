@@ -1,45 +1,46 @@
 <template>
-    <div v-if="datosCalculos.length != 0" class="d-flex justify-content-center flex-column text-center">
-        <!-- Iterar sobre los grupos de resultados agrupados por fecha -->
-        <div v-for="(resultadosPorFecha, date, fechaIndex) in agrupadosPorFecha" :key="date" class="mb-4">
-            <!-- Mostrar la fecha por encima de la tabla -->
-            <h3 class="text-center">{{ date }}</h3>
-            <div class="d-flex justify-content-center">
-                <div class="text-center resultsTable">
-                    <div v-for="(resultado, index) in resultadosPorFecha" :key="getGlobalIndex(fechaIndex, index)"
-                        @click="toggleRow(getGlobalIndex(fechaIndex, index), $event)" role="button"
-                        :class="[resultado.expanded ? 'resultsHourExpanded' : 'resultsHourMinimized']">
-                        <div v-if="!resultado.expanded" :class="['hourRow', {
-                            claseLluviaMinimized: resultado.alertas[0] == 'Precaución por lluvias',
-                            claseFrioMinimized: resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
-                            claseVientoMinimized: resultado.alertas[0] == 'Precaución por vientos fuertes (mayores a 40 km/h)',
-                            claseAgradableMinimized: resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
-                            claseTormentaMinimized: resultado.alertas[0] == 'Precaución por tormentas fuertes',
-                            claseNadaMinimized: resultado.alertas[0] == ''
-                        }]">
-                            <div class="d-flex w-33">
-                                <div class="iconAlert">
-                                    <AlertIcon :alertName="getAlertName(resultado.alertas[0])" />
+    <div class="d-flex">
+        <div v-if="datosCalculos.length != 0" class="d-flex justify-content-center flex-column text-center">
+            <!-- Iterar sobre los grupos de resultados agrupados por fecha -->
+            <div v-for="(resultadosPorFecha, date, fechaIndex) in agrupadosPorFecha" :key="date" class="mb-4">
+                <!-- Mostrar la fecha por encima de la tabla -->
+                <h3 class="text-center fechaTabla">{{ date }}</h3>
+                <div class="d-flex justify-content-center">
+                    <div class="text-center resultsTable">
+                        <div v-for="(resultado, index) in resultadosPorFecha" :key="getGlobalIndex(fechaIndex, index)"
+                            @click="toggleRow(getGlobalIndex(fechaIndex, index), $event)" role="button"
+                            :class="[resultado.expanded ? 'resultsHourExpanded' : 'resultsHourMinimized']">
+                            <div v-if="!resultado.expanded" :class="['hourRow', {
+                                claseLluviaMinimized: resultado.alertas[0] == 'Precaución por lluvias',
+                                claseFrioMinimized: resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
+                                claseVientoMinimized: resultado.alertas[0] == 'Precaución por vientos fuertes (mayores a 40 km/h)',
+                                claseAgradableMinimized: resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
+                                claseTormentaMinimized: resultado.alertas[0] == 'Precaución por tormentas fuertes',
+                                claseNadaMinimized: resultado.alertas[0] == ''
+                            }]">
+                                <div class="d-flex w-33">
+                                    <div class="iconAlert">
+                                        <AlertIcon :alertName="getAlertName(resultado.alertas[0])" />
+                                    </div>
+                                    <span class="ps-2">{{ resultado.hour }}</span>
                                 </div>
-                                <span class="ps-2">{{ resultado.hour }}</span>
+                                <span class="w-33">{{ resultado.cm }} cm</span>
+                                <span class="w-33 d-flex justify-content-end">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                        <path d="M0 0h24v24H0z" fill="none" />
+                                        <circle cx="12" cy="12" r="10" stroke="black" stroke-width="2" fill="none" />
+                                        <polygon points="8,10 16,10 12,14" fill="black" />
+                                    </svg>
+                                </span>
                             </div>
-                            <span class="w-33">{{ resultado.cm }} cm</span>
-                            <span class="w-33 d-flex justify-content-end">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                    <path d="M0 0h24v24H0z" fill="none" />
-                                    <circle cx="12" cy="12" r="10" stroke="black" stroke-width="2" fill="none" />
-                                    <polygon points="8,10 16,10 12,14" fill="black" />
-                                </svg>
-                            </span>
-                        </div>
-                        <span :class="['text-center', 'resultExpanded', {
-                            claseLluviaExpanded: resultado.alertas[0] == 'Precaución por lluvias',
-                            claseFrioExpanded: resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
-                            claseVientoExpanded: resultado.alertas[0] == 'Precaución por vientos fuertes (mayores a 40 km/h)',
-                            claseAgradableExpanded: resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
-                            claseTormentaExpanded: resultado.alertas[0] == 'Precaución por tormentas fuertes',
-                            claseNadaExpanded: resultado.alertas[0] == ''
-                        }]" :data-originalAlert="{
+                            <span :class="['text-center', 'resultExpanded', {
+                                claseLluviaExpanded: resultado.alertas[0] == 'Precaución por lluvias',
+                                claseFrioExpanded: resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
+                                claseVientoExpanded: resultado.alertas[0] == 'Precaución por vientos fuertes (mayores a 40 km/h)',
+                                claseAgradableExpanded: resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
+                                claseTormentaExpanded: resultado.alertas[0] == 'Precaución por tormentas fuertes',
+                                claseNadaExpanded: resultado.alertas[0] == ''
+                            }]" :data-originalAlert="{
                             'lluvia': resultado.alertas[0] == 'Precaución por lluvias',
                             'frio': resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
                             'viento': resultado.alertas[0] == 'Precaución por vientos fuertes (mayores a 40 km/h)',
@@ -47,48 +48,49 @@
                             'tormenta': resultado.alertas[0] == 'Precaución por tormentas fuertes',
                             'nada': resultado.alertas[0] == ''
                         }" v-else>
-                            <div class="dUP">
-                                <strong>{{ resultado.hour }}</strong>
-                                <span class="m-0">Apertura de ventana<br><span class="fs-3">{{ resultado.cm
-                                        }}cm</span></span>
-                            </div>
-                            <div class="dDOWN">
-                                <div class="alertIcons">
-                                    <template
-                                        v-if="!isMobileHerramienta || (isMobileHerramienta && resultado.alertas.length < 4)"
-                                        v-for="(alerta, index) in resultado.alertas" :key="index">
-                                        <div v-if="alerta != ''">
-                                            <AlertIcon :alertName="getAlertName(alerta)"
-                                                :class="{ 'alertSelected': index == 0 }"
-                                                @updateAlertName="cambiarAlerta" />
-                                        </div>
-                                    </template>
-                                    <template v-else>
-                                        <div>
-                                            <AlertIcon :alertName="getAlertName(resultado.alertas[0])"
-                                                :class="alertSelected" @updateAlertName="cambiarAlerta" />
-                                            <AlertIcon :alertName="getAlertName(resultado.alertas[1])"
-                                                @updateAlertName="cambiarAlerta" />
-                                        </div>
-                                        <div>
-                                            <AlertIcon :alertName="getAlertName(resultado.alertas[2])"
-                                                @updateAlertName="cambiarAlerta" />
-                                            <AlertIcon :alertName="getAlertName(resultado.alertas[3])"
-                                                @updateAlertName="cambiarAlerta" />
-                                        </div>
-                                    </template>
+                                <div class="dUP">
+                                    <strong>{{ resultado.hour }}</strong>
+                                    <span class="m-0">Apertura de ventana<br><span class="fs-3">{{ resultado.cm
+                                            }}cm</span></span>
                                 </div>
-                                <p class="m-0 align-self-center alertName">{{ resultado.alertas[0] }}</p>
-                            </div>
-                        </span>
+                                <div class="dDOWN">
+                                    <div class="alertIcons">
+                                        <template
+                                            v-if="!isMobileHerramienta || (isMobileHerramienta && resultado.alertas.length < 4)"
+                                            v-for="(alerta, index) in resultado.alertas" :key="index">
+                                            <div v-if="alerta != ''">
+                                                <AlertIcon :alertName="getAlertName(alerta)"
+                                                    :class="{ 'alertSelected': index == 0 }"
+                                                    @updateAlertName="cambiarAlerta" />
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <div>
+                                                <AlertIcon :alertName="getAlertName(resultado.alertas[0])"
+                                                    :class="alertSelected" @updateAlertName="cambiarAlerta" />
+                                                <AlertIcon :alertName="getAlertName(resultado.alertas[1])"
+                                                    @updateAlertName="cambiarAlerta" />
+                                            </div>
+                                            <div>
+                                                <AlertIcon :alertName="getAlertName(resultado.alertas[2])"
+                                                    @updateAlertName="cambiarAlerta" />
+                                                <AlertIcon :alertName="getAlertName(resultado.alertas[3])"
+                                                    @updateAlertName="cambiarAlerta" />
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <p class="m-0 align-self-center alertName">{{ resultado.alertas[0] }}</p>
+                                </div>
+                            </span>
+                        </div>
                     </div>
                 </div>
-                <TutorialModal v-if="fechaIndex === 0"/>
             </div>
         </div>
-    </div>
-    <div v-else class="d-flex justify-content-center flex-column w-75 text-center">
-        <p class="fs-5">¡Crea un local para saber cómo ventilar!</p>
+        <div v-else class="d-flex justify-content-center flex-column w-75 text-center">
+            <p class="fs-5">¡Crea un local para saber cómo ventilar!</p>
+        </div>
+        <TutorialModal />
     </div>
 </template>
 
@@ -387,6 +389,10 @@ export default {
 .resultsTable {
     width: 600px;
     height: auto;
+}
+
+.fechaTabla{
+    margin-bottom: 15px;
 }
 
 .resultsHourMinimized {

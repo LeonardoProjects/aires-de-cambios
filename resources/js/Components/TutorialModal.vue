@@ -21,18 +21,18 @@
 
                 <!-- Cuerpo del modal para mostrar el GIF -->
                 <div class="modal-body text-center">
-                    <img :src="currentGif.src" alt="⚠" class="img-fluid imgTutorial" />
-                    <p class="mt-3">{{ currentGif.description }}</p>
+                    <img :src="currentImage.src" alt="⚠" class="img-fluid imgTutorial" />
+                    <p class="mt-3">{{ currentImage.description }}</p>
                 </div>
 
                 <!-- Footer con los botones de navegación -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @click="previousGif"
-                        :disabled="currentGifIndex === 0">
+                    <button type="button" class="btn btn-secondary" @click="previousImage"
+                        :disabled="currentImageIndex === 0">
                         Anterior
                     </button>
-                    <button type="button" class="btn btn-primary" @click="nextGif"
-                        :disabled="currentGifIndex === gifs.length - 1">
+                    <button type="button" class="btn btn-primary" @click="nextImage"
+                        :disabled="currentImageIndex === images.length - 1">
                         Siguiente paso
                     </button>
                 </div>
@@ -46,49 +46,61 @@ export default {
     data() {
         return {
             showingTutorialModal: false,
-            currentGifIndex: 0,
-            gifs: [{
+            currentImageIndex: 0,
+            images: [{
                 src: null,
                 description: 'CREAR AMBIENTE'
             },
             {
-                src: '/gifs/btnCrearAmbiente.gif',
-                description: 'Paso 1: Click en el botón "+" para crear un ambiente.'
+                src: '/imagesTutorial/btnCrearLocal.png',
+                description: 'Paso 1: Click en el botón "+" para crear un local.'
             },
             {
-                src: '/gifs/detallesAmbiente.gif',
-                description: 'Paso 2: Ingresa los campos: Nombre, dimensiones en metros y tipo de habitacion para el ambiente.',
+                src: '/imagesTutorial/detallesLocal.png',
+                description: 'Paso 2: Complete los campos: Nombre, dimensiones en metros y tipo de habitación para el local.',
             }, {
-                src: '/gifs/ubicacionAmbiente.gif',
-                description: 'Paso 3: Ingresa los campos: Altura, vivo en y la ubicación del ambiente o clickea en el mapa como se mostrará en el siguiente ejemplo.'
+                src: '/imagesTutorial/ubicacionLocal.png',
+                description: 'Paso 3: Complete los campos: Altura, vivo en y la ubicación del local o clickea en el mapa como se mostrará en el siguiente ejemplo.'
             }, {
-                src: '/gifs/selectMapa.gif',
+                src: '/imagesTutorial/ubicacionClickeada.png',
                 description: 'Navega por el mapa y clickea un punto determinado'
             }, {
-                src: '/gifs/detallesAmbiente.gif',
-                description: 'Paso 4: Ingresa los campos con las dimensiones y selecciona la calidad de la ventana luego hacer click en el botón "Guardar cambios".'
+                src: '/imagesTutorial/ventanaLocal.png',
+                description: 'Paso 4: Complete los campos con las dimensiones y selecciona la calidad de la ventana luego hacer click en el botón "Guardar cambios".'
             }, {
-                src: '/gifs/resultados.gif',
-                description: 'Paso 5: Se podrán visualizar los resultados con fecha, hora, icono de alerta y apertura de ventana con la posibilidad de desplegar para mas detalles.'
+                src: '/imagesTutorial/resultados.png',
+                description: 'Paso 5: Se podrán visualizar los resultados divididos en dos días con sus 24 horas mostrando icono de alerta climatica relevante y apertura de ventana en centímetros. Con la posiblidad de desplegar cada item, observando sus detalles pudiendo intercambiar de alerta mediante un click.'
             }, {
                 src: null,
                 description: 'EDITAR AMBIENTE'
             }, {
-                src: '/gifs/editarAmbiente.gif',
-                description: 'Paso 1: Click en el botón "Editar" para cambiar los datos de un ambiente.'
-            }, {
+                src: '/imagesTutorial/btnEditarLocal.png',
+                description: 'Paso 1: Click en el botón "Editar" para cambiar los datos de un local.'
+            },{
+                src: '/imagesTutorial/modalEditarLocal.png',
+                description: 'Paso 2: Modifique los campos y haga click en el botón "Guardar cambios".'
+            },{
                 src: null,
                 description: 'ALTERNAR CANTIDAD DE PERSONAS'
             }, {
-                src: '/gifs/cantidadPersonas.gif',
+                src: '/imagesTutorial/cantidadPersonas.png',
                 description: 'Paso 1: Cambiar valor del campo "cant.personas" para visualizar diferentes resultados.'
+            },{
+                src: null,
+                description: 'ELIMINAR LOCAL'
+            }, {
+                src: '/imagesTutorial/btnEliminarLocal.png',
+                description: 'Paso 1: Click en el botón "Borrar" para eliminar un local.'
+            }, {
+                src: '/imagesTutorial/modalBorrarLocal.png',
+                description: 'Paso 2: Click en el botón "Borrar local" para confirmar la eliminación.'
             }
             ],
         };
     },
     computed: {
-        currentGif() {
-            return this.gifs[this.currentGifIndex];
+        currentImage() {
+            return this.images[this.currentImageIndex];
         }
     },
     methods: {
@@ -98,14 +110,14 @@ export default {
         closeTutorialModal() {
             this.showingTutorialModal = false;
         },
-        nextGif() {
-            if (this.currentGifIndex < this.gifs.length - 1) {
-                this.currentGifIndex++;
+        nextImage() {
+            if (this.currentImageIndex < this.images.length - 1) {
+                this.currentImageIndex++;
             }
         },
-        previousGif() {
-            if (this.currentGifIndex > 0) {
-                this.currentGifIndex--;
+        previousImage() {
+            if (this.currentImageIndex > 0) {
+                this.currentImageIndex--;
             }
         }
     }
@@ -121,6 +133,7 @@ export default {
 
 .botonTutorial {
     max-height: 35px;
+    margin-top: calc(1.75rem + 25px);
 }
 
 .imgTutorial {
