@@ -57,6 +57,9 @@ export default {
             this.$refs.resultados.cargarDatos();
             this.ambienteCreado = true;
         },
+        editAmbienteLocalStorage() {
+            this.$refs.resultados.cargarDatos();
+        },
         cargarResultados($idAmbiente) {
             this.idAmbiente = Number($idAmbiente);
             localStorage.setItem(`loggedAmbiente${userId.value.id}`, $idAmbiente.toString());
@@ -174,7 +177,7 @@ export default {
             </div>
             <div v-else class="d-flex justify-content-center position-relative divSelect">
                 <ModalCRUD v-if="!ambienteCreado" :notLogged="true" @updateLocalStorage="addAmbienteLocalStorage" />
-                <ModalEditAmbiente v-if="ambienteCreado" @updateAmbientesEdit="actualizarAmbientesPostEdit"
+                <ModalEditAmbiente v-if="ambienteCreado" :notLogged="true" @updateLocalStorageEdit="editAmbienteLocalStorage"
                     :ambiente="obtenerAmbienteXid(idAmbiente)" />
                 <p v-if="ambienteCreado">Si quieres más locales, ¡Inicia sesión!</p>
             </div>
