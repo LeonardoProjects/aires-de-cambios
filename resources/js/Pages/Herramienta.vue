@@ -57,6 +57,9 @@ export default {
             this.$refs.resultados.cargarDatos();
             this.ambienteCreado = true;
         },
+        editAmbienteLocalStorage() {
+            this.$refs.resultados.cargarDatos();
+        },
         cargarResultados($idAmbiente) {
             this.idAmbiente = Number($idAmbiente);
             localStorage.setItem(`loggedAmbiente${userId.value.id}`, $idAmbiente.toString());
@@ -174,7 +177,6 @@ export default {
                     </div>
                 </div>
             </div>
-
             <!-- DIV para users no logeados -->
             <div v-else class="d-flex flex-column justify-content-center position-relative divSelectNotLogged">
                 <div class="d-md-none d-flex justify-content-center mb-2">
@@ -196,9 +198,9 @@ export default {
 						</svg>
 					</button>
 				</div>
-				<div class="d-flex divSelectNotLogged position-relative">
+				<div :class="['d-flex', 'divSelectNotLogged', 'position-relative', !ambienteCreado ? 'justify-content-center' : '']">
 					<ModalCRUD v-if="!ambienteCreado" :notLogged="true" @updateLocalStorage="addAmbienteLocalStorage" />
-					<ModalEditAmbiente v-if="ambienteCreado" @updateAmbientesEdit="actualizarAmbientesPostEdit"
+                    <ModalEditAmbiente v-if="ambienteCreado" :notLogged="true" @updateLocalStorageEdit="editAmbienteLocalStorage"
                     :ambiente="obtenerAmbienteXid(idAmbiente)" />
 					<p v-if="ambienteCreado">Si quieres más locales, ¡Inicia sesión!</p>
 					<div v-if="idAmbiente != -1"
@@ -265,6 +267,7 @@ svg {
     }
     
 	.divSelectNotLogged {
+        padding-top: 10px;
 		margin-bottom: 10px;
 		justify-content: center;
 	}
