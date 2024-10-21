@@ -6,6 +6,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { computed } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import Show from "./Results/show.vue";
+import EventBus from './../EventBus';
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user);
@@ -35,6 +36,13 @@ export default {
                 this.ambientes = response.data.data;
             }
         },
+        actualizarAmbientesLocalStorage(nuevoAmbiente) {
+            console.log("entra al actualizarAmbientes del local storage:");
+            console.log("nuevoAmbiente:", nuevoAmbiente);
+            this.ambientes.push(nuevoAmbiente);
+            this.idAmbiente = nuevoAmbiente.data.id;
+            localStorage.setItem(`loggedAmbiente${nuevoAmbiente.idUsuario}`, nuevoAmbiente.id.toString());
+        },
         actualizarAmbientesPostAdd($data) {
             const ambienteAdd = Object.values($data)[0];
             this.ambientes.push(ambienteAdd);
@@ -42,12 +50,10 @@ export default {
             localStorage.setItem(`loggedAmbiente${ambienteAdd.idUsuario}`, ambienteAdd.id.toString());
         },
         actualizarAmbientesPostEdit($data) {
-            // Extraer el ambiente desde el objeto anidado
-            const ambiente = Object.values($data)[0]; // Toma el primer valor, que es el objeto con la clave numérica
-            // Ahora puedes acceder al id del ambiente
+            const ambiente = Object.values($data)[0];
             const index = this.ambientes.findIndex(item => item.id === ambiente.id);
             if (index !== -1) {
-                this.ambientes.splice(index, 1, ambiente); // Reemplaza el ambiente con el nuevo
+                this.ambientes.splice(index, 1, ambiente);
             }
             this.$refs.resultados.cargarDatos();
             localStorage.setItem(`loggedAmbiente${ambiente.idUsuario}`, ambiente.id.toString());
@@ -97,6 +103,7 @@ export default {
         }
     },
     mounted() {
+        EventBus.$on('ambienteCreadoConLocalStorage', this.actualizarAmbientesLocalStorage);
         this.obtenerAmbientes().then(() => {
             if (this.ambientes.length > 0) {
                 const loggedAmbiente = localStorage.getItem(`loggedAmbiente${userId.value.id}`);

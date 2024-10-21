@@ -142,4 +142,26 @@ class AmbienteController extends Controller
         $user = User::findOrFail($userId);
         return response()->json(['message' => 'Ambientes obtenidos correctamente', 'data' => $user->ambiente()->with(['ubicacion', 'ventana', 'local', 'ocupacion'])->get()], 200);
     }
+
+    public function createFromLocalStorage(Request $request) {
+        $validatedData = $request->validate([
+            'ambiente.nombre' => 'required|string|max:40',
+            'ambiente.alturaSelect' => 'required',
+            'ambiente.densidadSelect' => 'required',
+            'ambiente.tipoHabitacion' => 'required',
+            'ambiente.calidadVentana' => 'required',
+            'ambiente.longitud' => 'required',
+            'ambiente.latitud' => 'required',
+            'ambiente.anchoAmbiente' => 'required|numeric|between:0.1,20',
+            'ambiente.largoAmbiente' => 'required|numeric|between:0.1,20',
+            'ambiente.altoAmbiente' => 'required|numeric|between:0.1,20',
+            'ambiente.largoVentana' => 'required|numeric|between:0.1,20',
+            'ambiente.altoVentana' => 'required|numeric|between:0.1,20',
+        ]);
+
+        $ambiente = Ambiente::create([
+            'nombre' => $validatedData['ambiente']['nombre'],
+            'idUsuario' => $request['idUser'],  // Asignar el ID del usuario registrado
+        ]);
+    }
 }
