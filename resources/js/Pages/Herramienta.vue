@@ -164,7 +164,7 @@ export default {
                     </select>
                     <ModalEditAmbiente v-if="idAmbiente != -1" @updateAmbientesEdit="actualizarAmbientesPostEdit"
                         :ambiente="obtenerAmbienteXid(idAmbiente)" />
-                    <DeleteAmbienteConfirm :idAmbiente="idAmbiente" @deleteAmbiente="deleteAmbiente" />
+                    <DeleteAmbienteConfirm v-if="idAmbiente != -1" :idAmbiente="idAmbiente" @deleteAmbiente="deleteAmbiente" />
                     <div v-if="idAmbiente != -1"
                         class="d-none d-md-flex flex-column position-absolute divCantPersonas text-center">
                         <label for="cantPersonas" class="form-label">Cant. personas</label>
