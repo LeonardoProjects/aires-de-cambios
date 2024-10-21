@@ -40,14 +40,7 @@
                                 claseAgradableExpanded: resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
                                 claseTormentaExpanded: resultado.alertas[0] == 'Precaución por tormentas fuertes',
                                 claseNadaExpanded: resultado.alertas[0] == ''
-                            }]" :data-originalAlert="{
-                            'lluvia': resultado.alertas[0] == 'Precaución por lluvias',
-                            'frio': resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
-                            'viento': resultado.alertas[0] == 'Precaución por vientos fuertes (mayores a 40 km/h)',
-                            'agradable': resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
-                            'tormenta': resultado.alertas[0] == 'Precaución por tormentas fuertes',
-                            'nada': resultado.alertas[0] == ''
-                        }" v-else>
+                            }]"v-else>
                                 <div class="dUP">
                                     <strong>{{ resultado.hour }}</strong>
                                     <span class="m-0">Apertura de ventana<br><span class="fs-3">{{ resultado.cm
@@ -87,10 +80,11 @@
                 </div>
             </div>
         </div>
-        <div v-else class="d-flex justify-content-center flex-column w-75 text-center">
+        <div v-else class="d-flex justify-content-center flex-column w-100 text-center">
             <p class="fs-5">¡Crea un local para saber cómo ventilar!</p>
         </div>
-        <TutorialModal />
+        <TutorialModal v-if="idAmbiente != -1 && !isMobileHerramienta"/>
+        <TutorialModalMobile v-if="idAmbiente != 1 && isMobileHerramienta"/>
     </div>
 </template>
 
@@ -100,6 +94,7 @@ import { computed, ref, onMounted, onBeforeMount } from "vue";
 import AlertIcon from "@/Components/AlertIcon.vue";
 import TutorialModal from "@/Components/TutorialModal.vue";
 import { DateTime } from 'luxon';
+import TutorialModalMobile from "@/Components/TutorialModalMobile.vue";
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
@@ -131,6 +126,7 @@ export default {
     components: {
         AlertIcon,
         TutorialModal,
+        TutorialModalMobile,
     },
     data() {
         return {
