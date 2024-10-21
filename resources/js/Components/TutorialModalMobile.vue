@@ -1,5 +1,5 @@
 <template>
-    <button class="btn btn-outline-primary mx-1 rounded-5 p-2 px-3 botonTutorial" @click="openTutorialModal"
+    <button class="btn btn-outline-primary mx-1 rounded-5 p-2 px-3 botonTutorial" data-bs-toggle="modal" data-bs-target="#tutorialModalMobile"
         :style="{ bottom: footerVisible ? (footerHeight + 30) + 'px' : '20px' }">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-patch-question"
             viewBox="0 0 16 16">
@@ -11,13 +11,13 @@
         </svg>
     </button>
 
-    <div v-if="showingTutorialModal" class="modal fade show d-block" data-bs-backdrop="static" data-bs-keyboard="false"
+    <div class="modal fade" id="tutorialModalMobile" data-bs-backdrop="static" data-bs-keyboard="false"
         tabindex="-1" role="dialog" aria-labelledby="tutorialModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modalTutorialMobile">
             <div class="modal-content contenidoModalMobile">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tutorialModalLabel">Selecciona el tutorial MOBILE</h5>
-                    <button type="button" class="btn-close" @click="closeTutorialModal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="tutorialModalMobileLabel">Selecciona el tutorial MOBILE</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <!-- Cuerpo del modal -->
@@ -40,7 +40,7 @@
                     <div class="progress mt-3">
                         <div class="progress-bar"
                             :style="{ width: ((currentImageIndex + 1) / filtrarImagenesPorCategoria.length) * 100 + '%' }">
-                            Paso {{ currentImageIndex + 1 }} de {{ filtrarImagenesPorCategoria.length }}
+                            {{ currentImageIndex + 1 }} de {{ filtrarImagenesPorCategoria.length }}
                         </div>
                     </div>
                 </div>

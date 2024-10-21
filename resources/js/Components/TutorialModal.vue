@@ -1,5 +1,5 @@
 <template>
-    <button class="btn btn-outline-primary mx-1 rounded-5 p-3 botonTutorial" @click="openTutorialModal"
+    <button type="button" class="btn btn-outline-primary mx-1 rounded-5 p-3 botonTutorial" data-bs-toggle="modal" data-bs-target="#tutorialModal"
         :style="{ bottom: footerVisible ? (footerHeight + 30) + 'px' : '20px' }">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-patch-question"
             viewBox="0 0 16 16">
@@ -12,13 +12,13 @@
         Ver tutorial
     </button>
 
-    <div v-if="showingTutorialModal" class="modal fade show d-block" data-bs-backdrop="static" data-bs-keyboard="false"
-        tabindex="-1" role="dialog" aria-labelledby="tutorialModalLabel" aria-hidden="true">
+    <div class="modal fade" id="tutorialModal" data-bs-backdrop="static" data-bs-keyboard="false"
+        tabindex="-1" aria-labelledby="tutorialModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modalTutorial">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="tutorialModalLabel">Selecciona el tutorial</h5>
-                    <button type="button" class="btn-close" @click="closeTutorialModal" aria-label="Close"></button>
+                    <button type="button" id="closeTutorialModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <!-- Cuerpo del modal -->
@@ -41,7 +41,7 @@
                     <div class="progress mt-3">
                         <div class="progress-bar"
                             :style="{ width: ((currentImageIndex + 1) / filtrarImagenesPorCategoria.length) * 100 + '%' }">
-                            Paso {{ currentImageIndex + 1 }} de {{ filtrarImagenesPorCategoria.length }}
+                            {{ currentImageIndex + 1 }} de {{ filtrarImagenesPorCategoria.length }}
                         </div>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                     </button>
                     <button type="button" class="btn btn-primary" @click="nextImage"
                         :disabled="currentImageIndex === filtrarImagenesPorCategoria.length - 1">
-                        Siguiente paso
+                        Siguiente
                     </button>
                 </div>
             </div>
@@ -68,7 +68,6 @@ export default {
         return {
             footerVisible: false,
             footerHeight: 0,
-            showingTutorialModal: false,
             currentImageIndex: 0,
             categoriaSeleccionada: 'crearLocal',
             images: [
@@ -144,12 +143,6 @@ export default {
         this.footerHeight = document.querySelector('footer').offsetHeight;
     },
     methods: {
-        openTutorialModal() {
-            this.showingTutorialModal = true;
-        },
-        closeTutorialModal() {
-            this.showingTutorialModal = false;
-        },
         nextImage() {
             if (this.currentImageIndex < this.filtrarImagenesPorCategoria.length - 1) {
                 this.currentImageIndex++;
