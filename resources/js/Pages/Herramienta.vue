@@ -36,12 +36,11 @@ export default {
                 this.ambientes = response.data.data;
             }
         },
-        actualizarAmbientesLocalStorage(nuevoAmbiente) {
-            console.log("entra al actualizarAmbientes del local storage:");
-            console.log("nuevoAmbiente:", nuevoAmbiente);
-            this.ambientes.push(nuevoAmbiente);
-            this.idAmbiente = nuevoAmbiente.data.id;
-            localStorage.setItem(`loggedAmbiente${nuevoAmbiente.idUsuario}`, nuevoAmbiente.id.toString());
+        cargarAmbienteDesdeRegistro(ambiente) {
+            const ambienteRegistro = Object.values(ambiente)[0];
+            this.ambientes.push(ambienteRegistro);
+            this.idAmbiente = ambienteRegistro.id;
+            localStorage.setItem(`loggedAmbiente${ambienteRegistro.idUsuario}`, ambienteRegistro.id.toString());
         },
         actualizarAmbientesPostAdd($data) {
             const ambienteAdd = Object.values($data)[0];
@@ -103,7 +102,9 @@ export default {
         }
     },
     mounted() {
-        EventBus.$on('ambienteCreadoConLocalStorage', this.actualizarAmbientesLocalStorage);
+        EventBus.$on('ambienteCreadoConLocalStorage', (nuevoAmbiente) => {
+            this.cargarAmbienteDesdeRegistro(nuevoAmbiente);
+        });
         this.obtenerAmbientes().then(() => {
             if (this.ambientes.length > 0) {
                 const loggedAmbiente = localStorage.getItem(`loggedAmbiente${userId.value.id}`);

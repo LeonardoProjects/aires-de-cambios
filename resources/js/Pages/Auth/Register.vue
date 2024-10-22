@@ -3,7 +3,7 @@ import { Head, Link, useForm } from "@inertiajs/vue3";
 import AuthenticationCardLogo from "@/Components/AuthenticationCardLogo.vue";
 import Checkbox from "@/Components/Checkbox.vue";
 import InputError from "@/Components/InputError.vue";
-
+import EventBus from "./../../EventBus";
 
 const form = useForm({
     name: "",
@@ -47,7 +47,7 @@ const submit = () => {
             }
         },
         onError: () => {
-            console.log("Error durante el registro");
+            console.error("Error durante el registro");
         },
     });
 };
@@ -56,8 +56,8 @@ const createAmbiente = (localStorageData) => {
     return axios
         .post(route("ambiente.store"), localStorageData)
         .then((response) => {
-            console.log("Ambiente creado:", response.data);
-            return response.data;
+            const nuevoAmbiente = response.data.data;
+            return nuevoAmbiente;
         })
         .catch((error) => {
             console.error("Error creando ambiente:", error);
