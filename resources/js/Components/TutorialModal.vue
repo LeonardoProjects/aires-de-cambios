@@ -1,6 +1,6 @@
 <template>
-    <button type="button" class="btn btn-outline-primary mx-1 rounded-5 p-3 botonTutorial" data-bs-toggle="modal" data-bs-target="#tutorialModal"
-        :style="{ bottom: footerVisible ? (footerHeight + 30) + 'px' : '20px' }">
+    <button type="button" class="btn btn-outline-primary mx-1 rounded-5 p-3 botonTutorial" data-bs-toggle="modal"
+        data-bs-target="#tutorialModal" :style="{ bottom: footerVisible ? (footerHeight + 30) + 'px' : '20px' }">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-patch-question"
             viewBox="0 0 16 16">
             <path
@@ -12,18 +12,19 @@
         Ver tutorial
     </button>
 
-    <div class="modal fade" id="tutorialModal" data-bs-backdrop="static" data-bs-keyboard="false"
-        tabindex="-1" aria-labelledby="tutorialModalLabel" aria-hidden="true">
+    <div class="modal fade" id="tutorialModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="tutorialModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modalTutorial">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="tutorialModalLabel">Selecciona el tutorial</h5>
-                    <button type="button" id="closeTutorialModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" id="closeTutorialModal" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
 
                 <!-- Cuerpo del modal -->
                 <div class="modal-body">
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end divSelect">
                         <!-- Selector de categoría -->
                         <select v-model="categoriaSeleccionada" class="form-select mb-3 w-25 selectTutorial">
                             <option value="crearLocal">Crear local</option>
@@ -73,16 +74,16 @@ export default {
             images: [
                 {
                     src: '/imagesTutorial/Desktop/btnCrearLocal.png',
-                    description: 'Paso 1: Click en el botón "+" para crear un local.',
+                    description: 'Click en el botón "+" para crear un local.',
                     categoria: 'crearLocal'
                 },
                 {
                     src: '/imagesTutorial/Desktop/detallesLocal.png',
-                    description: 'Paso 2: Complete los campos: Nombre, dimensiones en metros y tipo de habitación para el local.',
+                    description: 'Complete los campos: Nombre, dimensiones en metros y tipo de habitación para el local.',
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Desktop/ubicacionLocal.png',
-                    description: 'Paso 3: Complete los campos: Altura, vivo en luego presione el botón "Lupa" para buscar la ubicación del local o clickea en el mapa como se mostrará en el siguiente ejemplo.',
+                    description: 'Complete los campos: Altura, vivo en luego presione el botón "Lupa" para buscar la ubicación del local o clickea en el mapa como se mostrará en el siguiente ejemplo.',
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Desktop/ubicacionClickeada.png',
@@ -90,31 +91,35 @@ export default {
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Desktop/ventanaLocal.png',
-                    description: 'Paso 4: Complete los campos con las dimensiones y selecciona la calidad de la ventana, por ultimo hacer click en el botón "Guardar cambios".',
+                    description: 'Complete los campos con las dimensiones y selecciona la calidad de la ventana, por ultimo hacer click en el botón "Guardar cambios".',
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Desktop/resultados.png',
-                    description: 'Paso 5: Se podrán visualizar los resultados divididos en dos días con sus 24 horas mostrando icono de alerta climatica relevante y apertura de ventana en centímetros. Haciendo click por cada hora se desplegará informacion detallada pudiendo intercambiar de alerta climática en caso que hayan varias.',
+                    description: 'Se podrán visualizar los resultados a lo largo de 15 horas mostrando icono de alerta climatica relevante  y apertura de ventana en centímetros. Haciendo click por cada hora se desplegará informacion detallada pudiendo intercambiar de alerta climática en caso que hayan varias.',
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Desktop/btnEditarLocal.png',
-                    description: 'Paso 1: Click en el botón "Editar" para modificar los datos de un local.',
+                    description: 'Click en el botón "Editar" para modificar los datos de un local.',
                     categoria: 'editarLocal'
                 }, {
                     src: '/imagesTutorial/Desktop/modalEditarLocal.png',
-                    description: 'Paso 2: Modifique los campos y haga click en el botón "Guardar cambios".',
+                    description: 'Modifique los campos y haga click en el botón "Guardar cambios".',
+                    categoria: 'editarLocal'
+                }, {
+                    src: '/imagesTutorial/Desktop/resultadosEditar.png',
+                    description: 'Visualización de los nuevos resultados a lo largo de 15 horas mostrando icono de alerta climática relevante  y apertura de ventana en centímetros. Haciendo click por cada hora se desplegará informacion detallada pudiendo intercambiar de alerta climática en caso que hayan varias.',
                     categoria: 'editarLocal'
                 }, {
                     src: '/imagesTutorial/Desktop/cantidadPersonas.png',
-                    description: 'Paso 1: Cambiar valor del campo "Cant. Personas" para visualizar diferentes resultados.',
+                    description: 'Cambiar valor del campo "Cant. Personas" para visualizar diferentes resultados.',
                     categoria: 'cantidadPersonas',
                 }, {
                     src: '/imagesTutorial/Desktop/btnEliminarLocal.png',
-                    description: 'Paso 1: Click en el botón "Borrar" para eliminar un local.',
+                    description: 'Click en el botón "Borrar" para eliminar un local.',
                     categoria: 'eliminarLocal'
                 }, {
                     src: '/imagesTutorial/Desktop/modalBorrarLocal.png',
-                    description: 'Paso 2: Click en el botón "Borrar local" para confirmar la eliminación.',
+                    description: 'Click en el botón "Borrar local" para confirmar la eliminación.',
                     categoria: 'eliminarLocal'
                 }
             ],
@@ -197,6 +202,10 @@ export default {
     opacity: 0;
 }
 
+.divSelect{
+    border-bottom: var(--bs-modal-header-border-width) solid var(--bs-modal-header-border-color);
+}
+
 @media (max-width: 767px) {
 
     .modalTutorial {
@@ -206,7 +215,7 @@ export default {
     }
 
     .selectTutorial {
-        width: 40% !important;
+        width: 50% !important;
     }
 }
 </style>

@@ -22,7 +22,7 @@
 
                 <!-- Cuerpo del modal -->
                 <div class="modal-body">
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end divSelectMobile">
                         <!-- Selector de categoría -->
                         <select v-model="categoriaSeleccionada" class="form-select mb-3 w-25 selectTutorial">
                             <option value="crearLocal">Crear local</option>
@@ -53,7 +53,7 @@
                     </button>
                     <button type="button" class="btn btn-primary" @click="nextImage"
                         :disabled="currentImageIndex === filtrarImagenesPorCategoria.length - 1">
-                        Siguiente paso
+                        Siguiente
                     </button>
                 </div>
             </div>
@@ -67,22 +67,21 @@ export default {
         return {
             footerVisible: false,
             footerHeight: 0,
-            showingTutorialModal: false,
             currentImageIndex: 0,
             categoriaSeleccionada: 'crearLocal',
             images: [
                 {
                     src: '/imagesTutorial/Mobile/btnCrearLocal.png',
-                    description: 'Paso 1: Presione el botón "+" para crear un local.',
+                    description: 'Presione el botón "+" para crear un local.',
                     categoria: 'crearLocal'
                 },
                 {
                     src: '/imagesTutorial/Mobile/detallesLocal.png',
-                    description: 'Paso 2: Complete los campos: Nombre, dimensiones en metros y tipo de habitación para el local.',
+                    description: 'Complete los campos: Nombre, dimensiones en metros y tipo de habitación para el local.',
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Mobile/ubicacionLocal.png',
-                    description: 'Paso 3: Complete los campos: Altura, vivo en luego presione el botón "Lupa" para buscar la ubicación del local o utilize el mapa como se mostrará en el siguiente ejemplo.',
+                    description: 'Complete los campos: Altura, vivo en luego presione el botón "Lupa" para buscar la ubicación del local o utilize el mapa como se mostrará en el siguiente ejemplo.',
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Mobile/ubicacionClickeada.png',
@@ -90,35 +89,35 @@ export default {
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Mobile/ventanaLocal.png',
-                    description: 'Paso 4: Complete los campos con las dimensiones y selecciona la calidad de la ventana, por último presione el botón "Guardar cambios".',
+                    description: 'Complete los campos con las dimensiones y selecciona la calidad de la ventana, por último presione el botón "Guardar cambios".',
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Mobile/resultados.png',
-                    description: 'Paso 5: Se podrán visualizar los resultados a lo largo de 15 horas mostrando icono de alerta climatica relevante y apertura de ventana en centímetros. Haciendo presionando cada hora se desplegará informacion detallada pudiendo intercambiar de alerta climática en caso que hayan varias.',
+                    description: 'Se podrán visualizar los resultados a lo largo de 15 horas mostrando icono de alerta climatica relevante y apertura de ventana en centímetros. Presionando cada hora se desplegará informacion detallada pudiendo intercambiar de alerta climática en caso que hayan varias.',
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Mobile/btnEditarLocal.png',
-                    description: 'Paso 1: Presionar el botón "Editar" para modificar los datos de un local.',
+                    description: 'Presionar el botón "Editar" para modificar los datos de un local.',
                     categoria: 'editarLocal'
                 }, {
                     src: '/imagesTutorial/Mobile/modalEditarLocal.png',
-                    description: 'Paso 2: Modifique los campos y presione el botón "Guardar cambios".',
+                    description: 'Modifique los campos y presione el botón "Guardar cambios".',
                     categoria: 'editarLocal'
                 },{
                     src: '/imagesTutorial/Mobile/resultadosEditar.png',
-                    description: 'Paso 3: Se podrán visualizar los nuevos resultados.',
+                    description: 'Se podrán visualizar los nuevos resultados.',
                     categoria: 'editarLocal'
                 }, {
                     src: '/imagesTutorial/Mobile/cantidadPersonas.png',
-                    description: 'Paso 1: Cambiar valor del campo "Cant. personas" para visualizar diferentes resultados o presione el botón "-" para disminuir en uno y "+" para aumentar en uno.',
+                    description: 'Cambiar valor del campo "Cant. personas" para visualizar diferentes resultados o presione el botón "-" para disminuir en uno y "+" para aumentar en uno.',
                     categoria: 'cantidadPersonas',
                 }, {
                     src: '/imagesTutorial/Mobile/btnEliminarLocal.png',
-                    description: 'Paso 1: Presione el botón "Borrar" para eliminar un local.',
+                    description: 'Presione el botón "Borrar" para eliminar un local.',
                     categoria: 'eliminarLocal'
                 }, {
                     src: '/imagesTutorial/Mobile/modalBorrarLocal.png',
-                    description: 'Paso 2: Presione el botón "Borrar local" para confirmar la eliminación.',
+                    description: 'Presione el botón "Borrar local" para confirmar la eliminación.',
                     categoria: 'eliminarLocal'
                 }
             ],
@@ -147,12 +146,6 @@ export default {
         this.footerHeight = document.querySelector('footer').offsetHeight;
     },
     methods: {
-        openTutorialModal() {
-            this.showingTutorialModal = true;
-        },
-        closeTutorialModal() {
-            this.showingTutorialModal = false;
-        },
         nextImage() {
             if (this.currentImageIndex < this.filtrarImagenesPorCategoria.length - 1) {
                 this.currentImageIndex++;
@@ -181,5 +174,9 @@ export default {
 }
 .contenidoModalMobile{
     height: 100%;
+}
+
+.divSelectMobile{
+    border-bottom: var(--bs-modal-header-border-width) solid var(--bs-modal-header-border-color);
 }
 </style>
