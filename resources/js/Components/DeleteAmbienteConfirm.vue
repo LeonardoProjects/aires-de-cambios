@@ -58,6 +58,10 @@ export default {
     }
 }
 </script>
-<style lang="">
-    
+<style>
+    @media screen and (max-width: 767px) {
+        #confirmDeleteAmbiente {
+            width: 100vw !important;
+        }
+    }
 </style>

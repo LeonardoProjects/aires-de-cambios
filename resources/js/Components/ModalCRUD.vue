@@ -211,19 +211,19 @@ function closeModal() {
                 </div>
                 <div class="modal-body text-center">
                     <form @submit.prevent="submit" id="crudFORM">
-                        <div class="mb-5">
+                        <div class="mb-5 divDetallesLocal">
                             <h3>Detalles del local</h3>
                             <hr />
-                            <div class="mt-1 mb-4 px-4 text-center">
+                            <div class="mt-1 mb-4 px-4 text-center divNombreLocal">
                                 <label for="nombreAmbiente" class="form-label">Nombre de local</label>
                                 <input id="nombreAmbiente" type="text" class="form-control w-0"
                                     v-model="formAdd.nombreAmbiente" />
                                 <div v-if="formAdd.errors.nombreAmbiente" class="error">{{
                                     formAdd.errors.nombreAmbiente[0]
-                                    }}
+                                }}
                                 </div>
                             </div>
-                            <div class="d-flex h-50 px-4 justify-content-between flex-row">
+                            <div class="d-flex h-50 px-4 justify-content-between flex-row divInputsNumericos">
                                 <div class="w-25 text-center">
                                     <label for="anchoAmbiente" class="form-label">Ancho (m)</label>
                                     <input id="anchoAmbiente" type="number" min="0.1" max="20" step="0.1"
@@ -253,7 +253,7 @@ function closeModal() {
                                 </select>
                                 <div v-if="formAdd.errors.tipoHabitacion" class="error">{{
                                     formAdd.errors.tipoHabitacion[0]
-                                    }}
+                                }}
                                 </div>
                             </div>
                         </div>
@@ -295,7 +295,7 @@ function closeModal() {
                                     </div>
                                     <div v-if="formAdd.errors.alturaSelect" class="error">{{
                                         formAdd.errors.alturaSelect[0]
-                                        }}
+                                    }}
                                     </div>
                                 </div>
 
@@ -344,7 +344,7 @@ function closeModal() {
                             </div>
                         </div>
 
-                        <div class="mb-0">
+                        <div class="mb-0 divDetallesVentana">
                             <h3>Detalles de ventana</h3>
                             <hr />
                             <div class="d-flex mt-2">
@@ -392,17 +392,17 @@ function closeModal() {
                                                 </option>
                                             </select>
                                             <button type="button" class="btn btnTooltip tooltipVentana"
-                                            data-bs-toggle="tooltip" data-bs-placement="top"
-                                            data-bs-custom-class="custom-tooltip"
-                                            data-bs-title="La calidad de las aberturas afecta en las infiltraciones de aire.">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                                                <path
-                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
-                                            </svg>
-                                        </button>
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="La calidad de las aberturas afecta en las infiltraciones de aire.">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                                    <path
+                                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                    <path
+                                                        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                                                </svg>
+                                            </button>
                                         </div>
                                         <div v-if="formAdd.errors.calidadVentana" class="error">{{
                                             formAdd.errors.calidadVentana[0] }}
@@ -472,14 +472,42 @@ select {
     width: 80% !important;
 }
 
+svg {
+    vertical-align: text-bottom;
+}
+
 /*Resolución para tablets (pantallas entre 768px y 1024px)*/
-@media (min-width: 767px) and (min-width: 1024px) {
+@media screen and (max-width: 767px) {
     #map {
         width: 90%;
         height: 350px;
     }
-}
-svg {
-    vertical-align: text-bottom;
-}
-</style>
+
+    #staticBackdrop {
+        width: 100vw;
+
+        label,
+        select,
+        input {
+            font-size: 0.75em !important;
+        }
+
+        .divDetallesVentana div {
+            padding: 0 !important;
+        }
+
+        .padreMapa {
+            div {
+                padding: 0 !important;
+            }
+        }  
+
+        .divInputsNumericos {
+            padding: 0 !important;
+        }
+
+        .divNombreLocal {
+            padding: 0 !important;
+        }
+    }
+}</style>
