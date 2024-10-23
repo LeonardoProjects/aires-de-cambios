@@ -79,15 +79,15 @@ export default {
                 },
                 {
                     src: '/imagesTutorial/Desktop/detallesLocal.png',
-                    description: 'Complete los campos: Nombre, dimensiones en metros y tipo de habitación para el local.',
+                    description: 'Complete los campos de la sección "Detalles del local".',
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Desktop/ubicacionLocal.png',
-                    description: 'Complete los campos: Altura, vivo en luego presione el botón "Lupa" para buscar la ubicación del local o clickea en el mapa como se mostrará en el siguiente ejemplo.',
+                    description: 'Complete los campos y luego presione el botón con ícono de lupa para buscar la ubicación del local o clickea en el mapa como se mostrará en el siguiente ejemplo.',
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Desktop/ubicacionClickeada.png',
-                    description: 'Navega por el mapa y clickea un punto determinado',
+                    description: 'Navega por el mapa y clickea un punto determinado.',
                     categoria: 'crearLocal'
                 }, {
                     src: '/imagesTutorial/Desktop/ventanaLocal.png',
