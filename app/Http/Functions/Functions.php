@@ -163,9 +163,14 @@ class Functions
     }
 
     //Función para calcular la apertura de la ventana en centímentros
-    public static function aperturaVentana(float $valorAE, float $alturaVentana)
+    public static function aperturaVentana(float $valorAE, float $alturaVentana, float $largoVentana)
     {
-        return round((($valorAE / $alturaVentana) * 100), 0);
+        $res = round((($valorAE / $alturaVentana) * 100), 0);
+        if ($res < ($largoVentana * 100) / 2) {
+            return $res;
+        } else {
+            return ($largoVentana * 100) / 2;
+        }
     }
     //Esta funcion depende de los datos de la API
     public static function determinarAlerta(float $temperatura, float $velocidadViento, bool $llueve, bool $tormenta)
@@ -337,7 +342,6 @@ class Functions
         $codigosDeTormeta = [
             //Comentar significado code
             1087,
-
             1207,
             1273,
             1252,
@@ -385,7 +389,7 @@ class Functions
         //Calculo de ventilación unilateral
         if ($caudalAireARenovar != -1) {
             $AE = self::obtenerAE($caudalAireARenovar, $vientoCh);
-            $centimetrosParaAbrirVentana = self::aperturaVentana($AE, $altoVentana);
+            $centimetrosParaAbrirVentana = self::aperturaVentana($AE, $altoVentana, $largoVentana);
         }
 
         $alertas = self::determinarAlerta($temperatura, $vientoKXh, $lluvia, $tormenta);
