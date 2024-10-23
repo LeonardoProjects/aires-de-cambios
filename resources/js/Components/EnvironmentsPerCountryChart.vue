@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="map2" style="height: 500px; width: 1000px"></div>
+        <div id="map2"></div>
     </div>
 </template>
 
@@ -13,6 +13,7 @@ export default {
     setup() {
         const map2 = ref(null);
         const maxAmbientes = ref(0);
+
         const roundToNearestPowerOfTen = (num) => {
             if (num < 10) return 10;
             return Math.pow(10, Math.floor(Math.log10(num)));
@@ -48,7 +49,7 @@ export default {
                 maxZoom: 4,
                 worldCopyJump: false,
                 maxBoundsViscosity: 1,
-                scrollWheelZoom: false
+                scrollWheelZoom: false,
             }).setView([20, 0], 2);
 
             const southWest = L.latLng(-85, -180);
@@ -60,129 +61,147 @@ export default {
                 attribution:
                     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             }).addTo(map2.value);
-            axios
-                .get("/countries-data")
-                .then((response) => {
-                    const ambientesPorPais = response.data;
 
-                    const maxAmbientesCalculado = Math.max(
-                        ...ambientesPorPais.map((a) => a.total)
-                    );
-                    maxAmbientes.value = roundToNearestPowerOfTen(
-                        maxAmbientesCalculado
-                    );
-                    var geojson;
-                    var info = L.control();
-                    axios
-                        .get("/country-data/ne_10m_admin_0_countries_arg.json")
-                        .then((geoJsonResponse) => {
-                            info.onAdd = function () {
-                                this._div = L.DomUtil.create('div'); // create a div with a class "info"
-                                this.update();
-                                this._div.style.background = 'rgba(255, 255, 255, 0.6)';
-                                this._div.style.padding = '10px';
-                                this._div.style.borderRadius = '7px';
-                                return this._div;
-                            };
+            axios.get("/countries-data").then((response) => {
+                const ambientesPorPais = response.data;
+                const maxAmbientesCalculado = Math.max(
+                    ...ambientesPorPais.map((a) => a.total)
+                );
+                maxAmbientes.value = roundToNearestPowerOfTen(
+                    maxAmbientesCalculado
+                );
+                var geojson;
+                var info = L.control();
 
-                            // method that we will use to update the control based on feature properties passed
-                            info.update = function (props) {
-                                this._div.innerHTML = '<h4>Información del país</h4>' +
-                                    (props ?
-                                        '<p class="m-0 fs-6 fw-bold">' + props.ADMIN + '</p><p class="m-0 fs-6">Ambientes: ' +
-                                        (ambientesPorPais.find(a => a.pais === props.ADMIN)?.total || 0) + '</p>'
-                                        : 'Posicione el mouse sobre un país </p>');
-                            };
+                axios
+                    .get("/country-data/ne_10m_admin_0_countries_arg.json")
+                    .then((geoJsonResponse) => {
+                        info.onAdd = function () {
+                            this._div = L.DomUtil.create("div"); // create a div with a class "info"
+                            this.update();
+                            this._div.style.background = "rgba(255, 255, 255, 0.6)";
+                            this._div.style.padding = "10px";
+                            this._div.style.borderRadius = "7px";
+                            return this._div;
+                        };
 
-                            info.addTo(map2.value);
+                        // method that we will use to update the control based on feature properties passed
+                        info.update = function (props) {
+                            this._div.innerHTML =
+                                '<h4>Información del país</h4>' +
+                                (props
+                                    ? '<p class="m-0 fs-6 fw-bold">' +
+                                    props.ADMIN +
+                                    "</p><p class='m-0 fs-6'>Ambientes: " +
+                                    (ambientesPorPais.find(
+                                        (a) => a.pais === props.ADMIN
+                                    )?.total || 0) +
+                                    "</p>"
+                                    : "Posicione el mouse sobre un país ");
+                        };
 
-                            geojson = L.geoJSON(geoJsonResponse.data, {
-                                style: (feature) => {
-                                    const pais = feature.properties.ADMIN;
-                                    const ambiente = ambientesPorPais.find((a) => a.pais === pais);
+                        info.addTo(map2.value);
+                        let selectedLayer = null;
+                        geojson = L.geoJSON(geoJsonResponse.data, {
+                            style: (feature) => {
+                                const pais = feature.properties.ADMIN;
+                                const ambiente = ambientesPorPais.find(
+                                    (a) => a.pais === pais
+                                );
 
-                                    let fillColor = "lightgray";
-                                    if (ambiente) {
-                                        const total = ambiente.total;
-                                        fillColor = getColor(total, maxAmbientes.value);
-                                    }
+                                let fillColor = "lightgray";
+                                if (ambiente) {
+                                    const total = ambiente.total;
+                                    fillColor = getColor(total, maxAmbientes.value);
+                                }
 
-                                    return {
-                                        color: "black",
-                                        fillColor: fillColor,
-                                        fillOpacity: 0.7,
-                                        weight: 1,
-                                    };
-                                },
-                                onEachFeature: (feature, layer) => {
-                                    // Evento 'mouseover' para resaltar la capa y actualizar el control info
-                                    layer.on({
-                                        mouseover: (e) => {
+                                return {
+                                    color: "black",
+                                    fillColor: fillColor,
+                                    fillOpacity: 0.7,
+                                    weight: 1,
+                                };
+                            },
+                            onEachFeature: (feature, layer) => {
+                                // Determinar si es móvil
+                                const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+                                // Si es móvil, se usa 'click', si no, 'mouseover'
+                                const eventType = isMobile ? 'click' : 'mouseover';
+
+                                layer.on({
+                                    [eventType]: (e) => {
+                                        highlightFeature(e);
+                                        info.update(e.target.feature.properties);
+                                    },
+                                    mouseout: (e) => {
+                                        resetHighlight(e);
+                                        info.update();
+                                    },
+                                    click: (e) => {
+                                        if (isMobile) {
+                                            // Restablecer el estilo del país previamente seleccionado
+                                            if (selectedLayer) {
+                                                geojson.resetStyle(selectedLayer);
+                                            }
+                                            // Establecer el nuevo país seleccionado y resaltarlo
+                                            selectedLayer = e.target;
                                             highlightFeature(e);
                                             info.update(e.target.feature.properties);
-                                        },
-                                        mouseout: (e) => {
-                                            resetHighlight(e);
-                                            info.update();
                                         }
-                                    });
-                                }
-                            }).addTo(map2.value);
-
-                            // Función para resaltar el país al hacer hover
-                            function highlightFeature(e) {
-                                var layer = e.target;
-
-                                layer.setStyle({
-                                    weight: 2,
-                                    color: '#fff',
-                                    dashArray: '',
-                                    fillOpacity: 0.8
+                                    },
                                 });
+                            },
+                        }).addTo(map2.value);
 
-                                layer.bringToFront();
-                            }
+                        // Función para resaltar el país
+                        function highlightFeature(e) {
+                            var layer = e.target;
 
-                            // Función para quitar el resaltado al salir del hover
-                            function resetHighlight(e) {
-                                geojson.resetStyle(e.target); // Asegúrate de que `geojson` esté definido correctamente
-                            }
-
-                            map2.value.on('click', function () {
-                                map2.value.scrollWheelZoom.enable();
+                            layer.setStyle({
+                                weight: 2,
+                                color: "#fff",
+                                dashArray: "",
+                                fillOpacity: 0.8,
                             });
 
+                            layer.bringToFront();
+                        }
 
-                            map2.value.on('blur', function () {
-                                map2.value.scrollWheelZoom.disable();
-                            });
-                            // Añadir leyenda
-                            var legend = L.control({ position: "bottomright" });
+                        // Función para quitar el resaltado
+                        function resetHighlight(e) {
+                            geojson.resetStyle(e.target);
+                        }
 
-                            legend.onAdd = function () {
-                                const div = L.DomUtil.create(
-                                    "div",
-                                    "info legend"
-                                );
-                                const gradient =
-                                    "linear-gradient(to right, rgba(255, 237, 160, 0.7), rgba(255, 69, 0, 0.7))";
-                                div.innerHTML += `<div style="width: 200px; height: 20px; background: ${gradient}; border: 1px solid;"></div>`;
-                                div.innerHTML += `<div style="display: flex; justify-content: space-between;">
+                        map2.value.on("click", function () {
+                            map2.value.scrollWheelZoom.enable();
+                        });
+
+                        map2.value.on("blur", function () {
+                            map2.value.scrollWheelZoom.disable();
+                        });
+
+                        // Añadir leyenda
+                        var legend = L.control({ position: "bottomright" });
+
+                        legend.onAdd = function () {
+                            const div = L.DomUtil.create("div", "info legend");
+                            const gradient =
+                                "linear-gradient(to right, rgba(255, 237, 160, 0.7), rgba(255, 69, 0, 0.7))";
+                            div.innerHTML += `<div style="width: 200px; height: 20px; background: ${gradient}; border: 1px solid;"></div>`;
+                            div.innerHTML += `<div style="display: flex; justify-content: space-between;">
                         <span class="fw-bold">0</span><span class="fw-bold">${maxAmbientes.value}</span>
                       </div>`;
 
-                                return div;
-                            };
+                            return div;
+                        };
 
-                            legend.addTo(map2.value);
-                        })
-                        .catch((error) =>
-                            console.error("Error al cargar el GeoJSON:", error)
-                        );
-                })
-                .catch((error) =>
-                    console.error("Error al obtener datos de países:", error)
-                );
+                        legend.addTo(map2.value);
+                    })
+                    .catch((error) =>
+                        console.error("Error al cargar el GeoJSON:", error)
+                    );
+            });
         };
 
         return {
@@ -213,5 +232,17 @@ export default {
 
 .info.legend div {
     margin: 4px 0;
+}
+
+@media screen and (max-width: 767px) {
+    #map2 {
+        width: 90vw !important;
+    }
+}
+
+@media screen and (max-width: 1440px) {
+    #map2 {
+        width: 95vw !important;
+    }
 }
 </style>

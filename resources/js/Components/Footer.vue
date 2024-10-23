@@ -71,4 +71,17 @@ import { Link } from "@inertiajs/vue3";
     max-height: 10vh;
     object-fit: contain;
 }
+
+@media screen and (max-width: 767px) {
+    .footer-container {
+        padding-top: 10px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
+
+    .logo-footer {
+        padding: 7% !important;
+    }
+}
 </style>

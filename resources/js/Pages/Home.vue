@@ -46,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <div class="app-data pb-5">
+        <div class="app-data pb-5 d-md-block d-none">
             <div class="ambientesXPaises w-100 d-flex flex-column align-items-center">
                 <div class="chartDescription">
                     <h4 class="text-center">Ambientes creados</h4>
@@ -456,6 +456,15 @@ export default {
         margin-bottom: 0px !important;
     }
 
+    .custom-shape-divider-top-1728974654 {
+        width: 100vw !important;
+    }
+
+    .leaflet-control-attribution {
+        a {
+            font-size: 1rem !important;
+        }
+    }
     .ContactUSDirection {
         width: 70vw;
 
@@ -480,6 +489,7 @@ export default {
         left: 50%;
         translate: -50% -50%;
         text-align: center;
+        width: 90vw !important;
     }
 
     .try-button-mobile {
@@ -505,6 +515,7 @@ export default {
         display: flex;
         flex-direction: column;
         margin-bottom: 0px !important;
+        width: 100vw !important;
     }
 
     .aboutFADU {
@@ -559,6 +570,9 @@ export default {
         width: 75% !important;
     }
 
+    .app-info {
+        margin-bottom: 0 !important;
+    }
 }
 
 @media screen and (max-width: 1440px) {
