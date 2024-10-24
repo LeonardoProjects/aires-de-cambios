@@ -13,7 +13,10 @@
     <div class="modal fade" id="confirmDeleteAmbiente" data-bs-backdrop="static" data-bs-keyboard="true"
         tabindex="-1" aria-labelledby="confirmDeleteAmbienteLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content position-relative">
+                <div v-if="loaderVisibleDelete" class="modal-overlay">
+                    <div class="loader loaderDelete"></div>
+                </div>
                 <div class="modal-header">
                     <h5 class="modal-title" id="confirmDeleteAmbienteLabel">Eliminar local</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -37,12 +40,18 @@ export default {
     props: {
         idAmbiente: Number
     },
+    data() {
+        return {
+            loaderVisibleDelete: false
+        }
+    },
     emits: ['deleteAmbiente'],
     methods: {
         closeModal() {
             document.querySelector('#deleteAmbientecloseModalButton').click();
         },
         async deleteAmbiente() {
+            this.loaderVisibleDelete = true;
             let response = await axios({
                 method: 'POST',
                 url: this.route("ambiente.delete"),
@@ -54,10 +63,13 @@ export default {
                 this.$emit('deleteAmbiente', response.data.data);
                 this.closeModal();
             }
+            this.loaderVisibleDelete = false;
         }
     }
 }
 </script>
-<style lang="">
-    
+<style>
+.loaderDelete {
+    background: #dc3545;
+}
 </style>

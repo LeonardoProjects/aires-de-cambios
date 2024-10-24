@@ -17,13 +17,16 @@ const emit = defineEmits(['updateAmbientesEdit']); // Definir el evento que vas 
 
 async function submitEdit() {
     try {
+        loaderVisibleEdit.value = true;
         const response = await axios.post(route("ambiente.update"), form);
         // Si la solicitud es exitosa (status 200)
         if (response.status === 200) {
             closeModal(); // Cerrar el modal
+            loaderVisibleEdit.value = false;
             emitirAmbiente(response.data.data); // Emitir los ambientes actualizados
         }
     } catch (error) {
+        loaderVisibleEdit.value = false;
         // Si hay un error de validación o cualquier otro error
         if (error.response && error.response.status === 422) {
             // Los errores de validación están en error.response.data.errors
@@ -102,6 +105,7 @@ function closeModal() {
 
 // Funcionalidad para el mapa Leaflet
 const marcadorEdit = ref(null);
+const loaderVisibleEdit = ref(false);
 let mapEdit;
 
 function crearMapaEdit($latitud, $longitud) {
@@ -196,7 +200,11 @@ function crearMapaEdit($latitud, $longitud) {
     <div class="modal fade" id="modalEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="modalEditLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
+            <div class="modal-content position-relative">
+
+                <div v-if="loaderVisibleEdit" class="modal-overlay">
+                    <div class="loader"></div>
+                </div>
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="modalEditLabel">
                         Editar local
@@ -353,7 +361,7 @@ function crearMapaEdit($latitud, $longitud) {
                                             </option>
                                         </select>
                                         <div v-if="form.errors.tipoVentana" class="error">{{ form.errors.tipoVentana[0]
-                                            }}
+                                        }}
                                         </div>
                                     </div>
                                 </div>
@@ -369,8 +377,7 @@ function crearMapaEdit($latitud, $longitud) {
                                             Calidad de ventana</label>
                                         <div class="d-flex">
                                             <select name="calidadSelect" id="calidadVentana" class="form-select w-80"
-                                                v-model="form.calidadVentana"
-                                                @change="form.clearErrors('calidadVentana')">
+                                                v-model="form.calidadVentana" @change="form.clearErrors('calidadVentana')">
                                                 <option value="Normal">Normal</option>
                                                 <option value="Mejorada">
                                                     Mejorada
