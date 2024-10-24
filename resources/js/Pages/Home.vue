@@ -1,5 +1,5 @@
 <template>
-    <button id="btnVolverArriba" ref="btnVolverArriba" @click="scrollArriba">
+    <button id="btnVolverArriba" ref="btnVolverArriba" @click="scrollArriba" :style="{ bottom: footerVisible ? (footerHeight + 30) + 'px' : '20px'}">
         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-up-short"
             viewBox="0 0 16 16">
             <path fill-rule="evenodd"
@@ -157,6 +157,9 @@ export default {
     setup() {
         const isMobile = ref(false);
         let btnVolverArriba = ref(null);
+        const footerVisible = ref(false);
+        const footerHeight = ref(0);
+        
         const checkDeviceSize = () => {
             isMobile.value = window.innerWidth < 768;
         };
@@ -176,11 +179,26 @@ export default {
             }
         };
 
+        const visibilidadFooter = () => {
+            const footer = document.querySelector("footer");
+            if (footer) {
+                const footerRect = footer.getBoundingClientRect();
+                footerVisible.value = footerRect.top < window.innerHeight && footerRect.bottom >= 0;
+            }
+        };
+
         onMounted(() => {
+            const footer = document.querySelector("footer");
             checkDeviceSize();
             window.addEventListener("resize", checkDeviceSize);
             btnVolverArriba.value = document.getElementById("btnVolverArriba");
+
             window.addEventListener("scroll", mostrarBtnScroll);
+            window.addEventListener("scroll", visibilidadFooter);
+
+            if (footer) {
+                footerHeight.value = footer.offsetHeight;
+            }
         });
 
         onBeforeMount(() => {
@@ -191,12 +209,13 @@ export default {
         return {
             isMobile,
             scrollArriba,
+            footerVisible,
+            footerHeight
         };
     },
     props: {
         ambientesPorPais: Array,
-    },
-    mounted() { },
+    }
 };
 </script>
 
@@ -318,6 +337,7 @@ export default {
     border-radius: 50px;
     display: none;
     cursor: pointer;
+    transition: bottom 0.3s ease-in-out;
 }
 
 #btnVolverArriba:hover {

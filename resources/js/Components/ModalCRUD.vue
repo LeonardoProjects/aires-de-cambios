@@ -39,12 +39,13 @@ const formAdd = useForm({
 
 async function submit() {
     try {
-
+        loaderVisibleCRUD.value = true;
         if (!props.notLogged) {
             const response = await axios.post(route("ambiente.store"), formAdd);
             // Si la solicitud es exitosa (status 200)
             if (response.status === 200) {
                 closeModal(); // Cerrar el modal
+                loaderVisibleCRUD.value = false;
                 emitirAmbiente(response.data.data); // Emitir los ambientes actualizados
             }
         } else {
@@ -68,6 +69,7 @@ async function submit() {
             addAmbienteLocalStorage();
         }
     } catch (error) {
+        loaderVisibleCRUD.value = false;
         // Si hay un error de validación o cualquier otro error
         if (error.response && error.response.status === 422) {
             // Los errores de validación están en error.response.data.errors
@@ -85,6 +87,7 @@ onMounted(() => {
 
 // Funcionalidad para el mapa Leaflet
 const marcador = ref(null);
+const loaderVisibleCRUD = ref(false);
 let map;
 
 function crearMapa() {
@@ -201,7 +204,11 @@ function closeModal() {
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
+            <div class="modal-content position-relative">
+
+                <div v-if="loaderVisibleCRUD" class="modal-overlay">
+                    <div class="loader"></div>
+                </div>
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">
                         <span>Crear local</span>
@@ -510,4 +517,9 @@ svg {
             padding: 0 !important;
         }
     }
-}</style>
+}
+
+svg {
+    vertical-align: text-bottom;
+}
+</style>
