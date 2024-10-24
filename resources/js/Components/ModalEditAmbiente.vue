@@ -1,7 +1,7 @@
 <script setup>
 import { useForm, usePage } from "@inertiajs/vue3";
-import { computed, ref, onMounted } from 'vue';
-import { Tooltip } from 'bootstrap';
+import { computed, ref, onMounted } from "vue";
+import { Tooltip } from "bootstrap";
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
@@ -9,34 +9,69 @@ const userId = computed(() => page.props.auth.user.id);
 const props = defineProps({
     ambiente: {
         type: Object,
-        default: null
-    }
+        default: null,
+    },
+    notLogged: {
+        type: Boolean,
+        default: false,
+    },
 });
 
-const emit = defineEmits(['updateAmbientesEdit']); // Definir el evento que vas a emitir
+const emit = defineEmits(["updateAmbientesEdit", "updateLocalStorageEdit"]); // Definir el evento que vas a emitir
 
 async function submitEdit() {
-    try {
-        const response = await axios.post(route("ambiente.update"), form);
-        // Si la solicitud es exitosa (status 200)
-        if (response.status === 200) {
-            closeModal(); // Cerrar el modal
-            emitirAmbiente(response.data.data); // Emitir los ambientes actualizados
+    if (!props.notLogged) {
+        try {
+            loaderVisibleEdit.value = true;
+            const response = await axios.post(route("ambiente.update"), form);
+            // Si la solicitud es exitosa (status 200)
+            if (response.status === 200) {
+                closeModal(); // Cerrar el modal
+                loaderVisibleEdit.value = false;
+                emitirAmbiente(response.data.data); // Emitir los ambientes actualizados
+            }
+        } catch (error) {
+            loaderVisibleEdit.value = false;
+            // Si hay un error de validación o cualquier otro error
+            if (error.response && error.response.status === 422) {
+                // Los errores de validación están en error.response.data.errors
+                form.errors = error.response.data.errors; // Asignar los errores al objeto 'form'
+            } else {
+                console.error("Error inesperado: ", error);
+            }
         }
-    } catch (error) {
-        // Si hay un error de validación o cualquier otro error
-        if (error.response && error.response.status === 422) {
-            // Los errores de validación están en error.response.data.errors
-            form.errors = error.response.data.errors; // Asignar los errores al objeto 'form'
-        } else {
-            console.error("Error inesperado: ", error);
-        }
+    } else {
+        const ambienteNotLogged = {
+            nombreAmbiente: form.nombreAmbiente,
+            anchoAmbiente: form.anchoAmbiente,
+            largoAmbiente: form.largoAmbiente,
+            altoAmbiente: form.altoAmbiente,
+            tipoHabitacion: form.tipoHabitacion,
+            alturaSelect: form.alturaSelect,
+            longitud: form.longitud,
+            latitud: form.latitud,
+            densidadSelect: form.densidadSelect,
+            largoVentana: form.largoVentana,
+            altoVentana: form.altoVentana,
+            tipoVentana: form.tipoVentana,
+            calidadVentana: form.calidadVentana,
+        };
+        localStorage.setItem(
+            "ambienteNotLogged",
+            JSON.stringify(ambienteNotLogged)
+        );
+        closeModal();
+        emitirAmbienteLocalStorage();
     }
 }
 
 onMounted(() => {
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new Tooltip(tooltipTriggerEl));
+    const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"]'
+    );
+    const tooltipList = [...tooltipTriggerList].map(
+        (tooltipTriggerEl) => new Tooltip(tooltipTriggerEl)
+    );
 });
 
 const form = useForm({
@@ -55,31 +90,54 @@ const form = useForm({
     tipoVentana: "Corrediza",
     calidadVentana: "",
     idUser: page.props.auth.user ? userId.value : "",
-    errors: {}
+    errors: {},
 });
 
 // Función para cargar los datos del ambiente en el formulario
 function cargarAmbiente(ambiente) {
-    crearMapaEdit(ambiente.ubicacion.latitud, ambiente.ubicacion.longitud);
-    form.reset();
-    form.idAmbiente = ambiente.id || 0;
-    form.nombreAmbiente = ambiente.nombre || "";
-    form.anchoAmbiente = Number(ambiente.local.ancho) || 0;
-    form.largoAmbiente = Number(ambiente.local.largo) || 0;
-    form.altoAmbiente = Number(ambiente.local.alto) || 0;
-    form.tipoHabitacion = ambiente.local.tipoHabitacion || "";
-    form.latitud = ambiente.ubicacion.latitud || "";
-    form.longitud = ambiente.ubicacion.longitud || "";
-    form.alturaSelect = ambiente.ubicacion.altura || "";
-    form.densidadSelect = ambiente.ubicacion.densidad || "";
-    form.largoVentana = Number(ambiente.ventana.largo) || 0;
-    form.altoVentana = Number(ambiente.ventana.alto) || 0;
-    form.calidadVentana = ambiente.ventana.calidad || "";
+    if (!props.notLogged) {
+        crearMapaEdit(ambiente.ubicacion.latitud, ambiente.ubicacion.longitud);
+        form.reset();
+        form.idAmbiente = ambiente.id || 0;
+        form.nombreAmbiente = ambiente.nombre || "";
+        form.anchoAmbiente = Number(ambiente.local.ancho) || 0;
+        form.largoAmbiente = Number(ambiente.local.largo) || 0;
+        form.altoAmbiente = Number(ambiente.local.alto) || 0;
+        form.tipoHabitacion = ambiente.local.tipoHabitacion || "";
+        form.latitud = ambiente.ubicacion.latitud || "";
+        form.longitud = ambiente.ubicacion.longitud || "";
+        form.alturaSelect = ambiente.ubicacion.altura || "";
+        form.densidadSelect = ambiente.ubicacion.densidad || "";
+        form.largoVentana = Number(ambiente.ventana.largo) || 0;
+        form.altoVentana = Number(ambiente.ventana.alto) || 0;
+        form.calidadVentana = ambiente.ventana.calidad || "";
+    } else {
+        const ambienteNotLogged = JSON.parse(
+            localStorage.getItem("ambienteNotLogged")
+        );
+        crearMapaEdit(ambienteNotLogged.latitud, ambienteNotLogged.longitud);
+        form.reset();
+        form.nombreAmbiente = ambienteNotLogged.nombreAmbiente || "";
+        form.anchoAmbiente = Number(ambienteNotLogged.anchoAmbiente) || 0;
+        form.largoAmbiente = Number(ambienteNotLogged.largoAmbiente) || 0;
+        form.altoAmbiente = Number(ambienteNotLogged.altoAmbiente) || 0;
+        form.tipoHabitacion = ambienteNotLogged.tipoHabitacion || "";
+        form.alturaSelect = ambienteNotLogged.alturaSelect || "";
+        form.latitud = ambienteNotLogged.latitud || "";
+        form.longitud = ambienteNotLogged.longitud || "";
+        form.densidadSelect = ambienteNotLogged.densidadSelect || "";
+        form.largoVentana = Number(ambienteNotLogged.largoVentana) || 0;
+        form.altoVentana = Number(ambienteNotLogged.altoVentana) || 0;
+        form.calidadVentana = ambienteNotLogged.calidadVentana || "";
+    }
 }
 
 function emitirAmbiente($ambiente) {
-    emit('updateAmbientesEdit', $ambiente);
+    emit("updateAmbientesEdit", $ambiente);
+}
 
+function emitirAmbienteLocalStorage() {
+    emit("updateLocalStorageEdit");
 }
 
 function clearInputs() {
@@ -97,42 +155,46 @@ function clearInputs() {
 }
 
 function closeModal() {
-    document.querySelector('#closeModalEditButton').click();
+    document.querySelector("#closeModalEditButton").click();
 }
 
 // Funcionalidad para el mapa Leaflet
 const marcadorEdit = ref(null);
+const loaderVisibleEdit = ref(false);
 let mapEdit;
 
 function crearMapaEdit($latitud, $longitud) {
-    mapEdit = L.map('mapEdit').setView([Number($latitud), Number($longitud)], 18);
+    mapEdit = L.map("mapEdit").setView(
+        [Number($latitud), Number($longitud)],
+        18
+    );
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         fullscreenControl: true,
         maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        attribution:
+            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(mapEdit);
-
 
     let pantallaCompleta = new L.Control.Fullscreen({
         title: {
-            'false': 'View Fullscreen',
-            'true': 'Exit Fullscreen'
-        }
+            false: "View Fullscreen",
+            true: "Exit Fullscreen",
+        },
     });
     mapEdit.addControl(pantallaCompleta);
 
     // Añadir el Geocoder al mapa
     L.Control.geocoder({
-        defaultMarkGeocode: false
+        defaultMarkGeocode: false,
     })
-        .on('markgeocode', function (e) {
+        .on("markgeocode", function (e) {
             let bbox = e.geocode.bbox;
             let poly = L.polygon([
                 [bbox.getSouthEast().lat, bbox.getSouthEast().lng],
                 [bbox.getNorthEast().lat, bbox.getNorthEast().lng],
                 [bbox.getNorthWest().lat, bbox.getNorthWest().lng],
-                [bbox.getSouthWest().lat, bbox.getSouthWest().lng]
+                [bbox.getSouthWest().lat, bbox.getSouthWest().lng],
             ]);
             mapEdit.fitBounds(poly.getBounds());
 
@@ -141,24 +203,28 @@ function crearMapaEdit($latitud, $longitud) {
             }
 
             // Añadir nuevo marcador en la ubicación ingresada por el geocoder
-            marcadorEdit.value = L.marker(e.geocode.center).addTo(mapEdit).bindPopup(e.geocode.name).openPopup();
+            marcadorEdit.value = L.marker(e.geocode.center)
+                .addTo(mapEdit)
+                .bindPopup(e.geocode.name)
+                .openPopup();
 
             // Actualizar latitud y longitud en el formulario
             form.latitud = e.geocode.center.lat;
             form.longitud = e.geocode.center.lng;
-        }).addTo(mapEdit);
+        })
+        .addTo(mapEdit);
     mapEdit.invalidateSize();
 
-    mapEdit.on('enterFullscreen', () => {
+    mapEdit.on("enterFullscreen", () => {
         mapEdit.invalidateSize(); // Ajustar el tamaño del mapa cuando entra en fullscreen
     });
 
-    mapEdit.on('exitFullscreen', () => {
+    mapEdit.on("exitFullscreen", () => {
         mapEdit.invalidateSize(); // Ajustar el tamaño del mapa cuando sale de fullscreen
     });
 
     // Evento de clic en el mapa para que el usuario pueda seleccionar una ubicación
-    mapEdit.on('click', function (e) {
+    mapEdit.on("click", function (e) {
         const { lat, lng } = e.latlng;
 
         // Borrar el marcador anterior si existe
@@ -167,13 +233,16 @@ function crearMapaEdit($latitud, $longitud) {
         }
 
         // Añadir nuevo marcador en la ubicación seleccionada por el usuario
-        marcadorEdit.value = L.marker([lat, lng]).addTo(mapEdit).bindPopup('Ubicación modificada').openPopup();
+        marcadorEdit.value = L.marker([lat, lng])
+            .addTo(mapEdit)
+            .bindPopup("Ubicación modificada")
+            .openPopup();
 
         form.latitud = lat;
         form.longitud = lng;
     });
     setTimeout(function () {
-        window.dispatchEvent(new Event('resize'));
+        window.dispatchEvent(new Event("resize"));
     }, 1000);
 
     marcadorEdit.value = L.marker([$latitud, $longitud]).addTo(mapEdit);
@@ -181,28 +250,58 @@ function crearMapaEdit($latitud, $longitud) {
 </script>
 
 <template>
-    <button type="button" class="btn btn-outline-primary mx-1 rounded-5 px-2" data-bs-toggle="modal"
-        data-bs-target="#modalEdit" @click="cargarAmbiente(ambiente)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil-square"
-            viewBox="0 0 16 16">
+    <button
+        type="button"
+        class="btn btn-outline-primary mx-1 rounded-5 px-2"
+        data-bs-toggle="modal"
+        data-bs-target="#modalEdit"
+        @click="cargarAmbiente(ambiente)"
+    >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="currentColor"
+            class="bi bi-pencil-square"
+            viewBox="0 0 16 16"
+        >
             <path
-                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-            <path fill-rule="evenodd"
-                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+            />
+            <path
+                fill-rule="evenodd"
+                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+            />
         </svg>
     </button>
 
     <!-- Modal -->
-    <div class="modal fade" id="modalEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="modalEditLabel" aria-hidden="true">
+    <div
+        class="modal fade"
+        id="modalEdit"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="modalEditLabel"
+        aria-hidden="true"
+    >
         <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
+            <div class="modal-content position-relative">
+
+                <div v-if="loaderVisibleEdit" class="modal-overlay">
+                    <div class="loader"></div>
+                </div>
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="modalEditLabel">
                         Editar local
                     </h1>
-                    <button type="button" class="btn-close" @click="clearInputs" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        @click="clearInputs"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
                 </div>
                 <div class="modal-body text-center">
                     <form @submit.prevent="submitEdit" id="editFORM">
@@ -210,33 +309,85 @@ function crearMapaEdit($latitud, $longitud) {
                             <h3>Detalles del local</h3>
                             <hr />
                             <div class="mt-1 mb-4 px-4 text-center">
-                                <label for="nombreAmbiente" class="form-label">Nombre de local</label>
-                                <input id="nombreAmbiente" type="text" class="form-control w-0"
-                                    v-model="form.nombreAmbiente" />
-                                <div v-if="form.errors.nombreAmbiente" class="error">{{ form.errors.nombreAmbiente[0] }}
+                                <label for="nombreAmbiente" class="form-label"
+                                    >Nombre de local</label
+                                >
+                                <input
+                                    id="nombreAmbiente"
+                                    type="text"
+                                    class="form-control w-0"
+                                    v-model="form.nombreAmbiente"
+                                />
+                                <div
+                                    v-if="form.errors.nombreAmbiente"
+                                    class="error"
+                                >
+                                    {{ form.errors.nombreAmbiente[0] }}
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-between px-4 h-50 flex-row">
+                            <div
+                                class="d-flex justify-content-between px-4 h-50 flex-row"
+                            >
                                 <div class="w-25 text-center">
-                                    <label for="anchoAmbiente" class="form-label">Ancho (m)</label>
-                                    <input id="anchoAmbiente" type="number" min="0.1" max="20" step="0.1"
-                                        class="form-control" v-model="form.anchoAmbiente" />
+                                    <label
+                                        for="anchoAmbiente"
+                                        class="form-label"
+                                        >Ancho (m)</label
+                                    >
+                                    <input
+                                        id="anchoAmbiente"
+                                        type="number"
+                                        min="0.1"
+                                        max="20"
+                                        step="0.1"
+                                        class="form-control"
+                                        v-model="form.anchoAmbiente"
+                                    />
                                 </div>
                                 <div class="w-25 text-center">
-                                    <label for="largoAmbiente" class="form-label">Largo (m)</label>
-                                    <input id="largoAmbiente" type="number" min="0.1" max="20" step="0.1" value="0"
-                                        class="form-control w-0" v-model="form.largoAmbiente" />
+                                    <label
+                                        for="largoAmbiente"
+                                        class="form-label"
+                                        >Largo (m)</label
+                                    >
+                                    <input
+                                        id="largoAmbiente"
+                                        type="number"
+                                        min="0.1"
+                                        max="20"
+                                        step="0.1"
+                                        value="0"
+                                        class="form-control w-0"
+                                        v-model="form.largoAmbiente"
+                                    />
                                 </div>
                                 <div class="w-25 text-center">
-                                    <label for="altoAmbiente" class="form-label">Alto (m)</label>
-                                    <input id="altoAmbiente" type="number" min="0.1" max="20" step="0.1" value="0"
-                                        class="form-control w-0" v-model="form.altoAmbiente" />
+                                    <label for="altoAmbiente" class="form-label"
+                                        >Alto (m)</label
+                                    >
+                                    <input
+                                        id="altoAmbiente"
+                                        type="number"
+                                        min="0.1"
+                                        max="20"
+                                        step="0.1"
+                                        value="0"
+                                        class="form-control w-0"
+                                        v-model="form.altoAmbiente"
+                                    />
                                 </div>
                             </div>
                             <div class="px-5 mt-4 w-100 text-center">
-                                <label for="tipoHabitacion" class="form-label">Tipo de habitación</label>
-                                <select name="tipoHabitacionSelect" id="tipoHabitacion" class="form-select"
-                                    v-model="form.tipoHabitacion" @change="form.clearErrors('tipoHabitacion')">
+                                <label for="tipoHabitacion" class="form-label"
+                                    >Tipo de habitación</label
+                                >
+                                <select
+                                    name="tipoHabitacionSelect"
+                                    id="tipoHabitacion"
+                                    class="form-select"
+                                    v-model="form.tipoHabitacion"
+                                    @change="form.clearErrors('tipoHabitacion')"
+                                >
                                     <option value="Dormitorio">
                                         Dormitorio
                                     </option>
@@ -244,7 +395,11 @@ function crearMapaEdit($latitud, $longitud) {
                                         Estar o comedor
                                     </option>
                                 </select>
-                                <div v-if="form.errors.tipoHabitacion" class="error">{{ form.errors.tipoHabitacion[0] }}
+                                <div
+                                    v-if="form.errors.tipoHabitacion"
+                                    class="error"
+                                >
+                                    {{ form.errors.tipoHabitacion[0] }}
                                 </div>
                             </div>
                         </div>
@@ -254,11 +409,22 @@ function crearMapaEdit($latitud, $longitud) {
                             <hr />
                             <div class="d-flex h-50 mt-2 px-4">
                                 <div class="pe-3 w-50 text-center">
-                                    <label for="alturaSelect" class="form-label">
-                                        Altura</label>
+                                    <label
+                                        for="alturaSelect"
+                                        class="form-label"
+                                    >
+                                        Altura</label
+                                    >
                                     <div class="d-flex">
-                                        <select name="alturaSelect" id="altura" v-model="form.alturaSelect"
-                                            class="form-select w-80" @change="form.clearErrors('alturaSelect')">
+                                        <select
+                                            name="alturaSelect"
+                                            id="altura"
+                                            v-model="form.alturaSelect"
+                                            class="form-select w-80"
+                                            @change="
+                                                form.clearErrors('alturaSelect')
+                                            "
+                                        >
                                             <option value="Planta baja">
                                                 Planta baja
                                             </option>
@@ -272,62 +438,114 @@ function crearMapaEdit($latitud, $longitud) {
                                                 6° piso o más
                                             </option>
                                         </select>
-                                        <button type="button" class="btn btnTooltip" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                            data-bs-title="La altura sobre el suelo afecta la velocidad del viento.">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                        <button
+                                            type="button"
+                                            class="btn btnTooltip"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            data-bs-custom-class="custom-tooltip"
+                                            data-bs-title="La altura sobre el suelo afecta la velocidad del viento."
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="16"
+                                                height="16"
+                                                fill="currentColor"
+                                                class="bi bi-info-circle"
+                                                viewBox="0 0 16 16"
+                                            >
                                                 <path
-                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"
+                                                />
                                                 <path
-                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"
+                                                />
                                             </svg>
                                         </button>
                                     </div>
-                                    <div v-if="form.errors.alturaSelect" class="error">{{ form.errors.alturaSelect[0] }}
+                                    <div
+                                        v-if="form.errors.alturaSelect"
+                                        class="error"
+                                    >
+                                        {{ form.errors.alturaSelect[0] }}
                                     </div>
                                 </div>
 
                                 <div class="ps-3 w-50 text-center">
-                                    <label for="densidadSelect" class="form-label">
-                                        Vivo en</label>
+                                    <label
+                                        for="densidadSelect"
+                                        class="form-label"
+                                    >
+                                        Vivo en</label
+                                    >
                                     <div class="d-flex">
-                                        <select name="densidadSelect" id="densidad" class="form-select w-80"
-                                            v-model="form.densidadSelect" @change="form.clearErrors('densidadSelect')">
+                                        <select
+                                            name="densidadSelect"
+                                            id="densidad"
+                                            class="form-select w-80"
+                                            v-model="form.densidadSelect"
+                                            @change="
+                                                form.clearErrors(
+                                                    'densidadSelect'
+                                                )
+                                            "
+                                        >
                                             <option value="Frente al mar">
                                                 Frente al mar
                                             </option>
                                             <option value="El campo">
                                                 El campo
                                             </option>
-                                            <option value="Un barrio poco denso">
+                                            <option
+                                                value="Un barrio poco denso"
+                                            >
                                                 Un barrio poco denso
                                             </option>
                                             <option value="Un barrio muy denso">
                                                 Un barrio muy denso
                                             </option>
-                                            <option value="El centro con edificios altos">
+                                            <option
+                                                value="El centro con edificios altos"
+                                            >
                                                 El centro con edificios altos
                                             </option>
                                         </select>
-                                        <button type="button" class="btn btnTooltip" data-bs-toggle="tooltip"
-                                            data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                            data-bs-title="Las características del terreno y lugar afectan la velocidad del viento por la rugosidad.">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                        <button
+                                            type="button"
+                                            class="btn btnTooltip"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            data-bs-custom-class="custom-tooltip"
+                                            data-bs-title="Las características del terreno y lugar afectan la velocidad del viento por la rugosidad."
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="16"
+                                                height="16"
+                                                fill="currentColor"
+                                                class="bi bi-info-circle"
+                                                viewBox="0 0 16 16"
+                                            >
                                                 <path
-                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"
+                                                />
                                                 <path
-                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                                                    d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"
+                                                />
                                             </svg>
                                         </button>
                                     </div>
-                                    <div v-if="form.errors.densidadSelect" class="error">{{
-                                        form.errors.densidadSelect[0] }}
+                                    <div
+                                        v-if="form.errors.densidadSelect"
+                                        class="error"
+                                    >
+                                        {{ form.errors.densidadSelect[0] }}
                                     </div>
                                 </div>
                             </div>
-                            <div class="w-100 mt-4 d-flex justify-content-center">
+                            <div
+                                class="w-100 mt-4 d-flex justify-content-center"
+                            >
                                 <div id="mapEdit"></div>
                             </div>
                         </div>
@@ -337,40 +555,84 @@ function crearMapaEdit($latitud, $longitud) {
                             <hr />
                             <div class="d-flex mt-2">
                                 <div class="flex-column w-50 ps-4">
-                                    <div class="text-center d-flex flex-column align-items-center">
-                                        <label for="largoVentana" class="form-label">
-                                            Largo (m)</label>
-                                        <input id="largoVentana" type="number" min="0.1" max="20" step="0.1"
-                                            class="form-control w-80" v-model="form.largoVentana" />
+                                    <div
+                                        class="text-center d-flex flex-column align-items-center"
+                                    >
+                                        <label
+                                            for="largoVentana"
+                                            class="form-label"
+                                        >
+                                            Largo (m)</label
+                                        >
+                                        <input
+                                            id="largoVentana"
+                                            type="number"
+                                            min="0.1"
+                                            max="20"
+                                            step="0.1"
+                                            class="form-control w-80"
+                                            v-model="form.largoVentana"
+                                        />
                                     </div>
-                                    <div class="text-center d-flex flex-column align-items-center mt-2">
-                                        <label for="tipoVentana" class="form-label">
-                                            Tipo de ventana</label>
-                                        <select name="tipoVentanaSelect" id="tipoVentana" class="form-select w-80"
-                                            v-model="form.tipoVentana" @change="form.clearErrors('tipoVentana')">
+                                    <div
+                                        class="text-center d-flex flex-column align-items-center mt-2"
+                                    >
+                                        <label
+                                            for="tipoVentana"
+                                            class="form-label"
+                                        >
+                                            Tipo de ventana</label
+                                        >
+                                        <select
+                                            name="tipoVentanaSelect"
+                                            id="tipoVentana"
+                                            class="form-select w-80"
+                                            v-model="form.tipoVentana"
+                                            @change="
+                                                form.clearErrors('tipoVentana')
+                                            "
+                                        >
                                             <option value="Corrediza">
                                                 Corrediza
                                             </option>
                                         </select>
                                         <div v-if="form.errors.tipoVentana" class="error">{{ form.errors.tipoVentana[0]
-                                            }}
+                                        }}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="flex-column w-50 pe-4">
-                                    <div class="text-center d-flex flex-column align-items-center">
-                                        <label for="altoVentana" class="form-label">
-                                            Alto (m)</label>
-                                        <input id="altoVentana" type="number" min="0.1" max="20" step="0.1"
-                                            class="form-control w-80" v-model="form.altoVentana" />
+                                    <div
+                                        class="text-center d-flex flex-column align-items-center"
+                                    >
+                                        <label
+                                            for="altoVentana"
+                                            class="form-label"
+                                        >
+                                            Alto (m)</label
+                                        >
+                                        <input
+                                            id="altoVentana"
+                                            type="number"
+                                            min="0.1"
+                                            max="20"
+                                            step="0.1"
+                                            class="form-control w-80"
+                                            v-model="form.altoVentana"
+                                        />
                                     </div>
-                                    <div class="text-center d-flex flex-column align-items-center mt-2">
-                                        <label for="calidadVentana" class="form-label">
-                                            Calidad de ventana</label>
+                                    <div
+                                        class="text-center d-flex flex-column align-items-center mt-2"
+                                    >
+                                        <label
+                                            for="calidadVentana"
+                                            class="form-label"
+                                        >
+                                            Calidad de ventana</label
+                                        >
                                         <div class="d-flex">
                                             <select name="calidadSelect" id="calidadVentana" class="form-select w-80"
-                                                v-model="form.calidadVentana"
-                                                @change="form.clearErrors('calidadVentana')">
+                                                v-model="form.calidadVentana" @change="form.clearErrors('calidadVentana')">
                                                 <option value="Normal">Normal</option>
                                                 <option value="Mejorada">
                                                     Mejorada
@@ -379,20 +641,36 @@ function crearMapaEdit($latitud, $longitud) {
                                                     Reforzada
                                                 </option>
                                             </select>
-                                            <button type="button" class="btn btnTooltip" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                                                data-bs-title="La calidad de las aberturas afecta en las infiltraciones de aire.">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                            <button
+                                                type="button"
+                                                class="btn btnTooltip"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-custom-class="custom-tooltip"
+                                                data-bs-title="La calidad de las aberturas afecta en las infiltraciones de aire."
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="16"
+                                                    height="16"
+                                                    fill="currentColor"
+                                                    class="bi bi-info-circle"
+                                                    viewBox="0 0 16 16"
+                                                >
                                                     <path
-                                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                                        d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"
+                                                    />
                                                     <path
-                                                        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                                                        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"
+                                                    />
                                                 </svg>
                                             </button>
                                         </div>
-                                        <div v-if="form.errors.calidadVentana" class="error">{{
-                                            form.errors.calidadVentana[0] }}
+                                        <div
+                                            v-if="form.errors.calidadVentana"
+                                            class="error"
+                                        >
+                                            {{ form.errors.calidadVentana[0] }}
                                         </div>
                                     </div>
                                 </div>
@@ -401,11 +679,21 @@ function crearMapaEdit($latitud, $longitud) {
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="closeModalEditButton" class="btn btn-secondary" @click="clearInputs"
-                        data-bs-dismiss="modal">
+                    <button
+                        type="button"
+                        id="closeModalEditButton"
+                        class="btn btn-secondary"
+                        @click="clearInputs"
+                        data-bs-dismiss="modal"
+                    >
                         Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary" form="editFORM" :disabled="form.processing">
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        form="editFORM"
+                        :disabled="form.processing"
+                    >
                         Guardar cambios
                     </button>
                 </div>

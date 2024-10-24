@@ -7,6 +7,7 @@ import { computed } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import Show from "./Results/show.vue";
 import Survey from "./../Components/ModalSurvey.vue";
+import EventBus from './../EventBus';
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user);
@@ -38,6 +39,12 @@ export default {
                 this.ambientes = response.data.data;
             }
         },
+        cargarAmbienteDesdeRegistro(ambiente) {
+            const ambienteRegistro = Object.values(ambiente)[0];
+            this.ambientes.push(ambienteRegistro);
+            this.idAmbiente = ambienteRegistro.id;
+            localStorage.setItem(`loggedAmbiente${ambienteRegistro.idUsuario}`, ambienteRegistro.id.toString());
+        },
         actualizarAmbientesPostAdd($data) {
             const ambienteAdd = Object.values($data)[0];
             this.ambientes.push(ambienteAdd);
@@ -48,14 +55,10 @@ export default {
             );
         },
         actualizarAmbientesPostEdit($data) {
-            // Extraer el ambiente desde el objeto anidado
-            const ambiente = Object.values($data)[0]; // Toma el primer valor, que es el objeto con la clave numérica
-            // Ahora puedes acceder al id del ambiente
-            const index = this.ambientes.findIndex(
-                (item) => item.id === ambiente.id
-            );
+            const ambiente = Object.values($data)[0];
+            const index = this.ambientes.findIndex(item => item.id === ambiente.id);
             if (index !== -1) {
-                this.ambientes.splice(index, 1, ambiente); // Reemplaza el ambiente con el nuevo
+                this.ambientes.splice(index, 1, ambiente);
             }
             this.$refs.resultados.cargarDatos();
             localStorage.setItem(
@@ -67,6 +70,9 @@ export default {
             this.idAmbiente = -2;
             this.$refs.resultados.cargarDatos();
             this.ambienteCreado = true;
+        },
+        editAmbienteLocalStorage() {
+            this.$refs.resultados.cargarDatos();
         },
         cargarResultados($idAmbiente) {
             this.idAmbiente = Number($idAmbiente);
@@ -129,6 +135,9 @@ export default {
         } else {
             this.surveyCompleted = true;
         }
+        EventBus.$on('ambienteCreadoConLocalStorage', (nuevoAmbiente) => {
+            this.cargarAmbienteDesdeRegistro(nuevoAmbiente);
+        });
         this.obtenerAmbientes().then(() => {
             if (this.ambientes.length > 0) {
                 const loggedAmbiente = localStorage.getItem(
@@ -257,121 +266,49 @@ export default {
                             No hay locales creados
                         </option>
                     </select>
-                    <ModalEditAmbiente
-                        v-if="idAmbiente != -1"
-                        @updateAmbientesEdit="actualizarAmbientesPostEdit"
-                        :ambiente="obtenerAmbienteXid(idAmbiente)"
-                    />
-                    <DeleteAmbienteConfirm
-                        :idAmbiente="idAmbiente"
-                        @deleteAmbiente="deleteAmbiente"
-                    />
-                    <div
-                        v-if="idAmbiente != -1"
-                        class="d-none d-md-flex flex-column position-absolute divCantPersonas text-center"
-                    >
-                        <label for="cantPersonas" class="form-label"
-                            >Cant. personas</label
-                        >
-                        <input
-                            type="number"
-                            id="cantPersonas"
-                            class="form-control"
-                            min="1"
-                            v-model="cantPersonas"
-                        />
+                    <ModalEditAmbiente v-if="idAmbiente != -1" @updateAmbientesEdit="actualizarAmbientesPostEdit"
+                        :ambiente="obtenerAmbienteXid(idAmbiente)" />
+                    <DeleteAmbienteConfirm v-if="idAmbiente != -1" :idAmbiente="idAmbiente" @deleteAmbiente="deleteAmbiente" />
+                    <div v-if="idAmbiente != -1"
+                        class="d-none d-md-flex flex-column position-absolute divCantPersonas text-center">
+                        <label for="cantPersonas" class="form-label">Cant. personas</label>
+                        <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas" />
                     </div>
                 </div>
             </div>
-
             <!-- DIV para users no logeados -->
             <div
                 v-else
                 class="d-flex flex-column justify-content-center position-relative divSelectNotLogged"
             >
                 <div class="d-md-none d-flex justify-content-center mb-2">
-                    <button
-                        class="btn btn-danger rounded-5 p-1 mx-2"
-                        @click="disminuirCantPersonas"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            enable-background="new 0 0 24 24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            width="24"
-                        >
-                            <g>
-                                <rect
-                                    fill="none"
-                                    fill-rule="evenodd"
-                                    height="24"
-                                    width="24"
-                                />
-                                <rect
-                                    fill="white"
-                                    fill-rule="evenodd"
-                                    height="2"
-                                    width="16"
-                                    x="4"
-                                    y="11"
-                                />
-                            </g>
-                        </svg>
-                    </button>
-                    <input
-                        type="text"
-                        id="cantPersonas"
-                        class="form-control text-center"
-                        min="1"
-                        v-model="cantPersonas"
-                    />
-                    <button
-                        class="btn btn-success rounded-5 p-1 mx-2"
-                        @click="aumentarCantPersonas"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            width="24"
-                        >
-                            <path d="M0 0h24v24H0z" fill="none" />
-                            <path
-                                d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"
-                                fill="white"
-                            />
-                        </svg>
-                    </button>
-                </div>
-                <div class="d-flex divSelectNotLogged position-relative">
-                    <ModalCRUD
-                        v-if="!ambienteCreado"
-                        :notLogged="true"
-                        @updateLocalStorage="addAmbienteLocalStorage"
-                    />
-                    <ModalEditAmbiente
-                        v-if="ambienteCreado"
-                        @updateAmbientesEdit="actualizarAmbientesPostEdit"
-                        :ambiente="obtenerAmbienteXid(idAmbiente)"
-                    />
-                    <p v-if="ambienteCreado">
-                        Si quieres más locales, ¡Inicia sesión!
-                    </p>
-                    <div
-                        v-if="idAmbiente != -1"
-                        class="d-none d-md-flex flex-column position-absolute divCantPersonas text-center"
-                    >
-                        <label for="cantPersonas" class="form-label"
-                            >Cant. personas</label
-                        >
-                        <input
-                            type="number"
-                            id="cantPersonas"
-                            class="form-control"
-                            min="1"
-                            v-model="cantPersonas"
-                        />
+					<button class="btn btn-danger rounded-5 p-1 mx-2" @click="disminuirCantPersonas">
+						<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24"
+							viewBox="0 0 24 24" width="24">
+							<g>
+								<rect fill="none" fill-rule="evenodd" height="24" width="24" />
+								<rect fill="white" fill-rule="evenodd" height="2" width="16" x="4" y="11" />
+							</g>
+						</svg>
+					</button>
+					<input type="text" id="cantPersonas" class="form-control text-center" min="1"
+						v-model="cantPersonas" />
+					<button class="btn btn-success rounded-5 p-1 mx-2" @click="aumentarCantPersonas">
+						<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+							<path d="M0 0h24v24H0z" fill="none" />
+							<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="white" />
+						</svg>
+					</button>
+				</div>
+				<div :class="['d-flex', 'divSelectNotLogged', 'position-relative', !ambienteCreado ? 'justify-content-center' : '']">
+					<ModalCRUD v-if="!ambienteCreado" :notLogged="true" @updateLocalStorage="addAmbienteLocalStorage" />
+                    <ModalEditAmbiente v-if="ambienteCreado" :notLogged="true" @updateLocalStorageEdit="editAmbienteLocalStorage"
+                    :ambiente="obtenerAmbienteXid(idAmbiente)" />
+					<p v-if="ambienteCreado">Si quieres más locales, ¡Inicia sesión!</p>
+					<div v-if="idAmbiente != -1"
+                        class="d-none d-md-flex flex-column position-absolute divCantPersonas text-center">
+                        <label for="cantPersonas" class="form-label">Cant. personas</label>
+                        <input type="number" id="cantPersonas" class="form-control" min="1" v-model="cantPersonas" />
                     </div>
                 </div>
             </div>
@@ -435,11 +372,12 @@ svg {
         padding-top: 10px;
         justify-content: center;
     }
-
-    .divSelectNotLogged {
-        margin-bottom: 10px;
-        justify-content: center;
-    }
+    
+	.divSelectNotLogged {
+        padding-top: 10px;
+		margin-bottom: 10px;
+		justify-content: center;
+	}
 
     #selectAmbiente {
         width: 40% !important;
