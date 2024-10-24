@@ -69,6 +69,11 @@ export default {
 }
 </script>
 <style>
+    @media screen and (max-width: 767px) {
+        #confirmDeleteAmbiente {
+            width: 100vw !important;
+        }
+    }
 .loaderDelete {
     background: #dc3545 !important;
 }

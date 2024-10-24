@@ -305,29 +305,17 @@ function crearMapaEdit($latitud, $longitud) {
                 </div>
                 <div class="modal-body text-center">
                     <form @submit.prevent="submitEdit" id="editFORM">
-                        <div class="mb-5">
+                        <div class="mb-5 divDetallesLocalEdit">
                             <h3>Detalles del local</h3>
                             <hr />
-                            <div class="mt-1 mb-4 px-4 text-center">
-                                <label for="nombreAmbiente" class="form-label"
-                                    >Nombre de local</label
-                                >
-                                <input
-                                    id="nombreAmbiente"
-                                    type="text"
-                                    class="form-control w-0"
-                                    v-model="form.nombreAmbiente"
-                                />
-                                <div
-                                    v-if="form.errors.nombreAmbiente"
-                                    class="error"
-                                >
-                                    {{ form.errors.nombreAmbiente[0] }}
+                            <div class="mt-1 mb-4 px-4 text-center divNombreLocalEdit">
+                                <label for="nombreAmbiente" class="form-label">Nombre de local</label>
+                                <input id="nombreAmbiente" type="text" class="form-control w-0"
+                                    v-model="form.nombreAmbiente" />
+                                <div v-if="form.errors.nombreAmbiente" class="error">{{ form.errors.nombreAmbiente[0] }}
                                 </div>
                             </div>
-                            <div
-                                class="d-flex justify-content-between px-4 h-50 flex-row"
-                            >
+                            <div class="d-flex justify-content-between px-4 h-50 flex-row divInputsNumericosEdit">
                                 <div class="w-25 text-center">
                                     <label
                                         for="anchoAmbiente"
@@ -404,7 +392,7 @@ function crearMapaEdit($latitud, $longitud) {
                             </div>
                         </div>
 
-                        <div class="mb-5">
+                        <div class="mb-5 divUbicacionEdit">
                             <h3>Ubicación</h3>
                             <hr />
                             <div class="d-flex h-50 mt-2 px-4">
@@ -550,7 +538,7 @@ function crearMapaEdit($latitud, $longitud) {
                             </div>
                         </div>
 
-                        <div class="mb-0">
+                        <div class="mb-0 divDetallesVentanaEdit">
                             <h3>Detalles de ventana</h3>
                             <hr />
                             <div class="d-flex mt-2">
@@ -733,10 +721,38 @@ hr {
 }
 
 /*Resolución para tablets (pantallas entre 768px y 1024px)*/
-@media (min-width: 767px) and (min-width: 1024px) {
+@media screen and (max-width: 767px) {
     #mapEdit {
         width: 90%;
         height: 350px;
+    }
+
+    #modalEdit {
+        width: 100vw !important;
+
+        label,
+        select,
+        input {
+            font-size: 0.75em !important;
+        }
+
+        .divDetallesVentanaEdit div {
+            padding: 0 !important;
+        }
+
+        .divUbicacionEdit {
+            div {
+                padding: 0 !important;
+            }
+        }  
+
+        .divInputsNumericosEdit {
+            padding: 0 !important;
+        }
+
+        .divNombreLocalEdit {
+            padding: 0 !important;
+        }
     }
 }
 

@@ -124,12 +124,31 @@ import NavLink from "@/Components/NavLink.vue";
 import AuthenticationCardLogo from "@/Components/AuthenticationCardLogo.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import { Link, router } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
 const showingNavigationDropdown = ref(false);
 const logout = () => {
     router.post(route("logout"));
 };
+
+const handleClickOutside = (event) => {
+  const dropdown = document.querySelector('.hamburguerDiv');
+  
+  // Verifica si el clic fue fuera del botón o del menú
+  if (dropdown && !dropdown.contains(event.target)) {
+    showingNavigationDropdown.value = false;
+  }
+};
+
+onMounted(() => {
+  // Agregar evento click en el documento
+  document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  // Remover evento click cuando el componente se desmonte
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <style lang="css" scoped>

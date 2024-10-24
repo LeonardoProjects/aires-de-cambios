@@ -218,10 +218,10 @@ function closeModal() {
                 </div>
                 <div class="modal-body text-center">
                     <form @submit.prevent="submit" id="crudFORM">
-                        <div class="mb-5">
+                        <div class="mb-5 divDetallesLocal">
                             <h3>Detalles del local</h3>
                             <hr />
-                            <div class="mt-1 mb-4 px-4 text-center">
+                            <div class="mt-1 mb-4 px-4 text-center divNombreLocal">
                                 <label for="nombreAmbiente" class="form-label">Nombre de local</label>
                                 <input id="nombreAmbiente" type="text" class="form-control w-0"
                                     v-model="formAdd.nombreAmbiente" />
@@ -230,7 +230,7 @@ function closeModal() {
                                 }}
                                 </div>
                             </div>
-                            <div class="d-flex h-50 px-4 justify-content-between flex-row">
+                            <div class="d-flex h-50 px-4 justify-content-between flex-row divInputsNumericos">
                                 <div class="w-25 text-center">
                                     <label for="anchoAmbiente" class="form-label">Ancho (m)</label>
                                     <input id="anchoAmbiente" type="number" min="0.1" max="20" step="0.1"
@@ -351,7 +351,7 @@ function closeModal() {
                             </div>
                         </div>
 
-                        <div class="mb-0">
+                        <div class="mb-0 divDetallesVentana">
                             <h3>Detalles de ventana</h3>
                             <hr />
                             <div class="d-flex mt-2">
@@ -479,11 +479,43 @@ select {
     width: 80% !important;
 }
 
+svg {
+    vertical-align: text-bottom;
+}
+
 /*Resolución para tablets (pantallas entre 768px y 1024px)*/
-@media (min-width: 767px) and (min-width: 1024px) {
+@media screen and (max-width: 767px) {
     #map {
         width: 90%;
         height: 350px;
+    }
+
+    #staticBackdrop {
+        width: 100vw;
+
+        label,
+        select,
+        input {
+            font-size: 0.75em !important;
+        }
+
+        .divDetallesVentana div {
+            padding: 0 !important;
+        }
+
+        .padreMapa {
+            div {
+                padding: 0 !important;
+            }
+        }  
+
+        .divInputsNumericos {
+            padding: 0 !important;
+        }
+
+        .divNombreLocal {
+            padding: 0 !important;
+        }
     }
 }
 

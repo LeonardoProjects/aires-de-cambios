@@ -98,6 +98,12 @@ html * {
     width: 140px;
 }
 
+@media screen and (max-width: 767px) {
+    .authCard {
+        width: 95vw !important;
+    }
+}
+
 .loader {
     width: 100px;
     padding: 15px;
@@ -132,5 +138,4 @@ html * {
     justify-content: center;
     align-items: center;
     z-index: 10000;
-    /* Asegúrate de que esté por encima del contenido */
 }

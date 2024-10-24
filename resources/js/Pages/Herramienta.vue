@@ -328,7 +328,7 @@ svg {
 }
 
 .divPrincipal {
-    width: 650px;
+    width: 100vw;
     padding: 50px 0 0 0;
 }
 
@@ -364,7 +364,11 @@ svg {
 }
 
 .divAjustes {
-    width: 100%;
+    width: 650px;
+}
+
+.leaflet-control-geocoder-alternatives {
+    text-align: start !important;
 }
 
 @media screen and (max-width: 767px) {
@@ -397,7 +401,23 @@ svg {
     }
 
     .divAjustes {
-        width: 400px;
+        width: 100vw !important;
+    }
+
+    .leaflet-control-geocoder-form {
+        input {
+            width: 100% !important;
+            padding: 0.5em !important;
+        }
+    }
+
+    .leaflet-container {
+        font-size: 1rem !important;
+    }
+
+    .leaflet-control-geocoder-alternatives {
+        width: 50vw !important;
+        font-size: 0.8rem !important;
     }
 }
 </style>
