@@ -27,11 +27,17 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'survey_completed',
     ];
 
     public function ambiente()
     {
         return $this->hasMany(Ambiente::class, 'idUsuario');
+    }
+
+    public function survey()
+    {
+        return $this->hasOne(Survey::class);
     }
 
     /**
@@ -65,6 +71,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'survey_completed' => 'boolean',
         ];
     }
 }

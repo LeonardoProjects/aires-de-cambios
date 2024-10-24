@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\AmbienteController;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\ResultadosController;
@@ -37,3 +38,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::post('/api/resultados', [ResultadosController::class, 'index'])->name('resultados.index');
 
 Route::get('/countries-data', [ChartController::class, 'getCountriesData']);
+
+Route::post('/survey', [SurveyController::class, 'store'])->middleware('auth');
+
+Route::post('/check-survey-status', [SurveyController::class, 'checkSurveyStatus']);
+
+
