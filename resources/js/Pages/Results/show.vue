@@ -1,5 +1,6 @@
 <template>
-    <div class="d-flex">
+    <div v-if="loaderVisibleShow" class="loader"></div>
+    <div v-else class="d-flex">
         <div v-if="datosCalculos.length != 0" class="d-flex justify-content-center flex-column text-center">
             <!-- Iterar sobre los grupos de resultados agrupados por fecha -->
             <div v-for="(resultadosPorFecha, date, fechaIndex) in agrupadosPorFecha" :key="date" class="mb-4">
@@ -40,7 +41,7 @@
                                 claseAgradableExpanded: resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
                                 claseTormentaExpanded: resultado.alertas[0] == 'Precaución por tormentas fuertes',
                                 claseNadaExpanded: resultado.alertas[0] == ''
-                            }]"v-else>
+                            }]" v-else>
                                 <div class="dUP">
                                     <strong>{{ resultado.hour }}</strong>
                                     <span class="m-0">Apertura de ventana<br><span class="fs-3">{{ resultado.cm
@@ -131,7 +132,8 @@ export default {
     data() {
         return {
             datosCalculos: [],
-            resultados: []
+            resultados: [],
+            loaderVisibleShow: false
         };
     },
     watch: {
@@ -211,6 +213,7 @@ export default {
         },
         async cargarDatos() {
             try {
+                this.loaderVisibleShow = true;
                 if (this.idAmbiente == -2) {
                     let ambienteNotLogged = JSON.parse(localStorage.getItem('ambienteNotLogged'));
                     let response = await axios({
@@ -239,6 +242,7 @@ export default {
                     this.setDatos();
                 }
             } catch (error) {
+                this.loaderVisibleShow = false;
                 if (error.response) {
                     console.error(
                         "Error en la respuesta del servidor:",
@@ -318,6 +322,7 @@ export default {
                     alertas: resultado.alertas,
                 });
             });
+            this.loaderVisibleShow = false;
         },
         cambiarAlerta($alertName) {
             let results = document.querySelector('.resultExpanded');
@@ -335,7 +340,9 @@ export default {
         }
     },
     mounted() {
+        this.loaderVisibleShow = true;
         this.cargarDatos();
+        this.loaderVisibleShow = false;
     },
 };
 </script>
