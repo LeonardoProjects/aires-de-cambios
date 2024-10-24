@@ -97,3 +97,9 @@ html *{
 .anchor{
     width: 140px;
 }
+
+@media screen and (max-width: 767px) {
+    .authCard {
+        width: 95vw !important;
+    }
+}
