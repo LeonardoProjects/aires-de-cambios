@@ -70,6 +70,6 @@ export default {
 </script>
 <style>
 .loaderDelete {
-    background: #dc3545;
+    background: #dc3545 !important;
 }
 </style>
