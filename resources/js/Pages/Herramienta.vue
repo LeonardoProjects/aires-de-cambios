@@ -19,7 +19,7 @@ export default {
             idAmbiente: -1,
             cantPersonas: 1,
             ambienteCreado: false,
-            surveyCompleted: false,
+            surveyCompleted: true,
         };
     },
     components: {
