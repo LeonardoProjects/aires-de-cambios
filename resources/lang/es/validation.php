@@ -30,7 +30,7 @@ return [
         'array'   => 'El campo :attribute debe contener entre :min y :max elementos.',
     ],
     'boolean'              => 'El campo :attribute debe ser verdadero o falso.',
-    'confirmed'            => 'El campo confirmación de :attribute no coincide.',
+    'confirmed'            => 'Los campos de :attribute no coinciden.',
     'date'                 => 'El campo :attribute no corresponde con una fecha válida.',
     'date_equals'          => 'El campo :attribute debe ser una fecha igual a :date.',
     'date_format'          => 'El campo :attribute no corresponde con el formato de fecha :format.',
@@ -113,10 +113,11 @@ return [
     'starts_with'          => 'El campo :attribute debe comenzar con uno de los siguientes valores: :values',
     'string'               => 'El campo :attribute debe ser una cadena de caracteres.',
     'timezone'             => 'El campo :attribute debe ser una zona horaria válida.',
-    'unique'               => 'El valor del campo :attribute ya está en uso.',
+    'unique'               => 'El :attribute ya está en uso.',
     'uploaded'             => 'El campo :attribute no se pudo subir.',
     'url'                  => 'El formato del campo :attribute es inválido.',
     'uuid'                 => 'El campo :attribute debe ser un UUID válido.',
+    'failed'               => 'Las credenciales ingresadas son incorrectas.',
 
     /*
     |--------------------------------------------------------------------------
@@ -152,6 +153,8 @@ return [
         'alturaSelect' => '"Altura"',
         'densidadSelect' => '"Vivo en"',
         'tipoVentana' => '"Tipo de ventana"',
-        'calidadVentana' => '"Calidad de ventana"'
+        'calidadVentana' => '"Calidad de ventana"',
+        'password' => 'contraseña',
+        'email' => 'email',
     ],
 ];
