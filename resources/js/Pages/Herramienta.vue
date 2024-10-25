@@ -176,7 +176,7 @@ export default {
         <div
             class="d-flex justify-content-start align-items-center flex-column min-vh-100 divPrincipal"
         >
-            <h3 class="d-md-none d-block">Ajustes de local</h3>
+            <h3 v-if="ambienteCreado" class="d-md-none d-block">Ajustes de local</h3>
             <!-- DIV para user logeados -->
             <div v-if="$page.props.auth.user" class="divAjustes">
                 <!-- DIV para cant. personas en móvil -->
@@ -281,7 +281,7 @@ export default {
                 v-else
                 class="d-flex flex-column justify-content-center position-relative divSelectNotLogged"
             >
-                <div class="d-md-none d-flex justify-content-center mb-2">
+                <div v-if="ambienteCreado" class="d-md-none d-flex justify-content-center mb-2">
 					<button class="btn btn-danger rounded-5 p-1 mx-2" @click="disminuirCantPersonas">
 						<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24"
 							viewBox="0 0 24 24" width="24">
@@ -317,7 +317,7 @@ export default {
                 :idAmbiente="idAmbiente"
                 :cantPersonas="cantPersonas"
             />
-            <survey v-if="!surveyCompleted" @surveyCompleted="surveyCompleted = true" />
+            <survey v-if="surveyCompleted" @surveyCompleted="surveyCompleted = true" />
         </div>
     </div>
 </template>
@@ -328,7 +328,7 @@ svg {
 }
 
 .divPrincipal {
-    width: 100vw;
+    width: 650px;
     padding: 50px 0 0 0;
 }
 
@@ -381,7 +381,12 @@ svg {
         padding-top: 10px;
 		margin-bottom: 10px;
 		justify-content: center;
+        width: 100% !important;
 	}
+
+    .divPrincipal {
+        width: 99% !important;
+    }
 
     #selectAmbiente {
         width: 40% !important;

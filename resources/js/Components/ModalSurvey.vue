@@ -1,13 +1,14 @@
 <template>
     <div>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#SurveyModal">
+        <button type="button" class="btn btn-primary mx-1 rounded-5 p-3 btnSurvey" data-bs-toggle="modal"
+            data-bs-target="#SurveyModal" :style="{ bottom: footerVisible ? (footerHeight + 30) + 'px' : '20px' }">
             Realizar encuesta
         </button>
 
         <div class="modal fade" id="SurveyModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header">  
                         <h1 class="modal-title fs-5">
                             Encuesta sobre la herramienta
                         </h1>
@@ -27,7 +28,7 @@
                                     <label for="utilNo">No</label>
                                 </div>
                             </div>
-                            
+
                             <!-- Pregunta 2 -->
                             <div class="mb-3">
                                 <label>¿La recomendarías a otros?</label>
@@ -70,7 +71,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 
 const page = usePage();
@@ -84,6 +85,8 @@ export default {
         const util = ref(null);
         const recomendar = ref(null);
         const puntuacion = ref(null);
+        const footerVisible = ref(false);
+        const footerHeight = ref(0);
 
         const submitSurvey = () => {
             useForm({
@@ -102,17 +105,48 @@ export default {
             });
         };
 
+        const visibilidadFooter = () => {
+            const footer = document.querySelector('footer');
+            // Tomo el tamaño del footer y su posicion relativa respecto al viewport
+            const footerRect = footer.getBoundingClientRect();
+
+            // Detecta si el footer está entrando en el viewport
+            footerVisible.value = footerRect.top < window.innerHeight && footerRect.bottom >= 0;
+        };
+
+        onMounted(() => {
+            window.addEventListener("scroll", visibilidadFooter);
+            footerHeight.value = document.querySelector('footer').offsetHeight;
+        });
+
         return {
             util,
             recomendar,
             puntuacion,
             submitSurvey,
+            footerHeight,
+            footerVisible
         };
     },
 };
 </script>
 
 <style scoped>
+.btnSurvey {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 100;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #0099ff;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: bottom 0.3s ease-in-out;
+}
+
 @media (max-width: 480px) {
     .modal-header h1 {
         font-size: 1rem;

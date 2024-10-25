@@ -16,7 +16,7 @@
         <div class="modal-dialog modal-dialog-scrollable modalTutorialMobile">
             <div class="modal-content contenidoModalMobile">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tutorialModalMobileLabel">Selecciona el tutorial MOBILE</h5>
+                    <h5 class="modal-title" id="tutorialModalMobileLabel">Selecciona el tutorial</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
