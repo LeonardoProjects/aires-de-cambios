@@ -243,7 +243,7 @@ button.hamburger:hover {
 
     .hamburguerDiv {
         display: flex !important;
-        justify-content: end;
+        justify-content: flex-end;
     }
 
     .dropdown-content {

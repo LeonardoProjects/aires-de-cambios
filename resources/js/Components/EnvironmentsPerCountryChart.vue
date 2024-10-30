@@ -22,7 +22,6 @@ export default {
         countries.registerLocale(es);
         const translateCountryName = (countryName) => {
             const countryISO = countries.getAlpha2Code(countryName, "en");
-            console.log(`ISO for ${countryName}: ${countryISO}`);
             if (countryISO) {
                 return countriesESP.getName(countryISO, "es");
             }
