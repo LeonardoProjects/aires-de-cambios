@@ -6,18 +6,18 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@inertiajs/vue3": "^1.0.14",
-        "@vitejs/plugin-vue": "^5.0.0",
-        "autoprefixer": "^10.4.16",
-        "axios": "^1.6.4",
-        "laravel-vite-plugin": "^1.0",
-        "postcss": "^8.4.32",
-        "vite": "^5.0",
-        "vue": "^3.3.13"
+        "@inertiajs/vue3": "1.0.14",
+        "@vitejs/plugin-vue": "5.0.0",
+        "autoprefixer": "10.4.16",
+        "axios": "1.6.4",
+        "laravel-vite-plugin": "1.0",
+        "postcss": "8.4.32",
+        "vite": "5.0",
+        "vue": "3.3.13"
     },
     "dependencies": {
-        "bootstrap": "^5.3.3",
+        "bootstrap": "5.3.3",
         "i18n-iso-countries": "7.12.0",
-        "luxon": "^3.5.0"
+        "luxon": "3.5.0"
     }
 }

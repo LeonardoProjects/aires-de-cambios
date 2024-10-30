@@ -1,6 +1,7 @@
 <template>
     <div>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#SurveyModal">
+        <button type="button" class="btn btn-primary mx-1 rounded-5 p-3 btnSurvey" data-bs-toggle="modal"
+            data-bs-target="#SurveyModal" :style="{ bottom: footerVisible ? (footerHeight + 30) + 'px' : '20px' }">
             Realizar encuesta
         </button>
 
@@ -26,8 +27,9 @@
                                     <input type="radio" id="utilNo" required value="false" v-model="util" />
                                     <label for="utilNo">No</label>
                                 </div>
+                                <div v-if="errors.util" class="text-danger">{{ errors.util }}</div>
                             </div>
-                            
+
                             <!-- Pregunta 2 -->
                             <div class="mb-3">
                                 <label>¿La recomendarías a otros?</label>
@@ -39,12 +41,12 @@
                                     <input type="radio" id="recomendarNo" value="false" v-model="recomendar" required />
                                     <label for="recomendarNo">No</label>
                                 </div>
+                                <div v-if="errors.recomendar" class="text-danger">{{ errors.recomendar }}</div>
                             </div>
 
                             <!-- Pregunta 3 -->
                             <div class="mb-3">
-                                <label>¿Cómo calificarías la herramienta del 1 al
-                                    5?</label>
+                                <label>¿Cómo calificarías la herramienta del 1 al 5?</label>
                                 <select v-model="puntuacion" class="form-select" required>
                                     <option value="1">1 - Muy mala</option>
                                     <option value="2">2 - Mala</option>
@@ -52,8 +54,10 @@
                                     <option value="4">4 - Buena</option>
                                     <option value="5">5 - Excelente</option>
                                 </select>
+                                <div v-if="errors.puntuacion" class="text-danger">{{ errors.puntuacion }}</div>
                             </div>
                         </form>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeSurveyModalButton">
@@ -76,28 +80,35 @@ import { useForm, usePage } from "@inertiajs/vue3";
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
 
+
 export default {
     setup(props, { emit }) {
-        const closeModal = () => {
-            document.querySelector("#closeSurveyModalButton").click();
-        };
         const util = ref(null);
         const recomendar = ref(null);
         const puntuacion = ref(null);
+        const footerVisible = ref(false);
+        const footerHeight = ref(0);
+        const errors = ref({});
+
+        const closeModal = () => {
+            document.querySelector("#closeSurveyModalButton").click();
+        };
 
         const submitSurvey = () => {
-            useForm({
+            const form = useForm({
                 idUser: page.props.auth.user ? userId.value : "",
                 util: util.value,
                 recomendar: recomendar.value,
                 puntuacion: puntuacion.value,
-            }).post("/survey", {
+            });
+
+            form.post("/survey", {
                 onSuccess: () => {
                     emit("surveyCompleted");
                     closeModal();
                 },
-                onError: (error) => {
-                    console.error(error);
+                onError: (formErrors) => {
+                    errors.value = formErrors;
                 },
             });
         };
@@ -107,12 +118,30 @@ export default {
             recomendar,
             puntuacion,
             submitSurvey,
+            footerHeight,
+            footerVisible,
+            errors,
         };
-    },
+    }
 };
 </script>
 
 <style scoped>
+.btnSurvey {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 100;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #0099ff;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: bottom 0.3s ease-in-out;
+}
+
 @media (max-width: 480px) {
     .modal-header h1 {
         font-size: 1rem;
