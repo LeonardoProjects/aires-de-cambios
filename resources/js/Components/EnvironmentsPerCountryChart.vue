@@ -7,12 +7,27 @@
 <script>
 import { ref } from "vue";
 import axios from "axios";
+import countries from "i18n-iso-countries";
+import countriesESP from "i18n-iso-countries";
+import es from "i18n-iso-countries/langs/es.json";
+import en from "i18n-iso-countries/langs/en.json";
 
 export default {
     name: "EnvironmentsPerCountryChart",
     setup() {
         const map2 = ref(null);
         const maxAmbientes = ref(0);
+
+        countries.registerLocale(en);
+        countries.registerLocale(es);
+        const translateCountryName = (countryName) => {
+            const countryISO = countries.getAlpha2Code(countryName, "en");
+            console.log(`ISO for ${countryName}: ${countryISO}`);
+            if (countryISO) {
+                return countriesESP.getName(countryISO, "es");
+            }
+            return countryName;
+        };
 
         const roundToNearestPowerOfTen = (num) => {
             if (num < 10) return 10;
@@ -79,7 +94,8 @@ export default {
                         info.onAdd = function () {
                             this._div = L.DomUtil.create("div"); // create a div with a class "info"
                             this.update();
-                            this._div.style.background = "rgba(255, 255, 255, 0.6)";
+                            this._div.style.background =
+                                "rgba(255, 255, 255, 0.6)";
                             this._div.style.padding = "10px";
                             this._div.style.borderRadius = "7px";
                             return this._div;
@@ -87,16 +103,19 @@ export default {
 
                         // method that we will use to update the control based on feature properties passed
                         info.update = function (props) {
+                            const nombreEnEspanol = props
+                                ? translateCountryName(props.ADMIN)
+                                : null;
                             this._div.innerHTML =
-                                '<h4>Información del país</h4>' +
+                                "<h4>Información del país</h4>" +
                                 (props
                                     ? '<p class="m-0 fs-6 fw-bold">' +
-                                    props.ADMIN +
-                                    "</p><p class='m-0 fs-6'>Ambientes: " +
-                                    (ambientesPorPais.find(
-                                        (a) => a.pais === props.ADMIN
-                                    )?.total || 0) +
-                                    "</p>"
+                                      nombreEnEspanol +
+                                      "</p><p class='m-0 fs-6'>Ambientes: " +
+                                      (ambientesPorPais.find(
+                                          (a) => a.pais === props.ADMIN
+                                      )?.total || 0) +
+                                      "</p>"
                                     : "Posicione el mouse sobre un país ");
                         };
 
@@ -112,7 +131,10 @@ export default {
                                 let fillColor = "lightgray";
                                 if (ambiente) {
                                     const total = ambiente.total;
-                                    fillColor = getColor(total, maxAmbientes.value);
+                                    fillColor = getColor(
+                                        total,
+                                        maxAmbientes.value
+                                    );
                                 }
 
                                 return {
@@ -124,15 +146,21 @@ export default {
                             },
                             onEachFeature: (feature, layer) => {
                                 // Determinar si es móvil
-                                const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                                const isMobile =
+                                    "ontouchstart" in window ||
+                                    navigator.maxTouchPoints > 0;
 
                                 // Si es móvil, se usa 'click', si no, 'mouseover'
-                                const eventType = isMobile ? 'click' : 'mouseover';
+                                const eventType = isMobile
+                                    ? "click"
+                                    : "mouseover";
 
                                 layer.on({
                                     [eventType]: (e) => {
                                         highlightFeature(e);
-                                        info.update(e.target.feature.properties);
+                                        info.update(
+                                            e.target.feature.properties
+                                        );
                                     },
                                     mouseout: (e) => {
                                         resetHighlight(e);
@@ -142,12 +170,16 @@ export default {
                                         if (isMobile) {
                                             // Restablecer el estilo del país previamente seleccionado
                                             if (selectedLayer) {
-                                                geojson.resetStyle(selectedLayer);
+                                                geojson.resetStyle(
+                                                    selectedLayer
+                                                );
                                             }
                                             // Establecer el nuevo país seleccionado y resaltarlo
                                             selectedLayer = e.target;
                                             highlightFeature(e);
-                                            info.update(e.target.feature.properties);
+                                            info.update(
+                                                e.target.feature.properties
+                                            );
                                         }
                                     },
                                 });
