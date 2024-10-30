@@ -42,7 +42,6 @@
                                 <span class="profile-text">{{
                                     $page.props.auth.user.name
                                 }}</span>
-                                <i class="ms-2 bi bi-chevron-down"></i>
                             </button>
                         </template>
 

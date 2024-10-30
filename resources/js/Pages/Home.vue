@@ -41,7 +41,7 @@
                     <span class="description">
                         como los datos ingresados por el usuario para realizar
                         cálculos que determinan la apertura óptima de una ventana en distintos horarios, con el fin de
-                        asegurar una ventilación adecuada del ambiente.
+                        asegurar una ventilación adecuada del local.
                     </span>
                 </div>
             </div>
@@ -49,9 +49,9 @@
         <div class="app-data pb-5 d-md-block d-none">
             <div class="ambientesXPaises w-100 d-flex flex-column align-items-center">
                 <div class="chartDescription">
-                    <h4 class="text-center">Ambientes creados</h4>
+                    <h4 class="text-center">Locales creados</h4>
                     <p class="text-center">
-                        Cantidad de ambientes creados en diferentes ubicaciones:
+                        Cantidad de locales creados en diferentes ubicaciones:
                     </p>
                 </div>
                 <CountryMap />

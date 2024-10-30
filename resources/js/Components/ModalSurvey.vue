@@ -8,7 +8,7 @@
         <div class="modal fade" id="SurveyModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">  
+                    <div class="modal-header">
                         <h1 class="modal-title fs-5">
                             Encuesta sobre la herramienta
                         </h1>
@@ -27,6 +27,7 @@
                                     <input type="radio" id="utilNo" required value="false" v-model="util" />
                                     <label for="utilNo">No</label>
                                 </div>
+                                <div v-if="errors.util" class="text-danger">{{ errors.util }}</div>
                             </div>
 
                             <!-- Pregunta 2 -->
@@ -40,12 +41,12 @@
                                     <input type="radio" id="recomendarNo" value="false" v-model="recomendar" required />
                                     <label for="recomendarNo">No</label>
                                 </div>
+                                <div v-if="errors.recomendar" class="text-danger">{{ errors.recomendar }}</div>
                             </div>
 
                             <!-- Pregunta 3 -->
                             <div class="mb-3">
-                                <label>¿Cómo calificarías la herramienta del 1 al
-                                    5?</label>
+                                <label>¿Cómo calificarías la herramienta del 1 al 5?</label>
                                 <select v-model="puntuacion" class="form-select" required>
                                     <option value="1">1 - Muy mala</option>
                                     <option value="2">2 - Mala</option>
@@ -53,8 +54,10 @@
                                     <option value="4">4 - Buena</option>
                                     <option value="5">5 - Excelente</option>
                                 </select>
+                                <div v-if="errors.puntuacion" class="text-danger">{{ errors.puntuacion }}</div>
                             </div>
                         </form>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeSurveyModalButton">
@@ -71,53 +74,44 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { useForm, usePage } from "@inertiajs/vue3";
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
 
+
 export default {
     setup(props, { emit }) {
-        const closeModal = () => {
-            document.querySelector("#closeSurveyModalButton").click();
-        };
         const util = ref(null);
         const recomendar = ref(null);
         const puntuacion = ref(null);
         const footerVisible = ref(false);
         const footerHeight = ref(0);
+        const errors = ref({});
+
+        const closeModal = () => {
+            document.querySelector("#closeSurveyModalButton").click();
+        };
 
         const submitSurvey = () => {
-            useForm({
+            const form = useForm({
                 idUser: page.props.auth.user ? userId.value : "",
                 util: util.value,
                 recomendar: recomendar.value,
                 puntuacion: puntuacion.value,
-            }).post("/survey", {
+            });
+
+            form.post("/survey", {
                 onSuccess: () => {
                     emit("surveyCompleted");
                     closeModal();
                 },
-                onError: (error) => {
-                    console.error(error);
+                onError: (formErrors) => {
+                    errors.value = formErrors;
                 },
             });
         };
-
-        const visibilidadFooter = () => {
-            const footer = document.querySelector('footer');
-            // Tomo el tamaño del footer y su posicion relativa respecto al viewport
-            const footerRect = footer.getBoundingClientRect();
-
-            // Detecta si el footer está entrando en el viewport
-            footerVisible.value = footerRect.top < window.innerHeight && footerRect.bottom >= 0;
-        };
-
-        onMounted(() => {
-            window.addEventListener("scroll", visibilidadFooter);
-            footerHeight.value = document.querySelector('footer').offsetHeight;
-        });
 
         return {
             util,
@@ -125,9 +119,10 @@ export default {
             puntuacion,
             submitSurvey,
             footerHeight,
-            footerVisible
+            footerVisible,
+            errors,
         };
-    },
+    }
 };
 </script>
 
