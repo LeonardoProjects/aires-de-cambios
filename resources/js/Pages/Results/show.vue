@@ -1,83 +1,210 @@
 <template>
-    <div v-if="datosCalculos.length != 0" class="d-flex justify-content-center flex-column text-center">
+    <div
+        v-if="datosCalculos.length != 0"
+        class="d-flex justify-content-center flex-column text-center"
+    >
         <!-- Iterar sobre los grupos de resultados agrupados por fecha -->
-        <div v-for="(resultadosPorFecha, date, fechaIndex) in agrupadosPorFecha" :key="date" class="mb-4">
+        <div
+            v-for="(resultadosPorFecha, date, fechaIndex) in agrupadosPorFecha"
+            :key="date"
+            class="mb-4"
+        >
             <!-- Mostrar la fecha por encima de la tabla -->
             <h3 class="text-center">{{ date }}</h3>
             <div class="d-flex justify-content-center">
                 <div class="text-center resultsTable">
-                    <div v-for="(resultado, index) in resultadosPorFecha" :key="getGlobalIndex(fechaIndex, index)"
-                        @click="toggleRow(getGlobalIndex(fechaIndex, index), $event)" role="button"
-                        :class="[resultado.expanded ? 'resultsHourExpanded' : 'resultsHourMinimized']">
-                        <div v-if="!resultado.expanded" :class="['hourRow', {
-                            claseLluviaMinimized: resultado.alertas[0] == 'Precaución por lluvias',
-                            claseFrioMinimized: resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
-                            claseVientoMinimized: resultado.alertas[0] == 'Precaución por vientos fuertes (mayores a 40 km/h)',
-                            claseAgradableMinimized: resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
-                            claseTormentaMinimized: resultado.alertas[0] == 'Precaución por tormentas fuertes',
-                            claseNadaMinimized: resultado.alertas[0] == ''
-                        }]">
+                    <div
+                        v-for="(resultado, index) in resultadosPorFecha"
+                        :key="getGlobalIndex(fechaIndex, index)"
+                        @click="
+                            toggleRow(getGlobalIndex(fechaIndex, index), $event)
+                        "
+                        role="button"
+                        :class="[
+                            resultado.expanded
+                                ? 'resultsHourExpanded'
+                                : 'resultsHourMinimized',
+                        ]"
+                    >
+                        <div
+                            v-if="!resultado.expanded"
+                            :class="[
+                                'hourRow',
+                                {
+                                    claseLluviaMinimized:
+                                        resultado.alertas[0] ==
+                                        'Precaución por lluvias',
+                                    claseFrioMinimized:
+                                        resultado.alertas[0] ==
+                                        'Precaución por bajas temperaturas (menor a 10° C)',
+                                    claseVientoMinimized:
+                                        resultado.alertas[0] ==
+                                        'Precaución por vientos fuertes (mayores a 40 km/h)',
+                                    claseAgradableMinimized:
+                                        resultado.alertas[0] ==
+                                        'Aprovechar temperaturas agradables (mayor a 18° C)',
+                                    claseTormentaMinimized:
+                                        resultado.alertas[0] ==
+                                        'Precaución por tormentas fuertes',
+                                    claseNadaMinimized:
+                                        resultado.alertas[0] == '',
+                                },
+                            ]"
+                        >
                             <div class="d-flex w-33">
                                 <div class="iconAlert">
-                                    <AlertIcon :alertName="getAlertName(resultado.alertas[0])" />
+                                    <AlertIcon
+                                        :alertName="
+                                            getAlertName(resultado.alertas[0])
+                                        "
+                                    />
                                 </div>
                                 <span class="ps-2">{{ resultado.hour }}</span>
                             </div>
                             <span class="w-33">{{ resultado.cm }} cm</span>
                             <span class="w-33 d-flex justify-content-end">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    width="24"
+                                >
                                     <path d="M0 0h24v24H0z" fill="none" />
-                                    <circle cx="12" cy="12" r="10" stroke="black" stroke-width="2" fill="none" />
-                                    <polygon points="8,10 16,10 12,14" fill="black" />
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="black"
+                                        stroke-width="2"
+                                        fill="none"
+                                    />
+                                    <polygon
+                                        points="8,10 16,10 12,14"
+                                        fill="black"
+                                    />
                                 </svg>
                             </span>
                         </div>
-                        <span :class="['text-center', 'resultExpanded', {
-                            claseLluviaExpanded: resultado.alertas[0] == 'Precaución por lluvias',
-                            claseFrioExpanded: resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
-                            claseVientoExpanded: resultado.alertas[0] == 'Precaución por vientos fuertes (mayores a 40 km/h)',
-                            claseAgradableExpanded: resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
-                            claseTormentaExpanded: resultado.alertas[0] == 'Precaución por tormentas fuertes',
-                            claseNadaExpanded: resultado.alertas[0] == ''
-                        }]" :data-originalAlert="{
-    'lluvia': resultado.alertas[0] == 'Precaución por lluvias',
-    'frio': resultado.alertas[0] == 'Precaución por bajas temperaturas (menor a 10° C)',
-    'viento': resultado.alertas[0] == 'Precaución por vientos fuertes (mayores a 40 km/h)',
-    'agradable': resultado.alertas[0] == 'Aprovechar temperaturas agradables (mayor a 18° C)',
-    'tormenta': resultado.alertas[0] == 'Precaución por tormentas fuertes',
-    'nada': resultado.alertas[0] == ''
-}" v-else>
+                        <span
+                            :class="[
+                                'text-center',
+                                'resultExpanded',
+                                {
+                                    claseLluviaExpanded:
+                                        resultado.alertas[0] ==
+                                        'Precaución por lluvias',
+                                    claseFrioExpanded:
+                                        resultado.alertas[0] ==
+                                        'Precaución por bajas temperaturas (menor a 10° C)',
+                                    claseVientoExpanded:
+                                        resultado.alertas[0] ==
+                                        'Precaución por vientos fuertes (mayores a 40 km/h)',
+                                    claseAgradableExpanded:
+                                        resultado.alertas[0] ==
+                                        'Aprovechar temperaturas agradables (mayor a 18° C)',
+                                    claseTormentaExpanded:
+                                        resultado.alertas[0] ==
+                                        'Precaución por tormentas fuertes',
+                                    claseNadaExpanded:
+                                        resultado.alertas[0] == '',
+                                },
+                            ]"
+                            :data-originalAlert="{
+                                lluvia:
+                                    resultado.alertas[0] ==
+                                    'Precaución por lluvias',
+                                frio:
+                                    resultado.alertas[0] ==
+                                    'Precaución por bajas temperaturas (menor a 10° C)',
+                                viento:
+                                    resultado.alertas[0] ==
+                                    'Precaución por vientos fuertes (mayores a 40 km/h)',
+                                agradable:
+                                    resultado.alertas[0] ==
+                                    'Aprovechar temperaturas agradables (mayor a 18° C)',
+                                tormenta:
+                                    resultado.alertas[0] ==
+                                    'Precaución por tormentas fuertes',
+                                nada: resultado.alertas[0] == '',
+                            }"
+                            v-else
+                        >
                             <div class="dUP">
                                 <strong>{{ resultado.hour }}</strong>
-                                <span class="m-0">Apertura de ventana<br><span class="fs-3">{{ resultado.cm
-                                }}cm</span></span>
+                                <span class="m-0"
+                                    >Apertura de ventana<br /><span class="fs-3"
+                                        >{{ resultado.cm }}cm</span
+                                    ></span
+                                >
                             </div>
                             <div class="dDOWN">
                                 <div class="alertIcons">
                                     <template
-                                        v-if="!isMobileHerramienta || (isMobileHerramienta && resultado.alertas.length < 4)"
-                                        v-for="(alerta, index) in resultado.alertas" :key="index">
+                                        v-if="
+                                            !isMobileHerramienta ||
+                                            (isMobileHerramienta &&
+                                                resultado.alertas.length < 4)
+                                        "
+                                        v-for="(
+                                            alerta, index
+                                        ) in resultado.alertas"
+                                        :key="index"
+                                    >
                                         <div v-if="alerta != ''">
-                                            <AlertIcon :alertName="getAlertName(alerta)"
-                                                :class="{ 'alertSelected': index == 0 }" @updateAlertName="cambiarAlerta" />
+                                            <AlertIcon
+                                                :alertName="
+                                                    getAlertName(alerta)
+                                                "
+                                                :class="{
+                                                    alertSelected: index == 0,
+                                                }"
+                                                @updateAlertName="cambiarAlerta"
+                                            />
                                         </div>
                                     </template>
                                     <template v-else>
                                         <div>
-                                            <AlertIcon :alertName="getAlertName(resultado.alertas[0])"
-                                                :class="alertSelected" @updateAlertName="cambiarAlerta" />
-                                            <AlertIcon :alertName="getAlertName(resultado.alertas[1])"
-                                                @updateAlertName="cambiarAlerta" />
+                                            <AlertIcon
+                                                :alertName="
+                                                    getAlertName(
+                                                        resultado.alertas[0]
+                                                    )
+                                                "
+                                                :class="alertSelected"
+                                                @updateAlertName="cambiarAlerta"
+                                            />
+                                            <AlertIcon
+                                                :alertName="
+                                                    getAlertName(
+                                                        resultado.alertas[1]
+                                                    )
+                                                "
+                                                @updateAlertName="cambiarAlerta"
+                                            />
                                         </div>
                                         <div>
-                                            <AlertIcon :alertName="getAlertName(resultado.alertas[2])"
-                                                @updateAlertName="cambiarAlerta" />
-                                            <AlertIcon :alertName="getAlertName(resultado.alertas[3])"
-                                                @updateAlertName="cambiarAlerta" />
+                                            <AlertIcon
+                                                :alertName="
+                                                    getAlertName(
+                                                        resultado.alertas[2]
+                                                    )
+                                                "
+                                                @updateAlertName="cambiarAlerta"
+                                            />
+                                            <AlertIcon
+                                                :alertName="
+                                                    getAlertName(
+                                                        resultado.alertas[3]
+                                                    )
+                                                "
+                                                @updateAlertName="cambiarAlerta"
+                                            />
                                         </div>
                                     </template>
                                 </div>
-                                <p class="m-0 align-self-center alertName">{{ resultado.alertas[0] }}</p>
+                                <p class="m-0 align-self-center alertName">
+                                    {{ resultado.alertas[0] }}
+                                </p>
                             </div>
                         </span>
                     </div>
@@ -85,7 +212,10 @@
             </div>
         </div>
     </div>
-    <div v-else class="d-flex justify-content-center flex-column w-75 text-center">
+    <div
+        v-else
+        class="d-flex justify-content-center flex-column w-75 text-center"
+    >
         <p class="fs-5">¡Crea un local para saber cómo ventilar!</p>
     </div>
 </template>
@@ -94,7 +224,7 @@
 import { usePage } from "@inertiajs/vue3";
 import { computed, ref, onMounted, onBeforeMount } from "vue";
 import AlertIcon from "@/Components/AlertIcon.vue";
-import { DateTime } from 'luxon';
+import { DateTime } from "luxon";
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
@@ -124,12 +254,12 @@ export default {
         };
     },
     components: {
-        AlertIcon
+        AlertIcon,
     },
     data() {
         return {
             datosCalculos: [],
-            resultados: []
+            resultados: [],
         };
     },
     watch: {
@@ -155,83 +285,94 @@ export default {
     methods: {
         getAlertName(alertName) {
             switch (alertName) {
-                case 'Precaución por vientos fuertes (mayores a 40 km/h)':
-                    return 'vientosIcon';
-                case 'Precaución por bajas temperaturas (menor a 10° C)':
-                    return 'frioIcon';
-                case 'Precaución por tormentas fuertes':
-                    return 'tormentasIcon';
-                case 'Precaución por lluvias':
-                    return 'lluviaIcon';
-                case 'Aprovechar temperaturas agradables (mayor a 18° C)':
-                    return 'agradableIcon';
+                case "Precaución por vientos fuertes (mayores a 40 km/h)":
+                    return "vientosIcon";
+                case "Precaución por bajas temperaturas (menor a 10° C)":
+                    return "frioIcon";
+                case "Precaución por tormentas fuertes":
+                    return "tormentasIcon";
+                case "Precaución por lluvias":
+                    return "lluviaIcon";
+                case "Aprovechar temperaturas agradables (mayor a 18° C)":
+                    return "agradableIcon";
                 default:
-                    return '';
+                    return "";
             }
         },
         getAlertClass(alertName, divResults) {
-            let pAlert = divResults.querySelector('.alertName');
+            let pAlert = divResults.querySelector(".alertName");
             switch (alertName) {
-                case 'vientosIcon':
-                    pAlert.textContent = 'Precaución por vientos fuertes (mayores a 40 km/h)'
-                    return 'claseVientoExpanded';
-                case 'frioIcon':
-                    pAlert.textContent = 'Precaución por bajas temperaturas (menor a 10° C)'
-                    return 'claseFrioExpanded';
-                case 'tormentasIcon':
-                    pAlert.textContent = 'Precaución por tormentas'
-                    return 'claseTormentaExpanded';
-                case 'lluviaIcon':
-                    pAlert.textContent = 'Precaución por lluvias'
-                    return 'claseLluviaExpanded';
-                case 'agradableIcon':
-                    pAlert.textContent = 'Aprovechar temperaturas agradables (mayor a 18° C)'
-                    return 'claseAgradableExpanded';
+                case "vientosIcon":
+                    pAlert.textContent =
+                        "Precaución por vientos fuertes (mayores a 40 km/h)";
+                    return "claseVientoExpanded";
+                case "frioIcon":
+                    pAlert.textContent =
+                        "Precaución por bajas temperaturas (menor a 10° C)";
+                    return "claseFrioExpanded";
+                case "tormentasIcon":
+                    pAlert.textContent = "Precaución por tormentas";
+                    return "claseTormentaExpanded";
+                case "lluviaIcon":
+                    pAlert.textContent = "Precaución por lluvias";
+                    return "claseLluviaExpanded";
+                case "agradableIcon":
+                    pAlert.textContent =
+                        "Aprovechar temperaturas agradables (mayor a 18° C)";
+                    return "claseAgradableExpanded";
                 default:
-                    return '';
+                    return "";
             }
         },
         getGlobalIndex(fechaIndex, index) {
             // Obtener el índice global sumando la cantidad de resultados anteriores.
             let count = 0;
             for (let i = 0; i < fechaIndex; i++) {
-                count += this.agrupadosPorFecha[Object.keys(this.agrupadosPorFecha)[i]].length;
+                count +=
+                    this.agrupadosPorFecha[
+                        Object.keys(this.agrupadosPorFecha)[i]
+                    ].length;
             }
             return count + index;
         },
         toggleRow(index, event) {
-            if (event.target.tagName !== 'svg' && event.target.tagName !== 'path') {
+            if (
+                event.target.tagName !== "svg" &&
+                event.target.tagName !== "path"
+            ) {
                 this.resultados.forEach((resultado, idx) => {
                     if (idx !== index) resultado.expanded = false;
                 });
-                this.resultados[index].expanded = !this.resultados[index].expanded;
+                this.resultados[index].expanded =
+                    !this.resultados[index].expanded;
             }
         },
         async cargarDatos() {
             try {
                 if (this.idAmbiente == -2) {
-                    let ambienteNotLogged = JSON.parse(localStorage.getItem('ambienteNotLogged'));
+                    let ambienteNotLogged = JSON.parse(
+                        localStorage.getItem("ambienteNotLogged")
+                    );
                     let response = await axios({
-                        method: 'POST',
+                        method: "POST",
                         url: this.route("resultados.index"),
                         data: {
                             idAmbiente: this.idAmbiente,
                             cantPersonas: this.cantPersonas,
-                            ambiente: ambienteNotLogged
-                        }
+                            ambiente: ambienteNotLogged,
+                        },
                     });
                     this.datosCalculos = response.data;
                     this.setDatos();
-                }
-                else if (this.idAmbiente != -1) {
+                } else if (this.idAmbiente != -1) {
                     let response = await axios({
-                        method: 'POST',
+                        method: "POST",
                         url: this.route("resultados.index"),
                         data: {
                             idAmbiente: this.idAmbiente,
                             cantPersonas: this.cantPersonas,
-                            idUsuario: userId.value
-                        }
+                            idUsuario: userId.value,
+                        },
                     });
                     this.datosCalculos = response.data;
                     this.setDatos();
@@ -288,24 +429,31 @@ export default {
                 secondDayData
             );
             let isoLocalTime = localTime.replace(" ", "T"); //Fixea localTime que llega de API para que sea ISO
-            let currentDate = DateTime.fromISO(isoLocalTime, { zone: this.datosCalculos["timezone"] });
+            let currentDate = DateTime.fromISO(isoLocalTime, {
+                zone: this.datosCalculos["timezone"],
+            });
             let tomorrowDate = currentDate.plus({ days: 1 });
 
-            let formattedCurrentDate = currentDate.toFormat('yyyy-MM-dd');
-            let formattedTomorrowDate = tomorrowDate.toFormat('yyyy-MM-dd');
+            let formattedCurrentDate = currentDate.toFormat("yyyy-MM-dd");
+            let formattedTomorrowDate = tomorrowDate.toFormat("yyyy-MM-dd");
 
             tenHoursData.forEach((resultado, index) => {
                 // Calcula la fecha correcta basado en la hora actual y la comparación
-                let date = index + Number(this.roundDownHour(localTime).split(":")[0]) < 24
-                    ? formattedCurrentDate
-                    : formattedTomorrowDate;
+                let date =
+                    index +
+                        Number(this.roundDownHour(localTime).split(":")[0]) <
+                    24
+                        ? formattedCurrentDate
+                        : formattedTomorrowDate;
 
                 // Utiliza Luxon para crear un objeto DateTime con la zona horaria adecuada
                 let dateWithTime = DateTime.fromISO(`${date}T00:00:00`, {
                     zone: this.datosCalculos["timezone"],
                 });
                 // Formatea la fecha en el formato deseado (día, mes, año)
-                let dateFecha = dateWithTime.setLocale("es").toLocaleString(DateTime.DATE_FULL);
+                let dateFecha = dateWithTime
+                    .setLocale("es")
+                    .toLocaleString(DateTime.DATE_FULL);
 
                 this.resultados.push({
                     hour: resultado.hora,
@@ -318,25 +466,40 @@ export default {
             });
         },
         cambiarAlerta($alertName) {
-            let results = document.querySelector('.resultExpanded');
-            results.className = '';
-            results.classList.add('text-center');
-            results.classList.add('resultExpanded');
+            let results = document.querySelector(".resultExpanded");
+            results.className = "";
+            results.classList.add("text-center");
+            results.classList.add("resultExpanded");
             results.classList.add(this.getAlertClass($alertName, results));
             // Clases para fade de color
 
-            let alertDeselect = results.querySelector('.alertSelected');
-            alertDeselect.className = '';
+            let alertDeselect = results.querySelector(".alertSelected");
+            alertDeselect.className = "";
 
             let alertIcon = results.querySelector(`#${$alertName}`);
-            alertIcon.parentElement.classList.add('alertSelected');
+            alertIcon.parentElement.classList.add("alertSelected");
             // Pintar svg
-
-
-        }
+        },
     },
-    mounted() {
-        this.cargarDatos();
+    async mounted() {
+        await this.cargarDatos();
+        if (this.datosCalculos && this.datosCalculos["localTime"]) {
+            let localtime = this.datosCalculos["localTime"];
+            let localtimeDate = new Date(localtime.replace(" ", "T"));
+
+            let millisecondsUntilNextHour =
+                (60 - localtimeDate.getMinutes()) * 60000 -
+                localtimeDate.getSeconds() * 1000;
+
+            setTimeout(() => {
+                this.cargarDatos();
+                this.intervalId = setInterval(() => {
+                    this.cargarDatos();
+                }, 3600000);
+            }, millisecondsUntilNextHour);
+        } else {
+            console.error("Localtime no está disponible.", this.datosCalculos);
+        }
     },
 };
 </script>
@@ -355,7 +518,7 @@ export default {
 
 .alertIcons {
     div {
-        fill: #3D5A73;
+        fill: #3d5a73;
     }
 }
 
@@ -421,7 +584,6 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 5px;
-
 }
 
 .resultsHourMinimized:hover {
@@ -451,44 +613,69 @@ export default {
 }
 
 .claseFrioMinimized:hover {
-    filter: invert(74%) sepia(61%) saturate(2366%) hue-rotate(169deg) brightness(84%) contrast(77%);
+    filter: invert(74%) sepia(61%) saturate(2366%) hue-rotate(169deg)
+        brightness(84%) contrast(77%);
 }
 
 .claseLluviaMinimized:hover {
-    filter: invert(14%) sepia(74%) saturate(2316%) hue-rotate(210deg) brightness(80%) contrast(116%);
+    filter: invert(14%) sepia(74%) saturate(2316%) hue-rotate(210deg)
+        brightness(80%) contrast(116%);
 }
 
 .claseVientoMinimized:hover {
-    filter: invert(71%) sepia(25%) saturate(5136%) hue-rotate(353deg) brightness(96%) contrast(99%);
+    filter: invert(71%) sepia(25%) saturate(5136%) hue-rotate(353deg)
+        brightness(96%) contrast(99%);
 }
 
 .claseTormentaMinimized:hover {
-    filter: invert(33%) sepia(96%) saturate(7476%) hue-rotate(270deg) brightness(79%) contrast(129%);
+    filter: invert(33%) sepia(96%) saturate(7476%) hue-rotate(270deg)
+        brightness(79%) contrast(129%);
 }
 
 .claseAgradableMinimized:hover {
-    filter: invert(23%) sepia(98%) saturate(2033%) hue-rotate(137deg) brightness(90%) contrast(104%);
+    filter: invert(23%) sepia(98%) saturate(2033%) hue-rotate(137deg)
+        brightness(90%) contrast(104%);
 }
 
 /* separacion minimized expanded */
 .claseFrioExpanded {
-    background: linear-gradient(180deg, rgba(79, 158, 195, 1) 0%, rgba(162, 208, 229, 1) 100%);
+    background: linear-gradient(
+        180deg,
+        rgba(79, 158, 195, 1) 0%,
+        rgba(162, 208, 229, 1) 100%
+    );
 }
 
 .claseLluviaExpanded {
-    background: linear-gradient(180deg, rgb(92, 119, 254) 0%, rgb(195, 205, 255) 100%);
+    background: linear-gradient(
+        180deg,
+        rgb(92, 119, 254) 0%,
+        rgb(195, 205, 255) 100%
+    );
 }
 
 .claseVientoExpanded {
-    background: linear-gradient(180deg, rgba(205, 126, 7, 1) 0%, rgba(226, 168, 80, 1) 100%);
+    background: linear-gradient(
+        180deg,
+        rgba(205, 126, 7, 1) 0%,
+        rgba(226, 168, 80, 1) 100%
+    );
 }
 
 .claseTormentaExpanded {
-    background: linear-gradient(180deg, rgb(139, 94, 228) 0%, rgb(181, 170, 244) 100%);
+    background: linear-gradient(
+        180deg,
+        rgb(139, 94, 228) 0%,
+        rgb(181, 170, 244) 100%
+    );
 }
 
 .claseAgradableExpanded {
-    background: linear-gradient(180deg, rgb(101, 214, 72) 0%, rgb(165, 212, 164) 100%);
+    background: linear-gradient(
+        180deg,
+        rgb(101, 214, 72) 0%,
+        rgb(165, 212, 164) 100%
+    );
 }
 
 @media screen and (max-width: 767px) {
