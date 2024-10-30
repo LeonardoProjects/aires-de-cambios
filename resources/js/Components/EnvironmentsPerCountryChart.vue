@@ -92,7 +92,7 @@ export default {
                                 (props
                                     ? '<p class="m-0 fs-6 fw-bold">' +
                                     props.ADMIN +
-                                    "</p><p class='m-0 fs-6'>Ambientes: " +
+                                    "</p><p class='m-0 fs-6'>Locales: " +
                                     (ambientesPorPais.find(
                                         (a) => a.pais === props.ADMIN
                                     )?.total || 0) +

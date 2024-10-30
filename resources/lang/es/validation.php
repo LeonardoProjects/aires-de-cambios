@@ -93,7 +93,13 @@ return [
     'not_in'               => 'El campo :attribute seleccionado es inválido.',
     'not_regex'            => 'El formato del campo :attribute es inválido.',
     'numeric'              => 'El campo :attribute debe ser un número.',
-    'password'             => 'La contraseña es incorrecta.',
+    'password' => [
+        'letters' => 'El campo :attribute debe contener al menos una letra.',
+        'mixed' => 'El campo :attribute debe contener al menos una letra mayúscula y una minúscula.',
+        'numbers' => 'El campo :attribute debe contener al menos un número.',
+        'symbols' => 'El campo :attribute debe contener al menos un símbolo.',
+        'uncompromised' => 'El valor del campo :attribute aparece en alguna filtración de datos. Por favor indica un valor diferente.',
+    ],
     'present'              => 'El campo :attribute debe estar presente.',
     'regex'                => 'El formato del campo :attribute es inválido.',
     'required'             => 'El campo :attribute es obligatorio.',
@@ -118,6 +124,7 @@ return [
     'url'                  => 'El formato del campo :attribute es inválido.',
     'uuid'                 => 'El campo :attribute debe ser un UUID válido.',
     'failed'               => 'Las credenciales ingresadas son incorrectas.',
+    'current_password' => 'La contraseña es incorrecta.',
 
     /*
     |--------------------------------------------------------------------------
@@ -154,6 +161,7 @@ return [
         'densidadSelect' => '"Vivo en"',
         'tipoVentana' => '"Tipo de ventana"',
         'calidadVentana' => '"Calidad de ventana"',
+        'current_password' => 'contraseña actual',
         'password' => 'contraseña',
         'email' => 'email',
     ],

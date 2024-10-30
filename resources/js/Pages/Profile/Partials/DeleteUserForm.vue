@@ -80,7 +80,9 @@ const closeModal = () => {
                         autocomplete="current-password"
                         @keyup.enter="deleteUser"
                     />
-                    <InputError :message="form.errors.password" class="mt-2" />
+                    <div v-if="form.errors.password">
+                        <InputError v-if="form.errors.password == 'The password is incorrect.'" message="La contraseña es incorrecta" class="mt-2" />
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">

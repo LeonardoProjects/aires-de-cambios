@@ -84,18 +84,14 @@
         <div v-else class="d-flex justify-content-center flex-column w-100 text-center">
             <p class="fs-5">¡Crea un local para saber cómo ventilar!</p>
         </div>
-        <TutorialModal v-if="idAmbiente != -1 && !isMobileHerramienta"/>
-        <TutorialModalMobile v-if="idAmbiente != 1 && isMobileHerramienta"/>
     </div>
 </template>
 
 <script>
 import { usePage } from "@inertiajs/vue3";
-import { computed, ref, onMounted, onBeforeMount } from "vue";
+import { computed } from "vue";
 import AlertIcon from "@/Components/AlertIcon.vue";
-import TutorialModal from "@/Components/TutorialModal.vue";
 import { DateTime } from 'luxon';
-import TutorialModalMobile from "@/Components/TutorialModalMobile.vue";
 
 const page = usePage();
 const userId = computed(() => page.props.auth.user.id);
@@ -105,29 +101,8 @@ export default {
         idAmbiente: Number,
         cantPersonas: Number,
     },
-    setup() {
-        const isMobileHerramienta = ref(false);
-        const checkDeviceSize = () => {
-            isMobileHerramienta.value = window.innerWidth < 768;
-        };
-
-        onMounted(() => {
-            checkDeviceSize();
-            window.addEventListener("resize", checkDeviceSize);
-        });
-
-        onBeforeMount(() => {
-            window.removeEventListener("resize", checkDeviceSize);
-        });
-
-        return {
-            isMobileHerramienta,
-        };
-    },
     components: {
-        AlertIcon,
-        TutorialModal,
-        TutorialModalMobile,
+        AlertIcon
     },
     data() {
         return {
