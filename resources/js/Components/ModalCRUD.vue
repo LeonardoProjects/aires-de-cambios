@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, usePage } from "@inertiajs/vue3";
-import { computed, ref, onMounted, watch } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { Tooltip } from 'bootstrap';
 
 const page = usePage();
@@ -60,7 +60,6 @@ const validateForm = () => {
                     case 'nombreAmbiente':
                         nombre = '"Nombre de local"';
                         break;
-                    case 'longitud':
                 }
                 nombre = nombre || key;
                 formAdd.errors[key] = [`${nombre} no puede estar vacío.`]; // Almacenar el error como un array
