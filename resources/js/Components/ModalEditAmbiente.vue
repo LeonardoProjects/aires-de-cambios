@@ -241,6 +241,10 @@ function crearMapaEdit($latitud, $longitud) {
         form.latitud = lat;
         form.longitud = lng;
     });
+
+    const geocoderInput = document.querySelector('.leaflet-control-geocoder-form input');
+    geocoderInput.setAttribute("enterkeyhint", "done");
+    
     setTimeout(function () {
         window.dispatchEvent(new Event("resize"));
     }, 1000);

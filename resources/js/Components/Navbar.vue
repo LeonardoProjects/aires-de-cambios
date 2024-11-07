@@ -102,6 +102,9 @@
                         </div>
                         <!-- Mostrar "Iniciar sesión" en el menú responsive si no está autenticado -->
                         <div class="border-top" v-else>
+                            <ResponsiveNavLink :href="route('herramienta')">
+                                Herramienta
+                            </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('login')">
                                 Iniciar sesión
                             </ResponsiveNavLink>

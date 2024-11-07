@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, usePage } from "@inertiajs/vue3";
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import { Tooltip } from 'bootstrap';
 
 const page = usePage();
@@ -23,19 +23,58 @@ const formAdd = useForm({
     nombreAmbiente: "",
     largoAmbiente: 0,
     altoAmbiente: 0,
-    tipoHabitacion: "",
-    alturaSelect: "",
+    tipoHabitacion: null,
+    alturaSelect: null,
     longitud: "",
     latitud: "",
-    densidadSelect: "",
+    densidadSelect: null,
     largoVentana: 0,
     altoVentana: 0,
     tipoVentana: "Corrediza",
-    calidadVentana: "",
+    calidadVentana: null,
     idUser: page.props.auth.user ? userId.value : '',
     errors: {}
 });
 
+const validateForm = () => {
+    // Reiniciar los errores antes de la validación
+    formAdd.errors = {};
+
+    for (const [key, value] of Object.entries(formAdd)) {
+        if (!value && value !== 0) {
+            if (key != 'idUser' && key != 'hasErrors' && key != 'processing' && key != 'progress' && key != 'wasSuccessful' && key != 'recentlySuccessful') {
+                let nombre;
+                switch (key) {
+                    case 'alturaSelect':
+                        nombre = '"Altura"';
+                        break;
+                    case 'densidadSelect':
+                        nombre = '"Vivo en"';
+                        break;
+                    case 'calidadVentana':
+                        nombre = '"Calidad de ventana"';
+                        break;
+                    case 'tipoHabitacion':
+                        nombre = '"Tipo de habitación"';
+                        break;
+                    case 'nombreAmbiente':
+                        nombre = '"Nombre de local"';
+                        break;
+                    case 'longitud':
+                }
+                nombre = nombre || key;
+                formAdd.errors[key] = [`${nombre} no puede estar vacío.`]; // Almacenar el error como un array
+            }
+        }
+    }
+
+    // Verificar si el objeto de errores tiene alguna clave
+    if (Object.keys(formAdd.errors).length > 0) {
+        return false; // Si hay errores
+    } else {
+        return true; // Si todos los campos son válidos
+    }
+};
 
 async function submit() {
     try {
@@ -49,6 +88,14 @@ async function submit() {
                 emitirAmbiente(response.data.data); // Emitir los ambientes actualizados
             }
         } else {
+            formAdd.errors = {};
+
+            // Primero validamos el formulario
+            if (!validateForm()) {
+                console.error("El formulario tiene campos vacíos");
+                loaderVisibleCRUD.value = false;
+                return;
+            }
             const ambienteNotLogged = {
                 nombreAmbiente: formAdd.nombreAmbiente,
                 anchoAmbiente: formAdd.anchoAmbiente,
@@ -158,6 +205,11 @@ function crearMapa() {
         formAdd.latitud = lat;
         formAdd.longitud = lng;
     });
+
+
+    const geocoderInput = document.querySelector('.leaflet-control-geocoder-form input');
+    geocoderInput.setAttribute("enterkeyhint", "done");
+
     setTimeout(function () {
         window.dispatchEvent(new Event('resize'));
     }, 1000);
@@ -349,6 +401,9 @@ function closeModal() {
                             <div class="w-100 mt-4 d-flex justify-content-center">
                                 <div id="map"></div>
                             </div>
+                            <div v-if="formAdd.errors.longitud || formAdd.errors.latitud" class="error mt-2">
+                                La ubicación es obligatoria.
+                            </div>
                         </div>
 
                         <div class="mb-0 divDetallesVentana">
@@ -507,7 +562,7 @@ svg {
             div {
                 padding: 0 !important;
             }
-        }  
+        }
 
         .divInputsNumericos {
             padding: 0 !important;
