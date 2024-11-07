@@ -45,7 +45,7 @@
                                 <div class="dUP">
                                     <strong>{{ resultado.hour }}</strong>
                                     <span class="m-0">Apertura de ventana<br><span class="fs-3">{{ resultado.cm
-                                            }}cm</span></span>
+                                    }}cm</span></span>
                                 </div>
                                 <div class="dDOWN">
                                     <div class="alertIcons">
@@ -179,12 +179,19 @@ export default {
             return count + index;
         },
         toggleRow(index, event) {
-            if (event.target.tagName !== 'svg' && event.target.tagName !== 'path') {
-                this.resultados.forEach((resultado, idx) => {
-                    if (idx !== index) resultado.expanded = false;
-                });
-                this.resultados[index].expanded = !this.resultados[index].expanded;
+            const target = event.target;
+
+            // Si se hace clic en el SVG con la clase `custom-svg`, no ejecutar el toggle
+            if (target.closest('.custom-svg')) {
+                return; // Salir de la función si se hace clic en ese SVG específico
             }
+
+            // Lógica para expandir/cerrar las filas si no se hizo clic en el SVG específico
+            this.resultados.forEach((resultado, idx) => {
+                if (idx !== index) resultado.expanded = false;
+            });
+
+            this.resultados[index].expanded = !this.resultados[index].expanded;
         },
         async cargarDatos() {
             try {
